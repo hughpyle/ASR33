@@ -55,9 +55,12 @@
 //
 // Additionally there's a pushbutton that triggers various test sequences.
 
+// set to add some debug messages to the USB serial port
 // #define DEBUG_ALL
 
-#define TESTING
+// set for "local" testing (USB-only; e.g. `sudo cu -l cu.usbmodem63191`)
+// #define TESTING
+
 #ifdef TESTING
 #define HWSERIAL Serial
 #else
