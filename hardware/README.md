@@ -2,6 +2,8 @@
 
 These are "as-built"; components were to hand, there are many better ways to do this.
 
+Current status: untested, not sure it works.
+
 Alternative designs would include:
 
 * Off-the-shelf RS232 convertor, then level-conversion for RS232 to microcontroller.  For example the [B&B](www.bb-elec.com/Products/Serial-Connectivity/Serial-Converters/Current-Loop-Converters.aspx) series.
