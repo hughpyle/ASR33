@@ -7,6 +7,10 @@
  * This driver performs character translation and other functions.
  */
 
+
+// TODO 'esc' may be codepoint 126, check & send as modern ESC
+
+
 // The teletype's serial interface is a 20mA current loop:
 //   110 baud
 //   One start bit
@@ -154,14 +158,7 @@ void loop() {
 }
 
 
-// ---- Bytes from TTY to USB
-
-void printTTY(const char *s) {
-  for(int i=0; i<strlen(s); s++) {
-    sendToTTY(s[i]);
-  }
-}
-
+// ---- Bytes from USB to TTY
 
 int processUSBByte(int b)
 {
@@ -173,7 +170,7 @@ int processUSBByte(int b)
 #endif
 
     if (isRxNLCR) {
-      // TODO linefeed conversion, LF => CR+LF
+      // Linefeed conversion, incoming LF => send CR+LF to teletype
       if ((b==LF) && (prevUSBByte!=CR)) {
         // write a CR first
         sendToTTY(CR);
@@ -186,29 +183,39 @@ int processUSBByte(int b)
 }
 
 
+void printTTY(const char *s) {
+  // Print a string to the teletype
+  for(int i=0; i<strlen(s); s++) {
+    sendToTTY(s[i]);
+  }
+}
+
+
 void sendToTTY(int b) {
-    bool pbit = 1;
-    if (isRxEvenParity) {
-      pbit = parity(b);
+  // Print a character to the teletype
+  // Includes appropriate parity and delays
+  bool pbit = 1;
+  if (isRxEvenParity) {
+    pbit = parity(b);
 #ifdef DEBUG_ALL
-      Serial.print("Parity ");
-      Serial.println(pbit, DEC);
+    Serial.print("Parity ");
+    Serial.println(pbit, DEC);
 #endif
-    }
-    // TODO set the parity bit
+  }
+  // TODO set the parity bit
 
-    HWSERIAL.write(b);
+  HWSERIAL.write(b);
 
-    if (isRxDelays) {
-      if (b==CR) {
-        // Add delay after carriage return
-        delay(250);
-      }
-      if (b==LF) {
-        // Add delay after line feed
-        delay(200);
-      }
+  if (isRxDelays) {
+    if (b==CR) {
+      // Add delay after carriage return
+      delay(250);
     }
+    if (b==LF) {
+      // Add delay after line feed
+      delay(200);
+    }
+  }
 
 #ifdef TESTING
   delay(20);
@@ -216,6 +223,7 @@ void sendToTTY(int b) {
 }
 
 
+// ---- Bytes from TTY to USB
 
 int processTTYByte(int b) {
   int c = b;
@@ -278,14 +286,19 @@ int processTTYByte(int b) {
   return c;
 }
 
+
 void sendToUSB(int c) {
+  // Print a character to the USB port
   if (c>0) {
     Serial.write(c);
   }
 }
 
 
+// ---- Misc
+
 bool parity(uint8_t v) {
+  // Compute the parity bit
   bool p = false;
   while (v) {
     p = !p;
@@ -294,10 +307,12 @@ bool parity(uint8_t v) {
   return p;
 }
 
+
 char *yesno(bool f) {
   if (f) return "yes";
   return "no";
 }
+
 
 // ----- Self-test routines ----------------------------------------------------
 //
