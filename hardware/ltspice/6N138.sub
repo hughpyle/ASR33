@@ -1,0 +1,26 @@
+.subckt 6N137 A K S C V E
+D1 A N001 LED
+C1 A K 1p
+V1 N001 K 0
+R2 ta S 100
+C2 ta S 200p
+B2 S ta I=TABLE(I(V1), 0,0,2.5m,50m,15m, 55m)
+C10 A C 0.1p
+C11 K S 0.1p
+M1 C ga S S NMOS1
+C5 C ga 10p
+De1 E V Dd1
+R6 V E 6k
+R7 E S 100k
+B4 0 en I=TABLE(V(E,S), 0,0,1.4,0,1.5, 1m)
+R4 en 0 1k
+R5 V S 1.5k
+C6 C S 10p
+C4 en 0 10p
+B3 S ga I=V(ta,s)*V(en)*10m
+R3 ga S 100
+C3 ga S 20p
+.model LED D(Is=1e-17 Rs=4 N=1.5 Eg=1.7 CJO=5p Tt=5n)
+.model NMOS1 NMOS(Vt0=2 Kp=0.03 Rs=5 Rd=5 lambda=0.02)
+.model Dd1 D(Is=1e-7 Rs=10 Cjo=5p Tt=5n)
+.ends
