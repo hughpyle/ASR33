@@ -1,6 +1,6 @@
 # Teletype Model 33
 
-Work-in-progress.  Hardware and firmware for interface between a Teletype ASR-33 and modern computers over USB.
+Hardware and firmware for interface between a Teletype ASR-33 and modern computers over USB.
 
 #### teensytty
 
