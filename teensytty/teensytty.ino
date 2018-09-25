@@ -133,8 +133,9 @@ AltSoftSerial altSerial(1,1,true);
 
 // You can tweak the baud rate very slightly here, but it's better to use 110 and
 // fix whatever timing/alignment issues in hardware
-#define BAUDRATE 109
+#define BAUDRATE 111
 
+#define SNOOZETIME 5000
 elapsedMillis millisSinceActivity;
 
 
@@ -184,9 +185,7 @@ void setup() {
   HWSERIAL.begin(BAUDRATE); //, SERIAL_8N2);
 #endif
 
-  millisSinceActivity = 0;
-  
-  delay(100);
+  millisSinceActivity = SNOOZETIME;
   readOptions();
 }
 
@@ -198,36 +197,29 @@ void loop() {
 
   if (isTestMode) {
     // print a test sequence
-    digitalWrite(PIN_INTERNAL_LED, HIGH);
     selfTest();
   }
-  digitalWrite(PIN_INTERNAL_LED, LOW);
-
-  if (HWSERIAL.available() > 0) {
-    millisSinceActivity = 0;
-    waitAlign();
-    incomingByte = HWSERIAL.read();
-    incomingByte = processTTYByte(incomingByte);
-  }
-
+  
   if (Serial.available() > 0) {
-    millisSinceActivity = 0;
-    waitAlign();
+    // Print something to tty
     incomingByte = Serial.read();
     incomingByte = processUSBByte(incomingByte);
-  } 
-
-  if (millisSinceActivity > 1000) {
-    waitAlign();
+    sendToTTY(incomingByte);
+    millisSinceActivity = 0;
+  } else if (HWSERIAL.available() > 0) {
+    // Read something from tty
+    incomingByte = HWSERIAL.read();
+    incomingByte = processTTYByte(incomingByte);
+    millisSinceActivity = 0;
+  } else if (millisSinceActivity > SNOOZETIME) {
+    // Stop the open-line chattering
     HWSERIAL.setBreak();
+  } else {
+    // Keep the line open so timing errors are minimized
+    sendToTTY(0);
   }
 
-}
 
-
-void waitAlign() {
-  // align to 10th of a second to spare the clutch
-  while ((millisSinceActivity % 100) != 0) {}
 }
 
 
@@ -286,7 +278,7 @@ int processUSBByte(int b)
   }
 
   prevUSBByte = b;
-  sendToTTY(b);
+  //sendToTTY(b);
   return b;
 }
 
@@ -308,16 +300,16 @@ void sendToTTY(int b) {
   }
 
 #ifdef DEBUG_ALL
-  Serial.print("Sending to TTY: ");
-  Serial.write(b);
-  Serial.print(" = 0x");
-  Serial.println(b, HEX);
+  if(b!=0) {
+    Serial.print("Sending to TTY: ");
+    Serial.write(b);
+    Serial.print(" = 0x");
+    Serial.println(b, HEX);
+  }
 #endif
 
   // Print the received byte at the teletype
   // HWSERIAL.flush();
-  while (HWSERIAL.isReading()) {}
-  HWSERIAL.write((uint8_t)0);
   digitalWrite(PIN_INTERNAL_LED, HIGH);
   HWSERIAL.write(b);
   while (HWSERIAL.isWriting()) {}
@@ -330,12 +322,10 @@ void sendToTTY(int b) {
       // Add delay after carriage return (200m or more)
       sendToTTY(0);
       sendToTTY(0);
-      //sendToTTY(0);
     }
     if (b==LF) {
       // Add delay after line feed
       sendToTTY(0);
-      //sendToTTY(0);
     }
   }
 
@@ -362,6 +352,7 @@ int processTTYByte(int b) {
 
     // Ryemove the parity bit
     b = b & 0x7F;
+    c = b;
 
     if(isTxUCLC) {
       // TTY produces uppercase alpha, fold them to lowercase
