@@ -6,6 +6,9 @@
  * USB serial connects to the host system.
  * This driver performs character translation and other functions.
  * 
+ * NB depends on a hacked AltSoftSerial:
+ * https://github.com/hughpyle/AltSoftSerial/tree/hacking
+ * 
  * 2018-09-03 update for with arduino 1.8.6
  */
 
