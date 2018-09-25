@@ -8,4 +8,8 @@ This is done using `getty`.  Follow the very detailed instructions here:
 I have this configured to auto-login as a specific OS user, and that user's `.profile` then sets up various
 additional configuration items (stty, aliases, and so on).
 
-
+My gettytab line looks like this:
+```
+h|hugh33|hugh33|mine:\
+	:sp#115200:ub:np:al=33:im=\r\n:
+```
