@@ -23,12 +23,9 @@
 //   Two stop bits (mark)
 // So the total frame size is 11 bits.
 //
-// The UART does not have direct support for even parity plus two stop bits.
-// But it does have '9-bit word'.  The Teensy serial code has format SERIAL_8N2
-// to use this and set the 9th bit as a stop bit.  Then we can calculate
-// the parity bit ourselves when sending to the tty (and ignore parity, or
-// clear tha parity bit, when receiving).
-// (All Teensy UART modes provide the start bit automatically).
+// The Teensy has great UARTs but they can't run slowly enough and also do USB.
+// (You can underclock, or use the UARTs at >500 baud, but not down to 110).
+// So instead this uses a software serial driver (AltSoftSerial).
 //
 // ASR33 is 7-bit ASCII, which does not include lowercase letters.
 // But for terminals and generally, lowercase is more useful (for example,
@@ -41,7 +38,6 @@
 //
 // But modern kernels (e.g. Darwin) have removed support for some of these stty
 // options, so it's more convenient and more flexible to do here in firmware.
-// On OSX you will still want `stty 
 //
 // The ASR33's ASCII (ANSI X3.4-1963) differs from today's ASCII in other ways.
 // Codepoint 0x5e is "up arrow", not caret (^).
