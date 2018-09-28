@@ -10,11 +10,12 @@ line-discipline things implemented there in firmware
 GPIO serial connection should work fine too.  In that
 case the port would be ttyAMA0 instead of ttyACM0 below.
 
+You can see all the ports using `ls /dev/tty*` 
 
 ## getty on systemd
 
 Recent versions of raspbian use `systemd`.
-To start a getty,
+To request a getty on the 'ttyACM0' device,
 ```
 sudo systemctl start getty@ttyACM0.service
 ```
@@ -35,7 +36,7 @@ sudo systemctl show getty@ttyACM0.service
 
 Create a directory,
 ```
-root@rpi33:~# mkdir /etc/systemd/system/getty@ttyACM0.service.d
+sudo mkdir /etc/systemd/system/getty@ttyACM0.service.d
 ```
 
 Then create a file `/etc/systemd/system/getty@ttyACM0.service.d/override.conf` with
