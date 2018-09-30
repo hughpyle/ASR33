@@ -8,8 +8,8 @@
 import sys
 
 
-# emoji to print in utf8 binary
-HEART_EMOJI = u'\u2764\ufe0f'.encode("utf-8")
+# emoji to print in binary
+HEART_EMOJI = u'\u2764\ufe0f'
 
 # How many nulls before and after the print
 LEAD = 10
@@ -152,7 +152,7 @@ def print_string(s):
 
 def print_binary(s):
     sys.stdout.write(chr(0) * LEAD)
-    sys.stdout.write(HEART_EMOJI)
+    sys.stdout.write(u"{}".format(HEART_EMOJI))
     sys.stdout.write(chr(0) * LEAD)
     for char in s:
         v = tape_chars.get(ord(char), 0)
