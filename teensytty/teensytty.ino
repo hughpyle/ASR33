@@ -12,6 +12,26 @@
  * 2018-09-03 update for with arduino 1.8.6
  */
 
+// TODO:
+// - handle BREAK: after a short break, send Ctrl+C / flush incoming
+// - handle BREAK: after a long break, reset the USB
+// - some set of ANSI (vt52? vt100?) escape sequences
+//    e.g. those supported by LA34/LA36/LA120
+//    http://bitsavers.trailing-edge.com/www.computer.museum.uq.edu.au/pdf/EK-LA34S-TM-001%20DECwriter%20IV%20Series%20Technical%20Manual.pdf
+// http://www.inwap.com/pdp10/ansicode.txt
+// - turn on and off the VT125 printer (punch tape)
+//      [4i = Received data goes to VT102 screen, not to its printer
+//      [5i = Received data goes to VT102's printer, not its screen
+//   or [@R -> 022 12 R DC2	Device Control 2, causes ASR-33 to activate paper-tape reader
+//      [@T -> 024 14 T DC4	Device Control 4, causes ASR-33 to deactivate paper-tape reader
+//      (similarly for ENQ, XON, etc)
+// - switch in and out of "raw binary mode" (for punch tape)?
+//      [@P => DLE? & ETB
+// - escapes for turning auto line-wrapping on and off
+//      [?7h = DECAWM - AutoWrap Mode, start newline after column 80
+//      [?7l = DECAWM - Cursor remains at end of line after column 80
+
+
 // ===========================================================================
 
 // The teletype's serial interface is a 20mA current loop:
