@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+log_user 0
+set timeout 3600
+spawn telnet bbs.fozztexx.com
+expect "User:"
+send "$env(BBSUSER)\n"
+expect "Password:"
+sleep 1
+send "$env(BBSPASS)\n"
+expect "Terminal size"
+expect ":"
+send "72x999\n"
+expect "Terminal type"
+expect ":"
+send "tty33\n"
+expect "Character set"
+expect ":"
+send "\n"
+interact
+

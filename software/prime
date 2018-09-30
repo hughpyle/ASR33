@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+log_user 0
+set timeout 3600
+spawn telnet em.prirun.com 8001
+expect {
+	"Login please." {
+            send "login $env(PRISUER)\r"
+            exp_continue
+	} "Password?" {
+	    send "$env(PRIPASS)\r"
+	    exp_continue
+        } "Welcome to PRIMOS" {
+            log_user 1
+            interact
+        } eof {
+            exit
+        }
+    }
+

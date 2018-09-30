@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+log_user 0
+set timeout 3600
+spawn telnet lambda.moo.mud.org 8888
+expect "connected."
+send "co $env(MOOUSER)\n"
+expect "Password:"
+sleep 1
+send "$env(MOOPASS)\n"
+# log_user 1
+interact
+
