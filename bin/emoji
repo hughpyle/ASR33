@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# display a big emoji
+
+url=$(emojiurl "$1")
+if [[ $? == 0 ]]; then
+    convert -density 1200 -background white $url -background none -colorspace Gray -auto-level jpg: | jp2a --invert --width=40 -
+fi

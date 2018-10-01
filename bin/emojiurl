@@ -35,6 +35,15 @@ def without_joiners(thing):
         if code_point_to_unicode(c) not in JOINER_CHARS
     )
 
+def suggest(arg):
+    choices = emoji_data_python.find_by_shortname(arg)
+    if choices == []:
+        sys.stderr.write("Not found!\n")
+    else:
+        cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])
+        sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
+
+
 def main():
     s = requests.Session()
     for arg in sys.argv[1:]:
@@ -42,12 +51,7 @@ def main():
         # See if there's a simple match
         emoji = emoji_data_python.emoji_short_names.get(arg)
         if emoji is None:
-            choices = emoji_data_python.find_by_shortname(arg)
-            if choices == []:
-                sys.stderr.write("Not found!\n")
-            else:
-                cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])
-                sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
+            suggest(arg)
             sys.exit(1)
 
         # print(emoji.__dict__)
@@ -70,6 +74,7 @@ def main():
             sys.exit(0)
         else:
             # Suggest alternatives that might be findable
+            suggest(arg)
             sys.exit(1)
 
 main()
