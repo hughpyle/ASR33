@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+# requires python 3 (or wide-char python 2.7, which you probably have to build from source)
+
+# Return a SVG URL for an emoji character
+# Example:
+# `emojiurl heart` => 'https://twemoji.maxcdn.com/svg/2764.svg'
+# `emojiurl heart` => 'https://twemoji.maxcdn.com/svg/2764.svg'
+
+import sys
+import requests
+import emoji_data_python
+from emoji_unicode import Emoji
+from emoji_unicode.models import JOINER_CHARS
+from emoji_unicode.utils import code_point_to_unicode
+
+# Use twemoji SVG from their CDN.
+# Filenames are lowercase, with hyphens separating codepoints, e.g. "1f1e8-1f1f3.svg"
+# BASE_URL = "https://twemoji.maxcdn.com/svg/{}.svg"
+BASE_URL = "https://cdnjs.cloudflare.com/ajax/libs/twemoji/11.1.0/2/svg/{}.svg"
+
+SEP = "-"
+
+def with_joiners(thing):
+    hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
+    return SEP.join(
+        c.lstrip('0').lower()
+        for c in hexcodes
+    )
+
+def without_joiners(thing):
+    hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
+    return SEP.join(
+        c.lstrip('0').lower()
+        for c in hexcodes
+        if code_point_to_unicode(c) not in JOINER_CHARS
+    )
+
+def main():
+    s = requests.Session()
+    for arg in sys.argv[1:]:
+        arg = arg.lower()
+        # See if there's a simple match
+        emoji = emoji_data_python.emoji_short_names.get(arg)
+        if emoji is None:
+            choices = emoji_data_python.find_by_shortname(arg)
+            if choices == []:
+                sys.stderr.write("Not found!\n")
+            else:
+                cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])
+                sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
+            sys.exit(1)
+
+        # print(emoji.__dict__)
+
+        # Get the SVG URL: first try 'unified'
+        uri = BASE_URL.format(emoji.unified.lower())
+        r = s.head(uri)
+        if r.status_code != 200:
+            # Try with joiners
+            uri = BASE_URL.format(with_joiners(emoji.char))
+            r = s.head(uri)
+        if r.status_code != 200:
+            # Try without joiners
+            uri = BASE_URL.format(without_joiners(emoji.char))
+            r = s.head(uri)
+
+        if r.status_code == 200:
+            # OK, found it
+            print(uri)
+            sys.exit(0)
+        else:
+            # Suggest alternatives that might be findable
+            sys.exit(1)
+
+main()
