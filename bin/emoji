@@ -2,6 +2,11 @@
 
 # display a big emoji
 
+if [[ "$1" == "" ]]; then
+    echo "Usage: emoji <name>"
+    exit
+fi
+
 tmps=$(mktemp -t XXXXXX.svg)
 tmpj=$(mktemp -t XXXXXX.jpg)
 function cleanup() {
