@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+# Substitute shortnames for emoji in text
+
+
+import sys
+import fileinput
+import emoji
+
+
+try:
+    for line in fileinput.input():
+        sys.stdout.write(emoji.demojize(line))
+except KeyboardInterrupt:
+    sys.exit(1)
+

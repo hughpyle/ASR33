@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+# convert :emojiname: to emoji characters
+
+import sys
+import fileinput
+import emoji
+
+
+try:
+    for line in fileinput.input():
+        sys.stdout.write(emoji.emojize(line, use_aliases=True))
+except KeyboardInterrupt:
+    sys.exit(1)
