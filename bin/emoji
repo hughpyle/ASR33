@@ -2,9 +2,16 @@
 
 # display a big emoji
 
-if [[ "$1" == "" ]]; then
-    echo "Usage: emoji <name>"
-    exit
+# 0.1" character pitch horizontally
+# 0.16" vertically
+# default to small
+width=32
+height=20
+if [[ "$1" == "-big" ]]; then
+    # large
+    width=72
+    height=45
+    shift
 fi
 
 tmps=$(mktemp -t XXXXXX.svg)
@@ -24,8 +31,6 @@ if [[ $? == 0 ]]; then
     wget -q -O "$tmps" "$url"
     convert -density 300 -background white "$tmps" -background none -colorspace Gray -auto-level "$tmpj"
 
-    # 0.1" character pitch horizontally
-    # 0.16" vertically
-    # so width 40 characters (4") => height 25
-    jp2a --invert --chars="$chars" --width=40 --height=25 "$tmpj"
+    # convert to ascii
+    jp2a --invert --chars="$chars" --width=$width --height=$height "$tmpj"
 fi

@@ -4,7 +4,6 @@
 # Return a SVG URL for an emoji character
 # Example:
 # `emojiurl heart` => 'https://twemoji.maxcdn.com/svg/2764.svg'
-# `emojiurl heart` => 'https://twemoji.maxcdn.com/svg/2764.svg'
 
 import sys
 import requests
@@ -13,21 +12,29 @@ from emoji_unicode import Emoji
 from emoji_unicode.models import JOINER_CHARS
 from emoji_unicode.utils import code_point_to_unicode
 
-# Use twemoji SVG from their CDN.
+
+# Images: Use twemoji SVG from their CDN.
 # Filenames are lowercase, with hyphens separating codepoints, e.g. "1f1e8-1f1f3.svg"
 # BASE_URL = "https://twemoji.maxcdn.com/svg/{}.svg"
 BASE_URL = "https://cdnjs.cloudflare.com/ajax/libs/twemoji/11.1.0/2/svg/{}.svg"
 
 SEP = "-"
 
+# max suggestions
+MAX_SUGGEST = 30
+
+
 def with_joiners(thing):
+    # Emoji codes including ZWJ characters
     hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
     return SEP.join(
         c.lstrip('0').lower()
         for c in hexcodes
     )
 
+
 def without_joiners(thing):
+    # Emoji codes excluding ZWJ characters
     hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
     return SEP.join(
         c.lstrip('0').lower()
@@ -35,13 +42,33 @@ def without_joiners(thing):
         if code_point_to_unicode(c) not in JOINER_CHARS
     )
 
+
+def popular():
+    # Suggest some of the most popular
+    popularmoji = requests.get("https://api.emojitracker.com/v1/rankings").json()[:MAX_SUGGEST]
+    popular = []
+    for p in popularmoji:
+        e = emoji_data_python.find_by_name(p["name"])
+        if e:
+            popular.append(e[0].short_name)
+
+    sys.stderr.write("Try: {}\n".format(" ".join(popular)))
+
+
 def suggest(arg):
-    choices = emoji_data_python.find_by_shortname(arg)
-    if choices == []:
-        sys.stderr.write("Not found!\n")
+    # Suggest based on the argument
+    if arg == "":
+        popular()
     else:
-        cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])
-        sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
+        choices = emoji_data_python.find_by_shortname(arg)
+        if choices == []:
+            choices = emoji_data_python.find_by_name(arg)
+        if choices == []:
+            sys.stderr.write("Not found! ")
+            popular()
+        else:
+            cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])[:MAX_SUGGEST]
+            sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
 
 
 def main():
@@ -79,5 +106,9 @@ def main():
             # Suggest alternatives that might be findable
             suggest(arg)
             sys.exit(1)
+
+    suggest(arg)
+    sys.exit(1)
+
 
 main()
