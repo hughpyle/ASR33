@@ -48,6 +48,9 @@ def main():
     s = requests.Session()
     for arg in sys.argv[1:]:
         arg = arg.lower()
+        if arg == "":
+            continue
+
         # See if there's a simple match
         emoji = emoji_data_python.emoji_short_names.get(arg)
         if emoji is None:
