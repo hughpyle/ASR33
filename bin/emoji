@@ -1,8 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
 # display a big emoji
 
+tmps=$(mktemp -t XXXXXX.svg)
+tmpj=$(mktemp -t XXXXXX.jpg)
+function cleanup() {
+    rm $tmps
+    rm $tmpj
+}
+trap cleanup EXIT
+
 url=$(emojiurl "$1")
 if [[ $? == 0 ]]; then
-    convert -density 1200 -background white $url -background none -colorspace Gray -auto-level jpg: | jp2a --invert --width=40 -
+    wget -q -O "$tmps" "$url"
+    convert -density 300 -background white "$tmps" -background none -colorspace Gray -auto-level "$tmpj"
+    jp2a --invert --width=40 "$tmpj"
 fi
