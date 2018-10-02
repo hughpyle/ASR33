@@ -4,12 +4,24 @@ Hardware and firmware for interface between a Teletype ASR-33 and modern compute
 
 [@33asr](https://twitter.com/33asr)
 
-#### teensytty
+#### bin
 
-Teensy microcontroller for ASR33-to-USB interface.
+A few command-line utilities for the tty user.  Put this on your PATH.
 
 #### hardware
 
 Hardware for 20mA current loop send and receive.
+
+#### osx
+
+Setting up a getty on OSX
+
+#### rpi
+
+Setting up a getty on Raspberry Pi
+
+#### teensytty
+
+Teensy microcontroller for ASR33-to-USB interface.
 
 
