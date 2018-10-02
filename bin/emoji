@@ -15,9 +15,17 @@ function cleanup() {
 }
 trap cleanup EXIT
 
+# ASR33 typewheel characters approximately sorted by print density
+chars=" .-\';,<:>!/=^\"1_\\7?I)(+J[]TLCF3YS59*V#Z6PD$OAUH4EG0X&Q@%82KRBNWM"
+
 url=$(emojiurl "$1")
 if [[ $? == 0 ]]; then
+    # fetch the SVG and convert to a JPG
     wget -q -O "$tmps" "$url"
     convert -density 300 -background white "$tmps" -background none -colorspace Gray -auto-level "$tmpj"
-    jp2a --invert --width=40 "$tmpj"
+
+    # 0.1" character pitch horizontally
+    # 0.16" vertically
+    # so width 40 characters (4") => height 25
+    jp2a --invert --chars="$chars" --width=40 --height=25 "$tmpj"
 fi
