@@ -23,14 +23,14 @@ function cleanup() {
 trap cleanup EXIT
 
 # ASR33 typewheel characters approximately sorted by print density
-chars=" .-\';,<:>!/=^\"1_\\7?I)(+J[]TLCF3YS59*V#Z6PD$OAUH4EG0X&Q@%82KRBNWM"
+chars=" .-,/)+>^_=?7I][*J5C#V96$P&%4OZSDAH@GX2U8EBQWKRM"
 
 url=$(emojiurl "$1")
 if [[ $? == 0 ]]; then
     # fetch the SVG and convert to a JPG
     wget -q -O "$tmps" "$url"
-    convert -density 300 -background white "$tmps" -background none -colorspace Gray -auto-level "$tmpj"
+    convert -density 200 -background white "$tmps" -background none -colorspace Gray -gamma 2 auto-level jpg:"$tmpj"
 
-    # convert to ascii
-    jp2a --invert --chars="$chars" --width=$width --height=$height "$tmpj"
+    # convert to ascii (and trim blanks from line endings, to save printing time)
+    jp2a --invert --chars="$chars" --width=$width --height=$height "$tmpj" | sed 's/[[:blank:]]*$//'
 fi
