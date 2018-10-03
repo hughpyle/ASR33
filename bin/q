@@ -1,0 +1,9 @@
+#!/bin/bash +e
+
+# requires WOLFRAM_ALPHA_KEY in environment
+
+url='https://api.wolframalpha.com/v1/result'
+q=$(echo "$@" | jq -s -R -r @uri -)
+
+curl "${url}?i=${q}&appid=${WOLFRAM_ALPHA_KEY}"
+echo ""
