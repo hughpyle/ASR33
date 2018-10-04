@@ -6,27 +6,32 @@ Various useful command-line tools for the teletype user.
 * `prime`: log in to the PRIMOS emulator (needs `$PRIUSER` and `$PRIPASS`)
 * `tape <text>`: print big characters on punch-tape.
 * `emoji <name>`: print an emoji.
+* `q <question>`: general knowledge.
 
 
 ```
-                          .;:-  
-            .:/>\      .1S&KR%S>
-=JTF3F<  .^Y%WMM8Y<   >#WW#]YNM8
-DMWMMK> \FNW6+?6MM5  >QMK\. .ZMM
-\:CMM* \9MMC.  ?MM@\\ZMMJ   .PMM
- \DMM( +MM6\   (MM&.\MM%;   "NMR
- "MMB! #MMI    9MM3 JMM*   .5MML
- TMM*.-QMN/   _RMK/ )MMD\ ,3WM9\
-.6MM? .6MW).'+RM@"  ;6MMQZKM8J\ 
-"NM@\  \KMN%RMRF,    \)5ZVFI;   
-3MMF    <(F3L?,     .':/"_?(+[[7
-\YT<       '!1)]35Z&8BMMMMMMMMMM
-    ->\J3#QRMMMMMMMMMMMWK8@D6Z*L
--1]*%WMMMMMMMMN%6*F[I_/:'.      
-ZWMMMMMR&*FJ\=,.        -,:!,   
-F8%VLI=;      .,=\+LYVP@2NMMN]  
- -.      ,_JYZ%NMMMMMMMMMMMM8(  
-       -YBMMMMMMW2DVYT+?_=>:\   
-       \5NN&9LI^<-              
-        .1".                    
+% q what is ascii
+No short answer available
+% emoji +1
+          ,?I=/
+          _JJJ[)
+          =JJJJI.
+          ?JJJJ*,
+         .]JJJJ].
+         >JJJJJ7
+        -]JJJJJ7--....
+       /IJJJJJJJ********[]7=>,
+    -+?*JJJJJJJJJCAEQQQQQQSJJ*_.
+   _[JJJJJJJJJJJJHMH699999CJJJJ>
+  )*JJJJJJJJJJJJJHM@%%%%%%%%4GU_
+  >JJJJJJJJJJJJJJ9QRQBBBBBBBEX#.
+  >JJJJJJJJJJJJJJDMAJJJJJJJJJ69/
+  >JJJJJJJJJJJJJJ9BW222222228K%.
+  >JJJJJJJJJJJJJJ9QBDZZZZZZZOV,
+  >JJJJJJJJJJJJJJ%R2#555555#DZ/
+  >JJJJJJJJJJJJJJ5HMKQQQQQQKEC.
+  /[JJJJJJJJJJJJJJXRS9VVVVV6C/
+   ,>=]JJJJJJJJJJJDR2DDDDDAQG,
+      -?JJJJJJJJJJ5@MMMMMMMB7
+%
 ```
