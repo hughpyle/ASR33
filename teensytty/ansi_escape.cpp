@@ -6,12 +6,13 @@
  * 
  * http://www.inwap.com/pdp10/ansicode.txt
  * https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+ *
  */
 
 #include "ansi_escape.h"
 
 
-#define MAX_COLUMNS 72
+#define MAX_COLUMNS 71
 #define ESC '\033'
 #define NL  '\n'
 #define CR  '\r'
@@ -155,12 +156,13 @@ void AnsiEscapeProcessor::updateFromOutput() {
 
 
 void AnsiEscapeProcessor::updateFromChar(uint8_t c) {
-    // Update column based on a single character of output
+    // Update our column-count based on a single character of output
     if(c==CR) {
+      // CR puts us back at the left margin -- column zero
       col = 0;
     }
     else if(isPrintable(c)) {
-      // printable updates the column position, unless we've hit the margin
+      // printable updates the column position, unless we've hit the right margin
       if(col < MAX_COLUMNS) {
         col++;
       }
@@ -172,7 +174,9 @@ void AnsiEscapeProcessor::updateFromChar(uint8_t c) {
 
 
 void AnsiEscapeProcessor::processSequence() {
-  // There's a complete sequence of escape characters
+  // Buffer contains a complete sequence of escape characters
+  // pBuf points at the last received character
+  writeResponse(NULL);
   if(isEscSimple) {
     //Serial.printf("<ESC(%c)>", *pBuf);
     switch(*pBuf) {
@@ -214,6 +218,12 @@ void AnsiEscapeProcessor::processSequence() {
           break;
         case 'Z': // CBT Cursor Backwards Tab
           break;
+        case 'c': //  device attributes
+          sendDA(getN(0));
+          break;
+        case 'n': //  device status report
+          sendDSR(getN(0));
+          break;
       }
     } else {
       // ESC [ ? ... 
@@ -225,6 +235,7 @@ void AnsiEscapeProcessor::processSequence() {
           resetMode(getN(0));
           break;
         case 'n': //  device status report
+          sendDSR(getN(0));
           break;
         case 'p': //  ESC[!p - soft terminal reset
           resetTerminal();
@@ -311,10 +322,52 @@ void AnsiEscapeProcessor::resetTerminal() {
 }
 
 
+// ------ Response to the host ------ //
+
+uint8_t *AnsiEscapeProcessor::getResponse() {
+  // The response that should be sent back to the host
+  return pResponse;
+}
+
+void AnsiEscapeProcessor::writeResponse(const char *out) {
+  // Set this as the response
+  pResponse = (uint8_t *)out;
+}
+
+void AnsiEscapeProcessor::sendDA(int n) {
+  switch(n) {
+    case 0:
+      // Status response to 'wtf are you?' is: 'I am a vt101 (bwahahaha)'
+      writeResponse("\033[?1;0c");
+  }
+}
+
+void AnsiEscapeProcessor::sendDSR(int n) {
+  switch(n) {
+    case 5:
+      // DSR - Status response to 'r u awake?' is: 'I have no malfunction (bwahahaha)'
+      writeResponse("\033[0n");
+      break;
+    case 15:
+      // DSR - Status response to 'you print?' is: 'I have no printer (bwahahaha)'
+      writeResponse("\033[?13n");
+      break;
+    case 6:
+      // CPR - cursor position report
+      int n = snprintf((char *)retbuf, 32, "\033[0;%dR", col);
+      if(n>=0 && n<32) {
+        writeResponse((char *)retbuf);
+      }
+  }
+}
+
+
 
 #ifdef ANSI_TESTING
 
-void ansi_test(const char *input, int expect_col) {
+// ------ Tests ------ //
+
+void ansi_test(const char *input, int expect_col, const char *expect_rsp) {
   AnsiEscapeProcessor processor;
   int model_col;
   // Send the whole string to the processor
@@ -338,43 +391,64 @@ void ansi_test(const char *input, int expect_col) {
   } else {
     Serial.printf(" FAIL: %d != %d\n", model_col, expect_col);
   }
+
+  if(expect_rsp!=NULL) {
+    uint8_t *rsp = processor.getResponse();
+    if(rsp==NULL) {
+      Serial.printf(" Response FAIL: NULL != %s\n", expect_rsp);
+    } else if(strcmp((char *)rsp, (char *)expect_rsp)!=0) {
+      Serial.printf(" Response FAIL: %s != %s\n", rsp, expect_rsp);
+    } else {
+      Serial.printf(" Response PASS: %s\n", rsp);
+    }
+  }
 }
 
 void test_ansi(usb_serial_class& serial) {
-  ansi_test("", 0);
-  ansi_test("abc", 3);
+  ansi_test("", 0, NULL);
+  ansi_test("abc", 3, NULL);
 
-  ansi_test("123456789012345678901234567890123456789012345678901234567890123456789012", 72);
-  ansi_test("123456789012345678901234567890123456789012345678901234567890123456789012345", MAX_COLUMNS);
+  ansi_test("12345678901234567890123456789012345678901234567890123456789012345678901", 71, NULL);
+  ansi_test("123456789012345678901234567890123456789012345678901234567890123456789012345", MAX_COLUMNS, NULL);
 
   // word wrap is like CRLF at the right place
-  ansi_test("123456789 123456789 123456789 123456789 123456789 123456789 123456789 12\r\n3456789 123456789 123456789 123456789", 37);
-  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", 37);
-  ansi_test("123456789 \033[?7l123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", 72);
-  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", 5);
-  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 \033[?7l123456789 123456789 123456789 123456789 123456789 123456789 123456789", 72);
+  ansi_test("123456789 123456789 123456789 123456789 123456789 123456789 123456789 12\r\n3456789 123456789 123456789 123456789", 37, NULL);
+  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", 38, NULL);
+  ansi_test("123456789 \033[?7l123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", MAX_COLUMNS, NULL);
+  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789", 7, NULL);
+  ansi_test("123456789 \033[?7h123456789 123456789 123456789 123456789 123456789 123456789 123456789 \033[?7l123456789 123456789 123456789 123456789 123456789 123456789 123456789", MAX_COLUMNS, NULL);
 
-  ansi_test("abc\nd", 4);
-  ansi_test("abc\rd_", 2);
-  ansi_test("abcd", 4);
+  ansi_test("abc\nd", 4, NULL);
+  ansi_test("abc\rd_", 2, NULL);
+  ansi_test("abcd", 4, NULL);
 
-  ansi_test("abc\0337defghijkl", 12); // ESC-7 "save state" in the middle has no effect on cursor position
-  ansi_test("abc\0337def\0338",  3);  // ESC-8 "restore state" moves back to earlier position
-  ansi_test("abc\0337def\0338g", 4);  // ESC-8 "restore state" moves back to earlier position
+  ansi_test("abc\0337defghijkl", 12, NULL); // ESC-7 "save state" in the middle has no effect on cursor position
+  ansi_test("abc\0337def\0338",  3, NULL);  // ESC-8 "restore state" moves back to earlier position
+  ansi_test("abc\0337def\0338g", 4, NULL);  // ESC-8 "restore state" moves back to earlier position
 
-  ansi_test("abc\033Adefghijkl", 12); // ESC-A CUU not implemented
-  ansi_test("abc\033Bdefghijkl", 12); // ESC-B CUD is just like lf
-  ansi_test("abc\033Cdefghijkl", 13); // ESC-C CUF is like space
-  ansi_test("abc\033Ddefghijkl", 11); // ESC-D CUB is like backspace
-  ansi_test("\033Dabcdefghijkl", 12); // ESC-D can't go back from the beginning
-  ansi_test("abc\033Mdefghijkl", 12); // ESC-M R   not implemented
+  ansi_test("abc\033Adefghijkl", 12, NULL); // ESC-A CUU not implemented
+  ansi_test("abc\033Bdefghijkl", 12, NULL); // ESC-B CUD is just like lf
+  ansi_test("abc\033Cdefghijkl", 13, NULL); // ESC-C CUF is like space
+  ansi_test("abc\033Ddefghijkl", 11, NULL); // ESC-D CUB is like backspace
+  ansi_test("\033Dabcdefghijkl", 12, NULL); // ESC-D can't go back from the beginning
+  ansi_test("abc\033Mdefghijkl", 12, NULL); // ESC-M R   not implemented
 
-  ansi_test("abc\033[Cdefghijkl", 13); // ESC-C CUF is like space
-  ansi_test("abc\033[Ddefghijkl", 11); // ESC-D CUB is like backspace
-  ansi_test("abc\033[2Cdefghijkl", 14); // ESC-C CUF is like space
-  ansi_test("abc\033[2Ddefghijkl", 10); // ESC-D CUB is like backspace
-  ansi_test("abc\033[5Ddefghijkl", 9); // ESC-D can't go back that far from here
-  ansi_test("abc\033[8Gdefghijkl", 17); // CHA Cursor Horizontal Absolute to N
+  ansi_test("abc\033[Cdefghijkl", 13, NULL);  // ESC-C CUF is like space
+  ansi_test("abc\033[Ddefghijkl", 11, NULL);  // ESC-D CUB is like backspace
+  ansi_test("abc\033[2Cdefghijkl", 14, NULL); // ESC-C CUF is like space
+  ansi_test("abc\033[2Ddefghijkl", 10, NULL); // ESC-D CUB is like backspace
+  ansi_test("abc\033[5Ddefghijkl", 9, NULL);  // ESC-D can't go back that far from here
+  ansi_test("abc\033[8Gdefghijkl", 17, NULL); // CHA Cursor Horizontal Absolute to N
+
+  ansi_test("\033[c",  0, "\033[?1;0c");   // DA1
+  ansi_test("\033[0c", 0, "\033[?1;0c");   // DA1
+  ansi_test("\033[5n", 0, "\033[0n");      // DSR
+  ansi_test("\033[?15n", 0, "\033[?13n");  // DSR
+
+  // CPR rows always zero
+  ansi_test("\033[6n", 0, "\033[0;0R");           // CPR when at (0,0)
+  ansi_test("abc\033[6n", 3, "\033[0;3R");        // CPR when at (0,3)
+  ansi_test("abc\rdefg\n\033[6n", 4, "\033[0;4R"); // CPR when at (<whatever>,4)
 
 }
 

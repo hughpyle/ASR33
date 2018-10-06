@@ -38,15 +38,15 @@ class AnsiEscapeProcessor
     // sent to the device.  (For example this might contain '\001' followed by `c`)
     uint8_t *update(uint8_t c);
     
-    // The response (if any) to be sent back to the host.
-    // (not yet implemented)
-    // uint8_t *getResponse();
+    // The response (if any) to be sent back to the host, as a null-terminated string.
+    uint8_t *getResponse();
 
     // Helpful getter
     int column();
 
   private:
     uint8_t outbuf[256];
+    uint8_t retbuf[32];
     enum escStateEnum escState;
 
     // is this a 'zero-content' seqence (ESC followed by a single character?)
@@ -65,6 +65,7 @@ class AnsiEscapeProcessor
     uint8_t *pBuf;
     uint8_t nEscChars;
     uint8_t savedCol;
+    uint8_t *pResponse;
 
     bool isTerminator(uint8_t c);
 
@@ -84,6 +85,11 @@ class AnsiEscapeProcessor
     void setMode(int mode);
     void resetMode(int mode);
     void resetTerminal();
+
+    void writeResponse(const char *out);
+    void sendDA(int n);
+    void sendDSR(int n);
+
 };
 
 
@@ -105,6 +111,19 @@ class AnsiEscapeProcessor
  *
  * DECSTR   ESC[!p      Soft Reset
  *
+ * DA1      ESC[c       primary device attributes
+ *          ESC[0c      primary device attributes
+ *                      ESC [ ? 1; 0 c "I am a VT101 terminal with no options"
+ * DSR      ESC[5n      device status report request
+ *                      ESC 0 n - "I have no malfunction"
+ * DSR      ESC[?15n    printer status request
+ *                      ESC [? 13 n - "I have no printer"
+ * CPR      ESC[6n      Cursor Position Report
+ *                      ESC [ <row> ; <col> R
+ * DECXCPR  ESC[?6n     Extended Cursor Position Report
+ *                      ESC [ <row> ; <col>; <page> R
+ *                      
+ *
  * (Not implemented; LATER MAYBE:)
  * 
  * Tab stops:
@@ -120,20 +139,19 @@ class AnsiEscapeProcessor
  *
  * DECARM   ESC[? 8 h   Selects auto repeat mode. A key pressed for more than 0.5 seconds automatically repeats.
  * DECARM   ESC[? 8 l   Turns off auto repeat. Keys pressed do not automatically repeat.
- *
- * DA       ESC[c or ESC[0c - respond with terminal info
- *             ESC [ ? 1; 0 c "I am a VT101 terminal with no options"
- * DSR      ESC 5 n - device status report request
- *             ESC 0 n - "I have no malfunction"
- * DSR      ESC ? 15 n - printer status request
- *             ESC ? 13 n - "I have no printer"
  *             
+ * DECRQM   report mode (eg. whether autowrap is set)
+ * DSR      ESC[? 75 n  The host asks for the status of the data integrity flag.
+ *                      ESC [? 70 n  Ready, no communication errors or power-ups have occurred since last report.
+ * DSR      ESC[? 26 n  The host asks for the keyboard status.
+ *                      ESC [? 27; 1; 0; Ptyp n  The keyboard language is North American, the keyboard status is Ready, and the keyboard type is Ptyp.
+ *                      
  * RIS      ESC c       hard reset
  */
 
 
 void test_ansi(usb_serial_class &serial);
-void ansi_test(usb_serial_class &serial, const char *input, int expect_col);
+void ansi_test(usb_serial_class &serial, const char *input, int expect_col, const char *expect_rsp);
 
 
 #endif // __cplusplus

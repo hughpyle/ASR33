@@ -291,6 +291,12 @@ int processUSBByte(int b)
       uint8_t cc = *p++;
       sendToTTY(cc);
     }
+
+    uint8_t *rsp = escapes.getResponse();
+    if(rsp != NULL) {
+      // The escape sequence has a response
+      Serial.write((char *)rsp);
+    }
   }
 
   prevUSBByte = b;
