@@ -1,4 +1,9 @@
-
+/*
+ * Copyright (c) Hugh Pyle
+ * 
+ * ansi_escape.h
+ * Defines a class that can process ANSI/vt100-style escape sequences for the teletype ASR33.
+ */
 
 #ifndef ANSI_escape_h_
 #define ANSI_escape_h_
@@ -50,11 +55,12 @@ class AnsiEscapeProcessor
     enum escStateEnum escState;
 
     // is this a 'zero-content' seqence (ESC followed by a single character?)
-    // If not, we only handle CSI sequences ("ESC[...")
     bool isEscSimple;
 
-    // Is this CSI with questionmark?  ("ESC[?...")
+    // Is this CSI?  ("ESC[...")
     bool isEscCsi;
+
+    // Is this CSI with questionmark?  ("ESC[?...")
     bool isCsiQuestion;
 
     // Word wrapping?
@@ -79,8 +85,6 @@ class AnsiEscapeProcessor
 
     void processSequence();
     int getN(int defaultN);
-    // int getX(int defaultY);
-    // int getY(int defaultX);
     void moveToColumn(int n);
     void setMode(int mode);
     void resetMode(int mode);
@@ -126,7 +130,7 @@ class AnsiEscapeProcessor
  *
  * (Not implemented; LATER MAYBE:)
  * 
- * Tab stops:
+ * Tab stops (only because they're cool)
  * DECCAHT  ESC 2       clear all horizontal tabs
  * HTS      ESC H       horizontal tabulation set - sets a tab stop at the current column
  * DECHTS   ESC 1       horizontal tabulation set (LA34-specific)
@@ -137,14 +141,11 @@ class AnsiEscapeProcessor
  * CHT      ESC[ Pn I   Cursor Horizontal Forward Tabulation - Move the active position n tabs forward. Default: 1.
  * CBT      ESC[ Pn Z   Cursor Backward Tabulation - Move the active position n tabs backward.  Default: 1.
  *
+ * Auto-repeat (but there's a hardware repeat already, not much need for this)
  * DECARM   ESC[? 8 h   Selects auto repeat mode. A key pressed for more than 0.5 seconds automatically repeats.
  * DECARM   ESC[? 8 l   Turns off auto repeat. Keys pressed do not automatically repeat.
  *             
  * DECRQM   report mode (eg. whether autowrap is set)
- * DSR      ESC[? 75 n  The host asks for the status of the data integrity flag.
- *                      ESC [? 70 n  Ready, no communication errors or power-ups have occurred since last report.
- * DSR      ESC[? 26 n  The host asks for the keyboard status.
- *                      ESC [? 27; 1; 0; Ptyp n  The keyboard language is North American, the keyboard status is Ready, and the keyboard type is Ptyp.
  *                      
  * RIS      ESC c       hard reset
  */

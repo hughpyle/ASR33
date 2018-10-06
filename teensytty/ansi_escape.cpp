@@ -1,9 +1,13 @@
 /*
- * Implement a subset of vt100 escape sequences to control the teletype.
+ * Copyright (c) Hugh Pyle
+ * 
+ * ansi_escape.cpp
+ * Implement a subset of vt100 escape sequences to control the teletype ASR33.
  * - Cursor positioning along the horizontal line;
- * - Auto-wrap;
+ * - Auto-wrap at the end of the line;
  * - Identification and reset.
  * 
+ * https://vt100.net/docs/vt220-rm/contents.html
  * http://www.inwap.com/pdp10/ansicode.txt
  * https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
  *
