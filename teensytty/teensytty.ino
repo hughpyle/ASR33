@@ -15,22 +15,6 @@
 // TODO:
 // - handle BREAK: after a short break, send Ctrl+C / flush incoming
 // - handle BREAK: after a long break, reset the USB
-// - some set of ANSI (vt52? vt100?) escape sequences
-//    e.g. those supported by LA34/LA36/LA120
-//    http://bitsavers.trailing-edge.com/www.computer.museum.uq.edu.au/pdf/EK-LA34S-TM-001%20DECwriter%20IV%20Series%20Technical%20Manual.pdf
-// http://www.inwap.com/pdp10/ansicode.txt
-// - turn on and off the VT125 printer (punch tape)
-//      [4i = Received data goes to VT102 screen, not to its printer
-//      [5i = Received data goes to VT102's printer, not its screen
-//   or [@R -> 022 12 R DC2	Device Control 2, causes ASR-33 to activate paper-tape reader
-//      [@T -> 024 14 T DC4	Device Control 4, causes ASR-33 to deactivate paper-tape reader
-//      (similarly for ENQ, XON, etc)
-// - switch in and out of "raw binary mode" (for punch tape)?
-//      [@P => DLE? & ETB
-// - escapes for turning auto line-wrapping on and off
-//      [?7h = DECAWM - AutoWrap Mode, start newline after column 80
-//      [?7l = DECAWM - Cursor remains at end of line after column 80
-
 
 // ===========================================================================
 
@@ -109,6 +93,7 @@
 
 //#define CONFIG_TIMER_PRESCALE_256
 #include <AltSoftSerial.h>
+#include "ansi_escape.h"
 
 // pin 20 receive
 // pin 21 transmit
@@ -174,6 +159,9 @@ int prevUSBByte;
 int prevTTYByte;
 bool isEscapingTTY;
 
+AnsiEscapeProcessor escapes;
+
+
 void setup() {
   // Digital selector pins use input pullups, and dip-switch to ground
   // Note this means (on = feature activated = digital input low)
@@ -201,6 +189,11 @@ void setup() {
   HWSERIAL.begin(BAUDRATE); //, SERIAL_8N2);
 #endif
 
+#ifdef ANSI_TESTING
+  test_ansi(Serial);
+#endif
+
+
   millisSinceActivity = SNOOZETIME;
   readOptions();
 }
@@ -219,8 +212,7 @@ void loop() {
   if (Serial.available() > 0) {
     // Print something to tty
     incomingByte = Serial.read();
-    incomingByte = processUSBByte(incomingByte);
-    sendToTTY(incomingByte);
+    processUSBByte(incomingByte);
     millisSinceActivity = 0;
   } else if (HWSERIAL.available() > 0) {
     // Read something from tty
@@ -291,6 +283,14 @@ int processUSBByte(int b)
         sendToTTY(CR);
       }
     }
+
+    // Use the ANSI-escape-sequence processor, which returns a length-prefixed buffer of things to write
+    uint8_t *p = escapes.update(b);
+    uint8_t len = *p++;
+    for(uint8_t n=1; n<=len; n++) {
+      uint8_t cc = *p++;
+      sendToTTY(cc);
+    }
   }
 
   prevUSBByte = b;
@@ -301,6 +301,7 @@ int processUSBByte(int b)
 
 void sendToTTY(int b) {
 
+/*
   if (!isRx8BitClean) {
     // When sending to the tty, normally the parity bit will be set '1'
     // Optionally can set even-parity
@@ -314,6 +315,7 @@ void sendToTTY(int b) {
     }
     // TODO set the parity bit
   }
+  */
 
 #ifdef DEBUG_ALL
   if(b!=0) {
