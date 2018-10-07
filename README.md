@@ -2,7 +2,7 @@
 
 Hardware and firmware for interface between a Teletype ASR-33 and modern computers over USB.
 
-* Project notes: [pdf](tty-usb.pdf)
+* Project notes: [pdf](tty-usb.pdf);  [pptx](tty-usb.pptx) with additional notes.
 * Follow progress on Twitter: [@33asr](https://twitter.com/33asr)
 
 #### bin
