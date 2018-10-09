@@ -51,3 +51,6 @@ ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 tty3
 The `tty33` is the terminal type (defined in `/lib/terminfo/`) and
 gives you a plain terminal without escape sequences for colors.
 
+You may need to set `stty brkint` for BREAK to send Ctrl+C to the host.
+
+

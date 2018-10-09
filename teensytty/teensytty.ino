@@ -136,9 +136,27 @@ AltSoftSerial altSerial(1,1,true);
 // fix whatever timing/alignment issues in hardware
 #define BAUDRATE 111
 
-#define SNOOZETIME 5000
+// Macro to force a Teensy reset
+#define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C
+#define CPU_RESTART_VAL 0x5FA0004
+#define CPU_RESTART (*CPU_RESTART_ADDR = CPU_RESTART_VAL);
+
+
+// Force the serial line after some (2 characters, 200ms) inactivity
+#define SNOOZETIME 200
 elapsedMillis millisSinceActivity;
 
+// Detect a brief 'break' condition
+#define SOFTBREAKTIME 250
+// Detect a continuous 'break' condition
+#define HARDBREAKTIME 5000
+
+// BREAK sends `intr`, usually ^C (003) or ^\ (034), see `stty -a`
+#define INTR '\003'
+
+bool isBreak;
+bool isSoftBreak;
+elapsedMillis millisSinceBreak;
 
 // Pressing he "test pushbutton" runs a series of printer tests,
 // each press cycles to the next one. 
@@ -178,7 +196,7 @@ void setup() {
   pinMode(PIN_PUSH_TEST,     INPUT_PULLUP);
   pinMode(PIN_PUSH_SPARE,    INPUT_PULLUP);
 
-  // Internal LED is used as a signal
+  // Internal LED is used as a break signal
   pinMode(PIN_INTERNAL_LED,  OUTPUT);
 
   // USB is always at full speed
@@ -194,7 +212,10 @@ void setup() {
 #endif
 
 
+  isBreak = false;
+  isSoftBreak = false;
   millisSinceActivity = SNOOZETIME;
+  millisSinceBreak = HARDBREAKTIME;
   readOptions();
 }
 
@@ -227,6 +248,28 @@ void loop() {
     sendToTTY(0);
   }
 
+  digitalWrite(PIN_INTERNAL_LED, HWSERIAL.isBreak() ? HIGH : LOW);
+ 
+  if(HWSERIAL.isBreak()) {
+    if(isBreak) {
+      if (millisSinceBreak > SOFTBREAKTIME && !isSoftBreak) {
+        // Short break.  Send a Ctrl+C
+        isSoftBreak = true;
+        Serial.write(INTR);
+      }
+      if (millisSinceBreak > HARDBREAKTIME) {
+        // Long break condition.  Hard reset the whole thing.
+        CPU_RESTART;
+      }
+    } else {
+      // Start timing
+      isBreak = true;
+      millisSinceBreak = 0;
+    }
+  } else {
+    isBreak = false;
+    isSoftBreak = false;
+  }
 
 }
 
@@ -334,10 +377,10 @@ void sendToTTY(int b) {
 
   // Print the received byte at the teletype
   // HWSERIAL.flush();
-  digitalWrite(PIN_INTERNAL_LED, HIGH);
+  // digitalWrite(PIN_INTERNAL_LED, HIGH);
   HWSERIAL.write(b);
   while (HWSERIAL.isWriting()) {}
-  digitalWrite(PIN_INTERNAL_LED, LOW);
+  // digitalWrite(PIN_INTERNAL_LED, LOW);
   delay(1);
 
   // CR/LF delays apply even on the 8-bit-clean path
