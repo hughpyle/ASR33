@@ -12,10 +12,6 @@
  * 2018-09-03 update for with arduino 1.8.6
  */
 
-// TODO:
-// - handle BREAK: after a short break, send Ctrl+C / flush incoming
-// - handle BREAK: after a long break, reset the USB
-
 // ===========================================================================
 
 // The teletype's serial interface is a 20mA current loop:
