@@ -11,6 +11,7 @@ Writes them all to a JSON file that can be used for rendering later.
 
 import sys
 import json
+import math
 import numpy as np
 import imageio
 import io
@@ -34,7 +35,7 @@ CHARS_CHARWIDTH =   SCALE * 60
 loaded_files = {}
 
 # Which character from the 5 available?
-INDEX = 1
+INDEX = 2
 
 
 # Load and cache an image file, normalized as float, inverted
@@ -126,9 +127,10 @@ def hog_char(image, count, luminance):
 
 def main():
     # (Later: run this over all 5 of the char instances)
-    # (Later: find the minimum bounding-box for each character)
 
     luminances = {}
+
+    # Find the minimum bounding-box for each character
     rowbounds = [1e10, 0]
     colbounds = [1e10, 0]
     for i in range(ord(' '), ord('_')+1):
@@ -136,13 +138,13 @@ def main():
         img = chars_image(c, index=INDEX)
         luminances[c] = img.mean()
         if c != ' ':
-            edges = np.unravel_index(np.argmax(img > 0.6, axis=None), img.shape)
+            edges = np.unravel_index(np.argmax(img > 0.4, axis=None), img.shape)
             if edges[0] < rowbounds[0]:
                 rowbounds[0] = edges[0]
             if edges[1] < colbounds[0]:
                 colbounds[0] = edges[1]
             flp = np.flip(img)
-            edges = np.unravel_index(np.argmax(flp > 0.6, axis=None), img.shape)
+            edges = np.unravel_index(np.argmax(flp > 0.4, axis=None), img.shape)
             if img.shape[0] - edges[0] > rowbounds[1]:
                 rowbounds[1] = img.shape[0] - edges[0]
             if img.shape[1] - edges[1] > colbounds[1]:
@@ -158,12 +160,14 @@ def main():
     minl = luminances[sl[0]]    # zero-point (space)
     manl = luminances[sl[1]]    # lightest-printable
     maxl = luminances[sl[-1]]   # darkest
-    fudg = 0.03                  # where we want the lightest-printable to be
+    fudg = 0.05                 # where we want the lightest-printable to be
     for c in sl:
         if luminances[c] == minl:
             luminances[c] = 0
         else:
-            luminances[c] = fudg + ((luminances[c] - manl) / (maxl - manl))
+            # manl => fudg
+            # maxl => 1.0
+            luminances[c] = fudg + ((luminances[c] - manl)*(1.0 - fudg) / (maxl - manl))
 
     for c in sl:
         print("\"{}\", {}".format(c, luminances[c]))

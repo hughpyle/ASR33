@@ -35,7 +35,7 @@ import numpy as np
 import imageio
 import io
 import click
-from skimage import feature, transform, color
+from skimage import feature, transform, color, exposure
 
 
 # The character itself is 4x3
@@ -53,7 +53,7 @@ PREPARED_FILE = "ascii.json"
 
 
 # Load and pre-process an image file
-def load_image(filename, width, invert):
+def load_image(filename, width, invert, gamma):
     # Read the image
     img = imageio.imread(filename)
 
@@ -71,13 +71,8 @@ def load_image(filename, width, invert):
     img_height = int(img.shape[0] * 3 * (img_width / (4 * img.shape[1])))
     img = transform.resize(img, (img_height, img_width), anti_aliasing=True, mode='constant')
 
-    # Normalize the whole image (based on a small-version to reduce noise effects)
-    small_width = width
-    small_height = int(img.shape[0] * 3 * (small_width / (4 * img.shape[1])))
-    small_img = transform.resize(img, (small_height, small_width), anti_aliasing=True, mode='constant')
-    small_min = np.min(small_img)
-    small_ptp = np.ptp(small_img)
-    img = (img - small_min)/small_ptp
+    # Asjust the exposure
+    img = exposure.adjust_gamma(img, gamma)
 
     if invert:
         img = 1 - img
@@ -206,16 +201,21 @@ def render(fd, outfile):
         f.write(b"\r\n")
         f.write(b"\r\n")
         f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
 
 
 @click.command()
 @click.option('--width', default=70, help='Image width (characters)')
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
+@click.option('--gamma', default=1.0, help='gamma')
 @click.argument('filename')
-def main(filename, width, invert):
+def main(filename, width, invert, gamma):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
-    img = load_image(filename, width, invert)
+    img = load_image(filename, width, invert, gamma)
     imageio.imsave("test.jpg", img)
 
     # Analyze the image
