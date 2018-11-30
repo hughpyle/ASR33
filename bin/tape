@@ -3,7 +3,8 @@
 # Copyright (c) 2014-2018 Hugh Pyle
 
 # print big letters on paper tape
-
+# letterforms based on 'FF Papertape' font by Matthias Jordan
+# NB requires "8-bit-clean" punch data path! e.g. you may need 'stty -onlcr'
 
 import sys
 
@@ -151,9 +152,9 @@ def print_string(s):
         bit = bit * 2
 
 def print_binary(s):
-    sys.stdout.write(chr(0) * LEAD)
-    sys.stdout.write(u"{}".format(HEART_EMOJI))
-    sys.stdout.write(chr(0) * LEAD)
+    # sys.stdout.buffer.write(b'\0' * LEAD)
+    # sys.stdout.buffer.write(u"{}".format(HEART_EMOJI).encode("utf-8"))
+    sys.stdout.buffer.write(b'\0' * LEAD)
     for char in s:
         v = tape_chars.get(ord(char), 0)
         for col in v:
@@ -162,9 +163,9 @@ def print_binary(s):
             while bit < 64:
                 t = t | (col & bit)<<1
                 bit = bit * 2
-            sys.stdout.write(chr(t))
-        sys.stdout.write(chr(0))
-    sys.stdout.write(chr(0) * LEAD)
+            sys.stdout.buffer.write(bytearray([t]))
+        sys.stdout.buffer.write(b'\0')
+    sys.stdout.buffer.write(b'\0' * LEAD)
 
 
 def main(label):
