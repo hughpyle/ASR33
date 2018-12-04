@@ -1,0 +1,12 @@
+# asr33 with auto-margin capability, pure-binary mode, etc
+# compile with 'tic'
+tty33-amx|model 33 teletype with 'teensytty' firmware,
+        hc, os, xon, am,
+        cols#72,
+        bel=^G, cr=^M, cud1=^J, ind=^J,
+        cub=\E[%p1%dD, cub1=\E[D,
+        cuf=\E[%p1%dC, cuf1=\E[C,
+        hpa=\E[%i%p1%dG,
+        smam=\E[?7h, rmam=\E[?7l,
+        sc=\E7, rc=\E8,
+        is2=\E[!p, rs2=\E[!p, 
