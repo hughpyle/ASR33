@@ -9,11 +9,16 @@
 import sys
 
 
+# Escape sequence to initialize (turn off wordwrap, NLCR, delays)
+INIT = b"\033[?7l\033_ab\234"
+RESET = b"\033[!p"
+
 # emoji to print in binary
 HEART_EMOJI = u'\u2764\ufe0f'
 
 # How many nulls before and after the print
-LEAD = 10
+LEAD = 5
+TAIL = 5
 
 tape_chars = {
     0x20: [0, 0],
@@ -44,7 +49,7 @@ tape_chars = {
     0x39: [0b10010, 0b10101, 0b10101, 0b01110],
     0x3a: [0b10010],
     0x3b: [0b100000, 0b10010],
-    0x3c: [0b00100, 0b01010, 0b10001], 
+    0x3c: [0b00100, 0b01010, 0b10001],
     0x3d: [0b01010, 0b01010, 0b01010, 0b01010],
     0x3e: [0b10001, 0b01010, 0b00100],
     0x3f: [0b00010, 0b11001, 0b00101, 0b00010],
@@ -63,7 +68,7 @@ tape_chars = {
     0x4c: [0b11111, 0b10000, 0b10000],
     0x4d: [0b11111, 0b00010, 0b00100, 0b00010, 0b11111],
     0x4e: [0b11111, 0b00010, 0b00100, 0b11111],
-    0x4f: [0b01110, 0b10001 ,0b10001, 0b10001, 0b01110],
+    0x4f: [0b01110, 0b10001, 0b10001, 0b10001, 0b01110],
     0x50: [0b11111, 0b00101, 0b00101, 0b00010],
     0x51: [0b01110, 0b10001, 0b10101, 0b11001, 0b11110],
     0x52: [0b11111, 0b00101, 0b00101, 0b11010],
@@ -79,10 +84,10 @@ tape_chars = {
     0x5c: [0b00001, 0b00010, 0b00100, 0b01000, 0b10000],
     0x5d: [0b10001, 0b11111],
     0x5e: [0b00010, 0b00001, 0b00010],
-    0x5f: [0b10000 ,0b10000, 0b10000],
+    0x5f: [0b10000, 0b10000, 0b10000],
     0x60: [0b00001, 0b00010],
     0x61: [0b01100, 0b10010, 0b10010, 0b11110],                 # a
-    0x62: [0b11111, 0b10010 ,0b10010, 0b01100],
+    0x62: [0b11111, 0b10010, 0b10010, 0b01100],
     0x63: [0b01100, 0b10010, 0b10010],
     0x64: [0b01100, 0b10010, 0b10010, 0b11111],
     0x65: [0b01100, 0b10110, 0b10110, 0b10100],
@@ -116,11 +121,12 @@ tape_chars = {
 
 PRINT_CHAR = "o"
 
+
 def print_all():
-    bit=1
-    while bit<64:
+    bit = 1
+    while bit < 64:
         t = ""
-        for (k,v) in tape_chars.items():
+        for (k, v) in tape_chars.items():
             for col in v:
                 if col & bit:
                     c = PRINT_CHAR
@@ -132,9 +138,10 @@ def print_all():
         print(t)
         bit = bit * 2
 
+
 def print_string(s):
-    bit=1
-    while bit<64:
+    bit = 1
+    while bit < 64:
         t = ""
         for char in s:
             v = tape_chars.get(ord(char), 0)
@@ -146,12 +153,14 @@ def print_string(s):
                 pass
                 t = t + c
             t = t + "  "
-        if bit==4:
+        if bit == 4:
             print("." * len(t))
         print(t)
         bit = bit * 2
 
+
 def print_binary(s):
+    sys.stdout.buffer.write(INIT)
     # sys.stdout.buffer.write(b'\0' * LEAD)
     # sys.stdout.buffer.write(u"{}".format(HEART_EMOJI).encode("utf-8"))
     sys.stdout.buffer.write(b'\0' * LEAD)
@@ -161,11 +170,12 @@ def print_binary(s):
             t = 0
             bit = 1
             while bit < 64:
-                t = t | (col & bit)<<1
+                t = t | (col & bit) << 1
                 bit = bit * 2
             sys.stdout.buffer.write(bytearray([t]))
         sys.stdout.buffer.write(b'\0')
-    sys.stdout.buffer.write(b'\0' * LEAD)
+    sys.stdout.buffer.write(b'\0' * TAIL)
+    sys.stdout.buffer.write(RESET)
 
 
 def main(label):
@@ -173,4 +183,3 @@ def main(label):
 
 
 main(" ".join(sys.argv[1:]))
-

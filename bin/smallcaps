@@ -2,18 +2,23 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2014-2018 Hugh Pyle
 
-# "SMALL CAPS" for paper tape, 
+# "SMALL CAPS" for paper tape,
 # based on silkscreen font by kottke http://kottke.org/plus/type/silkscreen/
 # NB requires "8-bit-clean" punch data path! e.g. you may need 'stty -onlcr'
 
 import sys
 
 
+# Escape sequence to initialize (turn off wordwrap, NLCR, delays)
+INIT = b"\033[?7l\033_ab\234"
+RESET = b"\033[!p"
+
 # emoji to print in binary
 HEART_EMOJI = u'\u2764\ufe0f'
 
 # How many nulls before and after the print
-LEAD = 10
+LEAD = 5
+TAIL = 5
 
 tape_chars = {
     # bits are bottom-to-top, e.g. 0b10000 is 'period'
@@ -117,11 +122,12 @@ tape_chars = {
 
 PRINT_CHAR = "o"
 
+
 def print_all():
-    bit=1
-    while bit<64:
+    bit = 1
+    while bit < 64:
         t = ""
-        for (k,v) in tape_chars.items():
+        for (k, v) in tape_chars.items():
             for col in v:
                 if col & bit:
                     c = PRINT_CHAR
@@ -133,9 +139,10 @@ def print_all():
         print(t)
         bit = bit * 2
 
+
 def print_string(s):
-    bit=1
-    while bit<64:
+    bit = 1
+    while bit < 64:
         t = ""
         for char in s:
             v = tape_chars.get(ord(char), 0)
@@ -147,12 +154,14 @@ def print_string(s):
                 pass
                 t = t + c
             t = t + "  "
-        if bit==4:
+        if bit == 4:
             print("." * len(t))
         print(t)
         bit = bit * 2
 
+
 def print_binary(s):
+    sys.stdout.buffer.write(INIT)
     # sys.stdout.write(b'\0' * LEAD)
     # sys.stdout.write(u"{}".format(HEART_EMOJI))
     sys.stdout.buffer.write(b'\0' * LEAD)
@@ -162,11 +171,12 @@ def print_binary(s):
             t = 0
             bit = 1
             while bit < 32:
-                t = t | (col & bit)<<3
+                t = t | (col & bit) << 3
                 bit = bit * 2
             sys.stdout.buffer.write(bytearray([t]))
         sys.stdout.buffer.write(b'\0')
-    sys.stdout.buffer.write(b'\0' * LEAD)
+    sys.stdout.buffer.write(b'\0' * TAIL)
+    sys.stdout.buffer.write(RESET)
 
 
 def main(label):
@@ -175,4 +185,3 @@ def main(label):
 
 
 main(" ".join(sys.argv[1:]))
-
