@@ -55,11 +55,11 @@ You may need to set `stty brkint` for BREAK to send Ctrl+C to the host.
 
 ### Using custom terminfo
 
-The [../teensytty](teensytty) firmware implements wordwrap, automatic CR for NL,
+The [teensytty](../teensytty) firmware implements wordwrap, automatic CR for NL,
 delays for NL and CR, and other features, controlled by escape sequences.  If you're using
 that firmware, the best settings are
 
-* Compile the [terminfo.txt](terminfo file): `sudo tic terminfo.txt`
+* Compile the [terminfo file](terminfo.txt): `sudo tic terminfo.txt`
 * Use this terminal type in the getty: `ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 tty33-amx`
 * Tell stty to *not* insert CR for NL (the firmware does this for us): `stty brkint -onlcr`
 
