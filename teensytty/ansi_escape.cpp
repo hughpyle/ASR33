@@ -5,11 +5,13 @@
  * Implement a subset of vt100 escape sequences to control the teletype ASR33.
  * - Cursor positioning along the horizontal line;
  * - Auto-wrap at the end of the line;
+ * - Application codes to re
  * - Identification and reset.
  * 
  * https://vt100.net/docs/vt220-rm/contents.html
  * http://www.inwap.com/pdp10/ansicode.txt
  * https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+ * https://www.proteansec.com/linux/blast-past-executing-code-terminal-emulators-via-escape-sequences/
  *
  */
 
@@ -27,13 +29,23 @@
 
 
 AnsiEscapeProcessor::AnsiEscapeProcessor() {
+  init();
+}
+
+void AnsiEscapeProcessor::init() {
   escState = escStateNone;
   nEscChars = 0;
   col = 0;
   isEscSimple = false;
+  isEscApc = false;
   isEscCsi = false;
   isCsiQuestion = false;
-  isWrapping = false;
+  isWrapping  = false;
+  isNLCR      = true;
+  isNulDelays = true;
+  isSoftReset = false;
+  isHardReset = false;
+
   pLen = (uint8_t *)outbuf;
   pBuf = pLen + 1;
 }
@@ -59,6 +71,8 @@ uint8_t *AnsiEscapeProcessor::update(uint8_t c) {
     *pBuf = c;
     *(pBuf+1) = 0;
 
+    // Handle escape sequences
+    
     switch(escState) {
         case escStateNone:
             // We're outside an escape sequence and received a character
@@ -69,6 +83,7 @@ uint8_t *AnsiEscapeProcessor::update(uint8_t c) {
                 escState = escStateEsc;
                 nEscChars = 0;
                 isEscSimple = false;
+                isEscApc = false;
                 isEscCsi = false;
                 isCsiQuestion = false;
                 // We're swallowing these, so the out-length is zero
@@ -85,18 +100,21 @@ uint8_t *AnsiEscapeProcessor::update(uint8_t c) {
             *pLen = 0;
 
             // Is this a terminator?  If so, we're ending the sequence, let's process it
-            if(isTerminator(c)) {
+            if(isTerminator(c) || nEscChars>MAXESCLEN) {
                 escState = escStateNone;
                 
                 // We finished now.
                 processSequence();
             }
 
+            if(nEscChars==1 && c=='_') {
+              isEscApc = true;
+            }
             if(nEscChars==1 && c=='[') {
               isEscCsi = true;
             }
             if(isEscCsi && nEscChars==2 && c=='?') {
-                isCsiQuestion = true;
+              isCsiQuestion = true;
             }            
             break;
 
@@ -104,8 +122,12 @@ uint8_t *AnsiEscapeProcessor::update(uint8_t c) {
             break;
     }
 
+    // Outside of escape sequences, handle the character stream
+    // with whatever additional processing is needed
+    
     if(escState == escStateNone) {
       pBuf = pLen + 1;
+      
       if(isWrapping) {
         // We're wrapping lines.
         // If the line is too long, break it
@@ -114,9 +136,22 @@ uint8_t *AnsiEscapeProcessor::update(uint8_t c) {
           writeOutput(buf, 3);
         }
       }
+
+      if(isNLCR) {
+        // NL should turn in to CR+NL
+        // (for now, handled by caller)
+      }
+
+      if(isNulDelays) {
+        // CR should be followed by a 2-character "delay NUL"
+        // NL should be followed by a 1-character "delay NUL"
+        // (for now, handled by caller)
+      }
+
     } else {
       pBuf++;
     }
+    
     updateFromOutput();
     return outbuf;
 }
@@ -127,6 +162,9 @@ bool AnsiEscapeProcessor::isTerminator(uint8_t c) {
     // The single-character escapes can end with a number
     // e.g ESC7, ESC8
     return ((c>='A' && c<='Z') || (c>='a' && c<='z') || (c>='0' && c<='9'));
+  } else if(isEscApc) {
+    // APC ends with String Terminator 0x9C
+    return (c==0x9C);
   } else {
     // CIS etc terminate on alphabet
     return ((c>='A' && c<='Z') || (c>='a' && c<='z'));
@@ -203,6 +241,9 @@ void AnsiEscapeProcessor::processSequence() {
         // Not Implemented
         break;
     }
+  } else if(isEscApc) {
+    // ESC _ <code> 0x9C -- we know *pBuf is 0x9C, process the characters in "code"
+    readAPC();
   } else if(isEscCsi) {
     //Serial.printf("<ESC[>");
     if(!isCsiQuestion) {
@@ -282,6 +323,36 @@ int AnsiEscapeProcessor::getN(int defaultN) {
 }
 
 
+void AnsiEscapeProcessor::readAPC() {
+  // Process an APC command consisting of zero or more bytes
+
+  // Buffer contains <len> <esc> _ <command> 0x9C
+  // Skip the escape prefix
+  const char *p = (const char *)outbuf + 3;
+
+  // Handle each byte of the command
+  uint8_t n=0;
+  while(*p != 0x9C && n < nEscChars) {
+      switch(*p) {
+        case APC_RX_NLCR_OFF:
+          isNLCR = false;
+          break;
+        case APC_RX_NLCR_ON:
+          isNLCR = true;
+          break;
+        case APC_RX_DELAYS_OFF:
+          isNulDelays = false;
+          break;
+        case APC_RX_DELAYS_ON:
+          isNulDelays = true;
+          break;
+      }
+      n++;
+      p++;
+  }
+}
+
+
 void AnsiEscapeProcessor::moveToColumn(int n) {
   // Populate the output buffer with whatever we need to position at column 'n' (zero-based)
   // without any word-wrapping, and with a fixed line length of MAX_COLUMNS
@@ -321,7 +392,8 @@ void AnsiEscapeProcessor::resetMode(int mode) {
 
 
 void AnsiEscapeProcessor::resetTerminal() {
-  isWrapping = false;
+  init();
+  isSoftReset = true;
   writeOutput("\r\n", 2);
 }
 
@@ -342,7 +414,7 @@ void AnsiEscapeProcessor::sendDA(int n) {
   switch(n) {
     case 0:
       // Status response to 'wtf are you?' is: 'I am a vt101 (bwahahaha)'
-      writeResponse("\033[?1;0c");
+      writeResponse(IDENT_SEQUENCE);
   }
 }
 

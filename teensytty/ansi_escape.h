@@ -2,7 +2,7 @@
  * Copyright (c) Hugh Pyle
  * 
  * ansi_escape.h
- * Defines a class that can process ANSI/vt100-style escape sequences for the teletype ASR33.
+ * Defines a class that can process ANSI/vt100-style escape sequences for a teletype ASR33.
  */
 
 #ifndef ANSI_escape_h_
@@ -29,6 +29,17 @@ enum escStateEnum {
     escStateEnd
 };
 
+#define MAXESCLEN 30
+
+#define APC_RX_NLCR_OFF    'a'
+#define APC_RX_NLCR_ON     'A'
+#define APC_RX_DELAYS_OFF  'b'
+#define APC_RX_DELAYS_ON   'B'
+
+#define IDENT_SEQUENCE  "\033[?1;0c"
+#define SEQ_BINARY      "\033_ab\234"
+#define SEQ_TEXT        "\033_AB\234"
+
 
 class AnsiEscapeProcessor;
 
@@ -46,8 +57,13 @@ class AnsiEscapeProcessor
     // The response (if any) to be sent back to the host, as a null-terminated string.
     uint8_t *getResponse();
 
-    // Helpful getter
+    // Helpful getters
     int column();
+    bool getIsWrapping() { return isWrapping; };
+    bool getIsNLCR() { return isNLCR; };
+    bool getIsNulDelays() { return isNulDelays; };
+    bool getIsSoftReset() { bool b=isSoftReset; isSoftReset=false; return b; }
+    bool getIsHardReset() { bool b=isHardReset; isHardReset=false; return b; }
 
   private:
     uint8_t outbuf[256];
@@ -57,14 +73,29 @@ class AnsiEscapeProcessor
     // is this a 'zero-content' seqence (ESC followed by a single character?)
     bool isEscSimple;
 
+    // Is this APC? ("ESC_...")
+    bool isEscApc;
+
     // Is this CSI?  ("ESC[...")
     bool isEscCsi;
 
     // Is this CSI with questionmark?  ("ESC[?...")
     bool isCsiQuestion;
 
+    // --- Processing state
+    
     // Word wrapping?
     bool isWrapping;
+
+    // NL -> CR+NL
+    bool isNLCR;
+
+    // insert NUL for delays after NL and CR
+    bool isNulDelays;
+
+    // Is the most recent escape instruction a reset code?
+    bool isSoftReset;
+    bool isHardReset;
 
     int col;
     uint8_t *pLen;
@@ -73,6 +104,7 @@ class AnsiEscapeProcessor
     uint8_t savedCol;
     uint8_t *pResponse;
 
+    void init();
     bool isTerminator(uint8_t c);
 
     static bool isPrintable(uint8_t c) {
@@ -85,6 +117,7 @@ class AnsiEscapeProcessor
 
     void processSequence();
     int getN(int defaultN);
+    void readAPC();
     void moveToColumn(int n);
     void setMode(int mode);
     void resetMode(int mode);
@@ -106,7 +139,7 @@ class AnsiEscapeProcessor
  * CUB      ESC D       Cursor Backward (Left) by 1
  * CUB      ESC [ Pn D  Cursor Backward (Left) by N
  * CHA      ESC [ Pn G  Cursor Horizontal Absolute - Move the active position to the n-th character of the active line.
- * 
+ *
  * DECSC    ESC 7       save state (cursor position)
  * DECRC    ESC 8       restore saved state (cursor position)
  * 
@@ -126,10 +159,18 @@ class AnsiEscapeProcessor
  *                      ESC [ <row> ; <col> R
  * DECXCPR  ESC[?6n     Extended Cursor Position Report
  *                      ESC [ <row> ; <col>; <page> R
- *                      
+ *
+ * APC      ESC _ <cmd> 0x9C (Application Program Command).
+ *
+ * APC commands are any number of bytes, each byte one of:
+ *  APC_RX_NLCR        a (off), A (on) -- whether NL should insert a CR ("stty onlcr")
+ *  APC_RX_DELAYS      b (off), B (on) -- whether to insert NUL as delay after NL/CR
+ * Others except 0x9C are ignored, and specifically 0xC2 will always be ignored.
+ * String Terminator is 0x9C or 0o234
+ *
  *
  * (Not implemented; LATER MAYBE:)
- * 
+ *
  * Tab stops (only because they're cool)
  * DECCAHT  ESC 2       clear all horizontal tabs
  * HTS      ESC H       horizontal tabulation set - sets a tab stop at the current column
@@ -144,9 +185,9 @@ class AnsiEscapeProcessor
  * Auto-repeat (but there's a hardware repeat already, not much need for this)
  * DECARM   ESC[? 8 h   Selects auto repeat mode. A key pressed for more than 0.5 seconds automatically repeats.
  * DECARM   ESC[? 8 l   Turns off auto repeat. Keys pressed do not automatically repeat.
- *             
+ *
  * DECRQM   report mode (eg. whether autowrap is set)
- *                      
+ *
  * RIS      ESC c       hard reset
  */
 

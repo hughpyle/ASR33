@@ -1,16 +1,16 @@
 
 /**
- * Teletype Model 33 USB driver using Teensy 3.0
- *
- * ASR33 teletype connects to the hardware serial port, via 20mA current-loop.
- * USB serial connects to the host system.
- * This driver performs character translation and other functions.
- * 
- * NB depends on a hacked AltSoftSerial:
- * https://github.com/hughpyle/AltSoftSerial/tree/hacking
- * 
- * 2018-09-03 update for with arduino 1.8.6
- */
+   Teletype Model 33 USB driver using Teensy 3.0
+
+   ASR33 teletype connects to the hardware serial port, via 20mA current-loop.
+   USB serial connects to the host system.
+   This driver performs character translation and other functions.
+
+   NB depends on a hacked AltSoftSerial:
+   https://github.com/hughpyle/AltSoftSerial/tree/hacking
+
+   2018-09-03 update for with arduino 1.8.6
+*/
 
 // ===========================================================================
 
@@ -101,11 +101,15 @@
 // Uncomment this to run "testing mode": development without a tty attached
 // #define TESTING
 
+// Uncomment this to ignore the hardware switches and use basic defaults
+#define IGNORE_THE_SWITCHES
+
+
 #ifdef TESTING
 #define HWSERIAL Serial
 #else
 // Use the modified AltSoftSerial with inverted data frame
-AltSoftSerial altSerial(1,1,true);
+AltSoftSerial altSerial(1, 1, true);
 #define HWSERIAL altSerial
 #endif
 
@@ -116,7 +120,7 @@ AltSoftSerial altSerial(1,1,true);
 #define PIN_TX_8BITCLEAN   5
 #define PIN_RX_8BITCLEAN   7
 #define PIN_RX_NLCR        8
-#define PIN_RX_EVENPARITY  9
+#define PIN_RX_SPARE1      9
 #define PIN_RX_DELAYS      10
 
 // Pushbutton for sending test sequences (momentary switch to ground)
@@ -155,7 +159,7 @@ bool isSoftBreak;
 elapsedMillis millisSinceBreak;
 
 // Pressing he "test pushbutton" runs a series of printer tests,
-// each press cycles to the next one. 
+// each press cycles to the next one.
 // testId is the ID of the currently-running test.
 int testId = 0;
 
@@ -165,7 +169,7 @@ bool isTxFoldSlash;
 bool isTxUtf8Arrows;
 bool isTx8BitClean;
 bool isRxNLCR;
-bool isRxEvenParity;
+bool isRxSpare1;
 bool isRxDelays;
 bool isRx8BitClean;
 
@@ -184,7 +188,7 @@ void setup() {
   pinMode(PIN_TX_UTF8ARROWS, INPUT_PULLUP);
   pinMode(PIN_TX_8BITCLEAN,  INPUT_PULLUP);
   pinMode(PIN_RX_NLCR,       INPUT_PULLUP);
-  pinMode(PIN_RX_EVENPARITY, INPUT_PULLUP);
+  pinMode(PIN_RX_SPARE1,     INPUT_PULLUP);
   pinMode(PIN_RX_DELAYS,     INPUT_PULLUP);
   pinMode(PIN_RX_8BITCLEAN,  INPUT_PULLUP);
 
@@ -225,7 +229,7 @@ void loop() {
     // print a test sequence
     selfTest();
   }
-  
+
   if (Serial.available() > 0) {
     // Print something to tty
     incomingByte = Serial.read();
@@ -245,9 +249,9 @@ void loop() {
   }
 
   digitalWrite(PIN_INTERNAL_LED, HWSERIAL.isBreak() ? HIGH : LOW);
- 
-  if(HWSERIAL.isBreak()) {
-    if(isBreak) {
+
+  if (HWSERIAL.isBreak()) {
+    if (isBreak) {
       if (millisSinceBreak > SOFTBREAKTIME && !isSoftBreak) {
         // Short break.  Send a Ctrl+C
         isSoftBreak = true;
@@ -277,9 +281,21 @@ void readOptions() {
   isTxUtf8Arrows = !digitalRead(PIN_TX_UTF8ARROWS);
   isTx8BitClean  = !digitalRead(PIN_TX_8BITCLEAN);
   isRxNLCR       = !digitalRead(PIN_RX_NLCR);
-  isRxEvenParity = !digitalRead(PIN_RX_EVENPARITY);
+  isRxSpare1     = !digitalRead(PIN_RX_SPARE1);
   isRxDelays     = !digitalRead(PIN_RX_DELAYS);
   isRx8BitClean  = !digitalRead(PIN_RX_8BITCLEAN);
+
+#ifdef IGNORE_THE_SWITCHES
+  isTestMode     = 0;
+  isTxUCLC       = 1;
+  isTxFoldSlash  = 0;
+  isTxUtf8Arrows = 0;
+  isTx8BitClean  = 0;
+  isRxNLCR       = 1;
+  isRxSpare1     = 0;
+  isRxDelays     = 1;
+  isRx8BitClean  = 0;
+#endif
 
 #ifdef DEBUG_ALL
   Serial.print("Tx 8-bit clean? ");  Serial.println(yesno(isTx8BitClean));
@@ -289,7 +305,7 @@ void readOptions() {
     Serial.print("Tx UTF8 arrows? ");  Serial.println(yesno(isTxUtf8Arrows));
   }
   Serial.print("Rx LF -> CR+LF? ");  Serial.println(yesno(isRxNLCR));
-  Serial.print("Rx Even Parity? ");  Serial.println(yesno(isRxEvenParity));
+  Serial.print("Rx Spare...(1)? ");  Serial.println(yesno(isRxSpare1));
   Serial.print("Rx CRLF Delays? ");  Serial.println(yesno(isRxDelays));
   Serial.print("Rx 8-bit clean? ");  Serial.println(yesno(isRx8BitClean));
 #endif
@@ -299,7 +315,7 @@ void readOptions() {
 // ---- Bytes from TTY to USB
 
 void printTTY(const char *s) {
-  for(uint i=0; i<strlen(s); s++) {
+  for (uint i = 0; i < strlen(s); s++) {
     sendToTTY(s[i]);
   }
 }
@@ -317,7 +333,7 @@ int processUSBByte(int b)
   if (!isRx8BitClean) {
     if (isRxNLCR) {
       // TODO linefeed conversion, LF => CR+LF
-      if ((b==LF) && (prevUSBByte!=CR)) {
+      if ((b == LF) && (prevUSBByte != CR)) {
         // write a CR first
         sendToTTY(CR);
       }
@@ -326,16 +342,19 @@ int processUSBByte(int b)
     // Use the ANSI-escape-sequence processor, which returns a length-prefixed buffer of things to write
     uint8_t *p = escapes.update(b);
     uint8_t len = *p++;
-    for(uint8_t n=1; n<=len; n++) {
+    for (uint8_t n = 1; n <= len; n++) {
       uint8_t cc = *p++;
       sendToTTY(cc);
     }
 
     uint8_t *rsp = escapes.getResponse();
-    if(rsp != NULL) {
-      // The escape sequence has a response
+    if (rsp != NULL) {
+      // The escape sequence has a response that should be sent back to the host
       Serial.write((char *)rsp);
     }
+
+    isRxNLCR = escapes.getIsNLCR();
+    isRxDelays = escapes.getIsNulDelays();
   }
 
   prevUSBByte = b;
@@ -346,24 +365,8 @@ int processUSBByte(int b)
 
 void sendToTTY(int b) {
 
-/*
-  if (!isRx8BitClean) {
-    // When sending to the tty, normally the parity bit will be set '1'
-    // Optionally can set even-parity
-    bool pbit = 1;
-    if (isRxEvenParity) {
-      pbit = parity(b);
 #ifdef DEBUG_ALL
-//    Serial.print("Parity ");
-//    Serial.println(pbit, DEC);
-#endif
-    }
-    // TODO set the parity bit
-  }
-  */
-
-#ifdef DEBUG_ALL
-  if(b!=0) {
+  if (b != 0) {
     Serial.print("Sending to TTY: ");
     Serial.write(b);
     Serial.print(" = 0x");
@@ -381,12 +384,12 @@ void sendToTTY(int b) {
 
   // CR/LF delays apply even on the 8-bit-clean path
   if (isRxDelays) {
-    if (b==CR) {
+    if (b == CR) {
       // Add delay after carriage return (200m or more)
       sendToTTY(0);
       sendToTTY(0);
     }
-    if (b==LF) {
+    if (b == LF) {
       // Add delay after line feed
       sendToTTY(0);
     }
@@ -417,28 +420,28 @@ int processTTYByte(int b) {
     b = b & 0x7F;
     c = b;
 
-    if(isTxUCLC) {
+    if (isTxUCLC) {
       // TTY produces uppercase alpha, fold them to lowercase
-      if (b>='A' && b<='Z') {
+      if (b >= 'A' && b <= 'Z') {
         c = b + ('a' - 'A');
       }
     }
-  
+
     if (isTxUtf8Arrows) {
-      if (b=='\x5E') {
+      if (b == '\x5E') {
         // caret => up arrow
         sendToUSB('\xE2');
         sendToUSB('\x86');
         c = '\x90';
       }
-      if (b=='\x5F') {
+      if (b == '\x5F') {
         // underscore => left arrow
         sendToUSB('\xE2');
         sendToUSB('\x86');
         c = '\x91';
       }
     }
-  
+
     // \n -> N
     // \7 -> \7
     // \\ -> \\ (and no escaping of the next character)
@@ -446,10 +449,10 @@ int processTTYByte(int b) {
       if (isEscapingTTY) {
         // Previous character was backslash (and was not sent).
         // It might 'escape' the current character.
-        if (c>='A' && c<='Z') {
+        if (c >= 'A' && c <= 'Z') {
           // The current character is uppercase alpha, send as lowercase
           c = c + ('a' - 'A');
-        } else if (c>='a' && c<='z') {
+        } else if (c >= 'a' && c <= 'z') {
           // The current character is lowercase alpha, send as uppercase
           c = c - ('a' - 'A');
         } else {
@@ -457,7 +460,7 @@ int processTTYByte(int b) {
           sendToUSB(prevTTYByte);
         }
         isEscapingTTY = false;
-      } else if (b=='\x5C') {
+      } else if (b == '\x5C') {
         // This is a backslash.  Don't send it yet.
         isEscapingTTY = true;
         c = -1;
@@ -475,7 +478,7 @@ int processTTYByte(int b) {
 }
 
 void sendToUSB(int c) {
-  if (c>0) {
+  if (c > 0) {
     Serial.write(c);
   }
 }
@@ -508,9 +511,9 @@ int prevOptions = -1;
 void selfTest() {
 
   readOptions();
-  options = isTxUCLC + (isTxFoldSlash<<1) + (isTxUtf8Arrows<<2)
-            + (isRxNLCR<<4) + (isRxEvenParity<<5) + (isRxDelays<<6);
-  if (options==prevOptions) {
+  options = isTxUCLC + (isTxFoldSlash << 1) + (isTxUtf8Arrows << 2)
+            + (isRxNLCR << 4) + (isRxSpare1 << 5) + (isRxDelays << 6);
+  if (options == prevOptions) {
     // start the next test
     testId++;
   } else {
@@ -522,7 +525,7 @@ void selfTest() {
   // "0        1         2         3         4         5         6         7  "
   // "123456789012345678901234567890123456789012345678901234567890123456789012"
   //
-  switch(testId) {
+  switch (testId) {
     case 1:
       // Just type all the standard printable characters.
       printTTY("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&^()*+,-./:;<=>?@[]^_\r\n");
@@ -551,8 +554,8 @@ void selfTest() {
       // Carriage return test
       // For N from 71 down to 10: print asterisk at position N,
       // then CR, then number at position 1.
-      for (int i=71; i>10; i--) {
-        for (int j=0; j<i; j++) {
+      for (int i = 71; i > 10; i--) {
+        for (int j = 0; j < i; j++) {
           sendToTTY(' ');
         }
         sendToTTY('*');
@@ -568,7 +571,7 @@ void selfTest() {
       // (octal) 047, 137, 127, 057, 127, 137
       // (hex)   x27, x5F, x57, x2F, x57, x5F
       // (apostrophe) (left-arrow) W (slash) W (left-arrow)
-      for(int i=1; i<=6; i++) {
+      for (int i = 1; i <= 6; i++) {
         sendToTTY('\047');
         sendToTTY('\137');
         sendToTTY('\127');
