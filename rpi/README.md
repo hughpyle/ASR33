@@ -59,7 +59,7 @@ The [teensytty](../teensytty) firmware implements wordwrap, automatic CR for NL,
 delays for NL and CR, and other features, controlled by escape sequences.  If you're using
 that firmware, the best settings are
 
-* Compile the [terminfo file](terminfo.txt): `sudo tic terminfo.txt`
-* Use this terminal type in the getty: `ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 tty33-amx`
+* Compile the [terminfo file](../teensytty/terminfo.txt): `sudo tic terminfo.txt`
+* Use `tty33-amx` instead of `tty33` in the getty override.conf `ExecStart=...` line
 * Tell stty to *not* insert CR for NL (the firmware does this for us): `stty brkint -onlcr`
 
