@@ -7,6 +7,7 @@
 # NB requires "8-bit-clean" punch data path! e.g. you may need 'stty -onlcr'
 
 import sys
+import click
 
 
 # Escape sequence to initialize (turn off wordwrap, NLCR, delays)
@@ -123,6 +124,56 @@ tape_chars = {
 PRINT_CHAR = "o"
 
 
+def write_bdf():
+    # Write a BDF font
+    print("""STARTFONT 2.1
+COMMENT https://github.com/hughpyle/ASR33/
+FONT -tape-smallcaps--6-60-75-75-C-60-ISO10646-1
+SIZE 6 75 75
+FONTBOUNDINGBOX 5 6 0 -1
+STARTPROPERTIES 11
+    FOUNDRY "tape"
+    PIXEL_SIZE 6
+    POINT_SIZE 60
+    RESOLUTION_X 75
+    RESOLUTION_Y 75
+    CHARSET_REGISTRY "ISO10646"
+    CHARSET_ENCODING "1"
+    FONT_ASCENT 5
+    FONT_DESCENT 1
+    DEFAULT_CHAR 0
+    COPYRIGHT "Copyright (c) 2018 by Hugh Pyle.  Distributed under the MIT license."
+ENDPROPERTIES""")
+    print("CHARS {}".format(len(tape_chars)))
+
+    def name(char):
+        return "U+{:04x}".format(char)
+
+    for char in tape_chars.keys():
+        print("STARTCHAR {}".format(name(char)))
+        print("ENCODING {}".format(char))
+        dw = len(tape_chars[char]) + 1
+        print("SWIDTH {} 0".format(dw*125))   # how far the origin moves after display
+        print("DWIDTH {} 0".format(dw))     # how far the origin moves after display
+        print("BBX 5 6 0 -1")   # (width height offsetX offsetY) of the lit pixels
+        # The bitmap is: (height) lines of hex data, right-padded with zeros.
+        # note: this is a horizontal read-out from the top down,
+        # but our `tape_chars` characters are vertically oriented (columns) with LSB=bottom.
+        # e.g. for "A", { 0x41: [0b11110, 0b00101, 0b00101, 0b11110] } reads as 10010000,
+        print("BITMAP")
+        bit = 1
+        n = 1
+        while bit < 64:
+            t = 0
+            for col in (tape_chars[char] + [0, 0, 0, 0, 0, 0, 0, 0])[:8]:
+                t = (t << 1) | bool(col & bit)
+            print("{:02x}".format(t))
+            bit = bit * 2
+            n = n + 1
+        print("ENDCHAR")
+    print("ENDFONT")
+
+
 def print_all():
     bit = 1
     while bit < 64:
@@ -179,9 +230,16 @@ def print_binary(s):
     sys.stdout.buffer.write(RESET)
 
 
-def main(label):
-    print_binary(label)
-    # print_string(label)
+@click.command(context_settings={"ignore_unknown_options": True})
+@click.argument('words', nargs=-1, type=click.UNPROCESSED)
+@click.option("--bdf", is_flag=True)
+def main(bdf, words):
+    label = " ".join(words)
+    if bdf:
+        write_bdf()
+    else:
+        print_binary(label)
+    pass
 
 
-main(" ".join(sys.argv[1:]))
+main()
