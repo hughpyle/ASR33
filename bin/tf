@@ -10,15 +10,15 @@
     This means that some fonts don't work well.
 
     Example fonts:
-        Chicago-12  Good with uppercase (bold)
+        chicago     Good with uppercase (bold)
         mod3270     Good with uppercase (bold)
         mod6x13     x11 "fixed", good uppercase and symbols.  But lowercase is not very readable.
         6x13        x11 "fixed" font.  Works OK in uppercase, but "Q" has a descender.
         small       small uppercase and lowercase, use with "--align 1"
         smallcaps   5px to fit under the track with "--align 3"
-        clR6x12     Uppercase is 7px but still lowercase descenders are still problematic
-        IBMCGA      8px PC font, bold, good uppercase and lowercase
-        IBMCGAthin  8px PC font, good uppercase and lowercase
+        cl          Uppercase is 7px but still lowercase descenders are still problematic
+        cga         8px PC font, bold, good uppercase and lowercase
+        cgathin     8px PC font, good uppercase and lowercase
 """
 
 
@@ -33,7 +33,7 @@ from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 INIT = b"\033[?7l\033_ab\234"
 RESET = b"\033[!p"
 
-DEFAULT_FONT = "Chicago-12"
+DEFAULT_FONT = "chicago"
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
