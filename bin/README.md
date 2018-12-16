@@ -4,7 +4,7 @@ Various useful command-line tools for the teletype user.
 * `moo`: log in to LambdaMoo (needs `$MOOUSER` and `$MOOPASS`)
 * `bbs`: log in to FoxxTexx BBS (needs `$BBSUSER` and `$BBSPASS`)
 * `prime`: log in to the PRIMOS emulator (needs `$PRIUSER` and `$PRIPASS`)
-* `tape <text>`: print big characters on punch-tape.
+* `tf <text>`: print big characters on punch-tape.
 * `emoji <name>`: print an emoji.
 * `q <question>`: general knowledge.
 
