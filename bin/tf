@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+
+"""Write text for punching on 8-level paper tape.
+
+    Text can be written using any BDF bitmap-font
+    that produces writing up to 9 pixels high.
+    Most 13- and 14-px fonts work if your text doesn't include any descenders.
+
+    For 9-pixel height, the fourth pixel is skipped (it's the ratchet track on the tape).
+
+"""
+
+
+import os
+import sys
+import tempfile
+import click
+from PIL import Image, ImageFont, ImageDraw, BdfFontFile
+
+
+# Escape sequence to initialize (turn off wordwrap, NLCR, delays)
+INIT = b"\033[?7l\033_ab\234"
+RESET = b"\033[!p"
+
+DEFAULT_FONT = "Chicago-12"
+
+
+@click.command(context_settings={"ignore_unknown_options": True})
+@click.argument('words', nargs=-1, type=click.UNPROCESSED)
+@click.option("--font", default=DEFAULT_FONT, type=click.Path())
+@click.option("--align", default=0)
+@click.option("--test", is_flag=True)
+def main(words, font, align, test):
+    """Write text to punchtape"""
+
+    font_filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bdf", "{}.bdf".format(font))
+    label = " ".join(words)
+
+    if label == "":
+        click.get_current_context().fail("Please specify some words.")
+
+    if not os.path.isfile(font_filename):
+        click.get_current_context().fail("Font not found ({})".format(font_filename))
+
+    with open(font_filename, 'rb') as font_file:
+        # Read the BDF font description
+        bdf = BdfFontFile.BdfFontFile(font_file)
+        # bdf.compile()
+
+        # PIL requires we write the font as a .pil file before it can be used
+        pil_filename = tempfile.mktemp(suffix=".pil")
+        bdf.save(pil_filename)
+        font = ImageFont.load(pil_filename)
+
+        # Make a new image just the right size for the text
+        line_w, line_h = font.getsize(label)
+        img = Image.new('1', (line_w, line_h), color=0)
+
+        # Write the text
+        ImageDraw.Draw(img).text((0, 0), label, font=font, fill=1)
+
+    os.unlink(pil_filename)
+    os.unlink(os.path.splitext(pil_filename)[0] + ".pbm")
+
+    # The vertical positioning of the text varies by font, but we want "automatic" layout.
+    # Scan the top and bottom of the bitmap to find and remove any blank lines.
+    (_, y0, _, y1) = img.getbbox()
+    height = y1 - y0
+
+    # If the height is 8 (or less), we can render it directly.
+    # If the height is 9, we can also render directly, just by ignoring the 4th bit (the 'track').
+    # Otherwise report an error.
+    if height > 9:
+        sys.exit("Text is too high ({}px)".format(height))
+
+    img = img.crop((0, y0, line_w, y1))
+
+    # Write the image as PNG for debugging
+    img.save(os.path.join(tempfile.gettempdir(), "tf.png"))
+
+    # Read out the bits of the image, one column at a time, from the left
+    pixels = img.load()
+
+    if not test:
+        sys.stdout.buffer.write(INIT)
+    for pos_x in range(line_w):
+        byte = 0
+        for pos_y in reversed(range(height)):
+            if pos_y == 3 and height == 9:
+                # skip the track bit
+                continue
+            byte = (byte << 1) | pixels[pos_x, pos_y]
+        byte = (byte << align) & 0xff
+        if test:
+            sys.stdout.write("{:08b}\n".format(byte).replace("0", ".").replace("1", "*"))
+        else:
+            sys.stdout.buffer.write(bytearray([byte]))
+
+    if not test:
+        sys.stdout.buffer.write(RESET)
+
+
+# pylint: disable=no-value-for-parameter
+main()
