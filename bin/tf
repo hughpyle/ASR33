@@ -12,13 +12,17 @@
     Example fonts:
         chicago     Good with uppercase, classic Apple bold proportional font
         mod3270     Good with uppercase, classic IBM terminal bold fixed width font
+        vt100       classic DEC terminal font, uppercase chars are 7px
         cga         8px IBM-PC font, fixed width, bold, good uppercase and lowercase
         cgathin     8px IBM-PC font, fixed width, good uppercase and lowercase
+        helv        Helvetica regular 12, for uppercase
         small       small uppercase and lowercase, use with "--align 1"
         smallcaps   5px to fit under the track with "--align 3"
-        mod6x13     modified x11 "fixed", good uppercase and symbols.  But lowercase is not very readable.
-        6x13        original x11 "fixed" font.  Works OK in uppercase, but "Q" has a descender.
+        mod6x13     modified X11 "fixed", good uppercase and symbols.  But lowercase is not very readable.
+        6x13        original X11 "fixed" font.  Works OK in uppercase, but "Q" has a descender.
         cl          Uppercase is 7px but still lowercase descenders are still problematic
+    Many more classic BDF-format fonts can be found in the Downloads section here:
+                    https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html
 """
 
 
