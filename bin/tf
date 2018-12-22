@@ -83,10 +83,15 @@ def main(words, font, align, test):
     os.unlink(pil_filename)
     os.unlink(os.path.splitext(pil_filename)[0] + ".pbm")
 
-    # The vertical positioning of the text varies by font, but we want "automatic" layout.
-    # Scan the top and bottom of the bitmap to find and remove any blank lines.
-    (_, y0, _, y1) = img.getbbox()
-    height = y1 - y0
+    if line_h <= 8:
+        y0 = 0
+        y1 = line_h
+        height = line_h
+    else:
+        # The vertical positioning of the text varies by font, but we want "automatic" layout.
+        # Scan the top and bottom of the bitmap to find and remove any blank lines.
+        (_, y0, _, y1) = img.getbbox()
+        height = y1 - y0
 
     # If the height is 8 (or less), we can render it directly.
     # If the height is 9, we can also render directly, just by ignoring the 4th bit (the 'track').
