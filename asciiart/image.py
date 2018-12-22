@@ -128,7 +128,7 @@ def process(image):
     return fd
 
 
-def render(fd, outfile):
+def render(fd, outfile, indent=0):
     # The fd is a histograms-of-gradients
     n_cells_row = fd.shape[0]
     n_cells_col = fd.shape[1]
@@ -188,11 +188,11 @@ def render(fd, outfile):
         print("\n")
 
         if result is None:
-            result = lines
+            result = [(" " * indent) + line for line in lines]
         else:
             i = 0
             for line in lines:
-                result[i] = result[i] + "\r" + line
+                result[i] = result[i] + "\r" + (" " * indent) + line
                 i = i + 1
 
     # Write a text file with all the iterations
@@ -211,8 +211,9 @@ def render(fd, outfile):
 @click.option('--width', default=70, help='Image width (characters)')
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='gamma')
+@click.option('--indent', default=0, help='indent')
 @click.argument('filename')
-def main(filename, width, invert, gamma):
+def main(filename, width, invert, gamma, indent):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
@@ -222,7 +223,7 @@ def main(filename, width, invert, gamma):
     hog_fd = process(img)
 
     # Map to ASCII
-    render(hog_fd, filename + ".txt")
+    render(hog_fd, filename + ".txt", indent)
 
 
 if __name__ == "__main__":
