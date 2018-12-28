@@ -3,8 +3,10 @@
 # word-wrap on or off
 
 if [ "$1" == "off" ] || [ "$1" == "OFF" ]; then
-  echo -e '\033[?7l'
+  # echo -e '\033[?7l'
+  tput rmam
 else
-  echo -e '\033[?7h'
+  # echo -e '\033[?7h'
+  tput smam
 fi
 

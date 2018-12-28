@@ -1,4 +1,13 @@
 #!/usr/bin/expect -f
+
+# Turn on auto-word-wrap for the duration of this session
+proc exit_handler {} {
+  send_user -raw [exec tput rmam]
+  exit
+}
+trap exit_handler {SIGINT SIGTERM SIGQUIT}
+send_user -raw [exec tput smam]
+
 log_user 0
 set timeout 3600
 spawn telnet lambda.moo.mud.org 8888
@@ -7,6 +16,9 @@ send "co $env(MOOUSER)\n"
 expect "Password:"
 sleep 1
 send "$env(MOOPASS)\n"
+
 # log_user 1
 interact
+
+exit_handler
 
