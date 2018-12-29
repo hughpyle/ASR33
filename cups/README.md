@@ -2,7 +2,7 @@
 
 The teletype is four devices in one: hardcopy display (printer), tape punch, keyboard, and tape reader.  So, shouldn't the printer be available to modern applications?
 
-![screenshot][../pix/osx-printers.jpg]
+![screenshot](../pix/osx-printers.jpg)
 
 Here's how to configure a Raspberry Pi to share the teletype as a networked printer, using CUPS.
 This assumes the hardware configuration such as [this](../rpi/) where the teletype is a USB serial device on the Raspberry Pi host.
