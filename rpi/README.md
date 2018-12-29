@@ -61,5 +61,5 @@ that firmware, the best settings are
 
 * Compile the [terminfo file](../teensytty/terminfo.txt): `sudo tic terminfo.txt`
 * Use `tty33-amx` instead of `tty33` in the getty override.conf `ExecStart=...` line
-* Tell stty to *not* insert CR for NL (the firmware does this for us): `stty brkint -onlcr`
+
 
