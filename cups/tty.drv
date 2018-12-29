@@ -1,0 +1,30 @@
+// Include standard font and media definitions
+#include <font.defs>
+#include <media.defs>
+
+// Fonts etc
+Font Courier Standard "(1.0)" Standard ROM
+ColorDevice no
+Cutter no
+DriverType custom
+Duplex none
+ManualCopies no
+Attribute "TTRasterizer" "" "None"
+
+// Manufacturer, model name, and version
+Manufacturer "Teletype"
+ModelName "ASR"
+Version "Model 33"
+
+// Each filter provided by the driver...
+Filter text/plain 0 texttotext
+
+// Supported page sizes
+#media "Continuous" 8in 100ft
+*MediaSize "Continuous"
+
+*MediaType 0 "Paper"
+MediaType 1 "Tape"
+
+// Specify the name of the PPD file we want to generate...
+PCFileName "tty.ppd"

@@ -1,0 +1,15 @@
+#! /bin/bash
+# see "man 7 filter"
+# debug info in /var/log/cups/error_log
+set -x
+# set inputfile to where the input comes from
+inputfile="-"
+[ -n "$6" ] && inputfile="$6"
+
+echo "ATTR: marker-names=Paper,Tape" 1>&2
+echo "ATTR: marker-colors=#000000,#000000" 1>&2
+echo "ATTR: marker-levels=0,0" 1>&2
+echo "ATTR: marker-message=All OK" 1>&2
+
+# printing
+cat $inputfile

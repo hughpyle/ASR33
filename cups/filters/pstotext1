@@ -1,0 +1,9 @@
+#! /bin/bash
+# see "man 7 filter"
+# debug info in /var/log/cups/error_log
+set -x
+# set inputfile to where the input comes from
+inputfile="-"
+[ -n "$6" ] && inputfile="$6"
+# printing
+ps2ascii $inputfile -
