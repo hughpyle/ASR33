@@ -3,6 +3,7 @@
 The teletype is four devices in one: hardcopy display (printer), tape punch, keyboard, and tape reader.  So, shouldn't the printer be available to modern applications?
 
 Here's how to configure a Raspberry Pi to share the teletype as a networked printer, using CUPS.
+This assumes the hardware configuration such as [this](../rpi/) where the teletype is a USB serial device on the Raspberry Pi host.
 
 ## TODO
 
@@ -12,7 +13,7 @@ Still to do:
 (This is also the general queueing method that I want for other purposes, such as for automatic printing of news, twitter, and other messages).
 * Document formats other than text/plain.  CUPS will convert filetypes, e.g. from postscript and pdf, but we must prevent them from going through
 rasterization (to preserve the original text).
-* Somehow enable *bold* text formatting by overstriking each letter.
+* Somehow enable _bold_ text formatting by overstriking each letter.
 
 
 ## Installing CUPS
