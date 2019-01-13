@@ -1,0 +1,62 @@
+%!PS
+
+% Template for drawing patterns on 8-level paper tape
+% Copyright (c) 2019 by Hugh Pyle, distributed under the MIT license
+
+% 1 inch = 72 points.  The base grid will be (1x1 = tenths of an inch)
+/s 7.2 def
+s s scale
+
+0.1 s div setlinewidth
+
+/hole 0.3 def
+/trak 0.2 def
+/rows 90 def
+/strips 5 def
+/gap 2.5 def
+
+/dotrow {
+    0.25 setgray
+    newpath 0 0 hole 0 360 arc closepath stroke
+    newpath 1 0 hole 0 360 arc closepath stroke
+    newpath 2 0 hole 0 360 arc closepath stroke
+    newpath 4 0 hole 0 360 arc closepath stroke
+    newpath 5 0 hole 0 360 arc closepath stroke
+    newpath 6 0 hole 0 360 arc closepath stroke
+    newpath 7 0 hole 0 360 arc closepath stroke
+    newpath 8 0 hole 0 360 arc closepath stroke
+    0.5 setgray
+    newpath 3 0 trak 0 360 arc closepath fill
+} def
+
+/dot {
+    0.5 setgray
+    newpath 3 0 0.22 0 360 arc closepath fill
+} def
+
+/border {
+    0.2 setgray
+    newpath
+    1.0  10.5 moveto
+    1.0  rows 15.5 add lineto
+    -4.0 rows 11.5 add lineto
+    -9.0 rows 15.5 add lineto
+    -9.0 10.5 lineto
+    -4.0 6.5 lineto
+    closepath
+    stroke
+} def
+
+2 0 translate
+strips {
+    5 7 translate
+    3 { 0 1 translate dot } repeat
+    rows dup { 0 1 translate dotrow } repeat
+    2 { 0 1 translate dot } repeat
+    15 add neg 8 exch translate
+    0 3 translate
+    border
+    gap 0 translate
+} repeat
+
+showpage
