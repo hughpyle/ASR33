@@ -39,10 +39,10 @@ from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 INIT = b"\033[?7l\033_ab\234"
 RESET = b"\033[!p"
 
-# Font files are in a subdirectory 'bdf'
-# (https://github.com/hughpyle/ASR33/tree/master/bin/bdf)
+# Font files are in a subdirectory 'fonts'
+# (https://github.com/hughpyle/ASR33/tree/master/bin/fonts)
 DEFAULT_FONT = "chicago"
-FONT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bdf")
+FONT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
 ALL_FONTS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(FONT_PATH) if filename.endswith(".bdf")])
 
 
