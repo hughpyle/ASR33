@@ -15,18 +15,22 @@ s s scale
 /strips 5 def
 /gap 2.5 def
 
+/dot {
+    0.5 setgray
+    newpath 3 0 trak 0 360 arc closepath fill
+} def
+
 /dotrow {
     0.25 setgray
     newpath 0 0 hole 0 360 arc closepath stroke
     newpath 1 0 hole 0 360 arc closepath stroke
     newpath 2 0 hole 0 360 arc closepath stroke
+    dot
     newpath 4 0 hole 0 360 arc closepath stroke
     newpath 5 0 hole 0 360 arc closepath stroke
     newpath 6 0 hole 0 360 arc closepath stroke
     newpath 7 0 hole 0 360 arc closepath stroke
     newpath 8 0 hole 0 360 arc closepath stroke
-    0.5 setgray
-    newpath 3 0 trak 0 360 arc closepath fill
 } def
 
 /dot {
@@ -35,7 +39,7 @@ s s scale
 } def
 
 /border {
-    0.2 setgray
+    0.0 setgray
     newpath
     1.0  10.5 moveto
     1.0  rows 15.5 add lineto
