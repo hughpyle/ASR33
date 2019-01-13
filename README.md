@@ -44,11 +44,13 @@ The Model 33's data format – 1 start bit, 8 data bits and 2 stop bits – is s
 
 # This Project
 
-In the early 1980s, I was lucky to attend a high-school that had a Teletype connected to the [PR1ME](https://en.wikipedia.org/wiki/Prime_Computer) cluster at the University of Surrey.  As user SCH008, this was my early gateway to the world of networked computers.  It's amazingly fun to revisit some of those experiences.
+In the early 1980s, I was lucky to attend a high-school that had a Teletype connected to the [PR1ME](https://en.wikipedia.org/wiki/Prime_Computer) cluster at the University of Surrey.  As user SCH008, this was my early gateway to the world of networked computers.  It's amazingly fun to revisit some of those experiences.  I've worked in DOS, Windows, OS/2, linux, macOS, iOS, Android, and a bit of aix, and it looks like little linux machines are everywhere.  Millions of times faster than this data interface. 
 
-Although the Teletype hardware and [original Unix software](http://www.lemis.com/grog/Documentation/Lions/index.php) has been superseded by 50 years' of layered improvement, the hard-copy teletype is still the canonical `tty`.
+Although the Teletype hardware and [original Unix software](http://www.lemis.com/grog/Documentation/Lions/index.php) has been superseded by 50 years' of layered improvement, the hard-copy teletype is still the canonical `/dev/tty`.
 
-This project is an ongoing exploration of how to use it with modern computers, including:
+This project is an ongoing exploration of how to connect its descendents to its operator.  How to use it interactively, for real, as a terminal to modern computers and everything they can do.  The command-line is waiting, more powerful by miles, and its rails were built for these wheels.  
+
+In this repo you'll find documentation of software and hardware in the process, with tools, mostly Unix-ish software in Python for the Raspberry Pi.
 * The physical connection (current-loop serial to USB),
 * The logical connection as a terminal (`getty`, the line discipline, and related things),
 * Making the Unix commandline and essential software usable with a hard-copy terminal where "carriage return" takes hundreds of milliseconds, with no scroll-back, no "erase" or "clear", no back-space, no lower-case, no color, no graphics, and no cursor, 
@@ -56,14 +58,14 @@ This project is an ongoing exploration of how to use it with modern computers, i
 * Connecting to vintage systems and simulations,
 * Fun with printing and paper tape.
  
-Follow along – and contribute please! – [here on GitHub](https://github.com/hughpyle/ASR33), and [@33asr on Twitter](https://twitter.com/33asr).
+Follow along – and dive in please! – [here on GitHub](https://github.com/hughpyle/ASR33), and [@33asr on Twitter](https://twitter.com/33asr).
 
 [![teletype ASR33 on pedestal](pix/20181014_101010_x500.jpg)](pix/20181014_101010.jpg)
 
 
 ---
 
-* Initial project notes: [pdf](tty-usb.pdf) and [pptx](tty-usb.pptx).
+* Initial project notes: [pdf](tty-usb.pdf) and [pptx](tty-usb.pptx) Mostly about the electronics hardware.
 
 * **[pix](pix)**: 
 Photos and other pictures.
