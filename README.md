@@ -8,7 +8,7 @@ The [Teletype Model 33](https://en.wikipedia.org/wiki/Teletype_Model_33) was a v
 
 The history of the _teletypewriter_ – mechanical devices for digital communication – spans [from the earliest digital communications to global news and messaging networks](http://www.samhallas.co.uk/repository/telegraph/teletype_story.pdf).
 
-With the Model 33 Teletype, *interactive terminals* became the standard UI for _minicomputers_ such as the [DEC PDP-8](https://www.computerhistory.org/revolution/minicomputers/11/331) and [PDP-11](https://dave.cheney.net/2017/12/04/what-have-we-learned-from-the-pdp-11) – also allowing multiple users to simultaneously work on the same computer! – and as affordable consoles for the first generation of _personal computers_ including the [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800).
+With the Model 33 Teletype, *interactive terminals* became the standard UI for _minicomputers_ such as the [DEC PDP-8](https://www.computerhistory.org/revolution/minicomputers/11/331) and [PDP-11](https://dave.cheney.net/2017/12/04/what-have-we-learned-from-the-pdp-11), and as affordable consoles for the first generation of _personal computers_ including the [Altair 8800](https://en.wikipedia.org/wiki/Altair_8800).  Way before Wifi, before the [LAN](https://en.wikipedia.org/wiki/Local_area_network#History).  The minis, and even the PCs, often let multiple users simultaneously work on the same computer!  Increasingly, the larger or general-purpose computers became connected by networks too.
 
 
 #### Terminal
@@ -16,8 +16,16 @@ A terminal consists of __data input__ and __data display__, connected to a compu
 
 Hard-copy terminals were superseded in the 70s by the "glass TTY" and then increasingly smart CRT terminals with nice fonts, even color and graphics.  So the Teletype machinery is obsolete, but the data formats (serial ASCII) and the central expectations of what a terminal could do (interactive input and output) are still baked into everything.  In this sense the Teletype is "compatible".  PC-compatible, Linux-compatible, Android-compatible, Internet-compatible, because it's their foundational I/O device. 
 
+[![paper and tape](pix/paper_and_tape_x300.jpg)](pix/paper_and_tape.jpg)
+
+Yup, forgot to turn on word wrap
+
 #### Paper Tape
 In the "ASR" (Automatic Send-Receive) Teletype models there are two additional I/O devices: a paper-tape reader for input, and a paper-tape punch for output.  [Punched paper tape](https://en.wikipedia.org/wiki/Punched_tape) is a great way to store and communicate data, although it's limited in density (10 characters per inch, or 2.66 kilometers per megabyte), slow (the Teletype can read/write at 10 bytes per second), and tears quite easily.
+
+The reader is mechanical, which is pretty cool.  I don't understand it yet.
+
+![tape](pix/tape_and_paper.jpg)
 
 #### ASCII
 The keyboard and printer use ASCII, which is a 7-bit character encoding [standardized in 1963](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.678&rep=rep1&type=pdf), with numbers, upper-case letters (no lowercase!), punctuation, and several _control characters_.  (Some of the punctuation is [unusual](https://twitter.com/33asr/status/1052956789086531584)).
@@ -25,6 +33,8 @@ The keyboard and printer use ASCII, which is a 7-bit character encoding [standar
 An eighth data bit can be used for [parity](https://en.wikipedia.org/wiki/Parity_bit), depending on the exact model of Teletype keyboard.  The tape punch and reader can use all 8 bits.
 
 [![ASCII printed by teletype](pix/ascii_print_x500.jpg)](pix/ascii_print.jpg) [![ASCII documentation](pix/ascii_table_x500.jpg)](pix/ascii_table.jpg)
+
+Pretty typewheel, and comprehensive man pages (in the three-ring binder)
 
 #### Serial Data Mechanism
 The data connection is a serial [current loop](https://en.wikipedia.org/wiki/Digital_current_loop_interface) (two-wire system).  There are two independent current loops, one for "send" and another for "receive".  They are quite reliable over moderate distances (up to several kilometers), which is handy if your nearest computer is a long way away.
@@ -98,7 +108,7 @@ Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as 
 Related source documentation and reference material.
 
 
-The contents of this project are published under the [MIT license](LICENSE).
+The contents of this project are published under the [MIT license](LICENSE), let me know what you do with it!
 
 ---
 
