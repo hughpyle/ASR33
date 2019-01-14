@@ -96,13 +96,13 @@ Setting up a getty on macOS.
 Setting up a getty on Raspberry Pi (raspbian).
 
 * **[bin](bin)**:
-Some command-line utilities for the tty user.  Put this on your PATH.
+Some command-line utilities for the tty user.  Put this on your PATH.  There's a lot of fun stuff there including scripts to print [words on papertape](https://twitter.com/33asr/status/1074432596728262656), connect to [LambdaMoo](https://twitter.com/33asr/status/1078698114003943425), print [emoji](https://twitter.com/33asr/status/1046930898321645568), play [zork](https://github.com/hughpyle/ASR33/blob/master/bin/profile), connect to bbs, and more. 
 
 * **[asciiart](asciiart)**:
-Using the unique features of a hardcopy terminal, including _overstrike_.  Not just emoji, but Real Art and stuff.  Pictures and drawings and logos and photos.  Framed, and available online somewhere eventually.
+Using the unique features of a hardcopy terminal, including _overstrike_.  Not just emoji, but Real Art of a sort.  Pictures and drawings and logos and photos.  Framed, and available online [in my Etsy store](https://www.etsy.com/shop/asr33) eventually.
 
 * **[cups](cups)**:
-Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as a network printer.  That's nice if you want to print from the laptop, but also because it's a message queue.  The print queue can take things from online services, like twitter and the news and SMS, who knows, WhatsApp or something.  But the printing should happen in background, only when the operator isn't in the middle of something else.  
+Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as a network printer.  That's nice if you want to print from the laptop, but also because it's a message queue.  The print queue can take things from online services, like twitter and the news and SMS, who knows, WhatsApp or something.  But the printing should happen in background, only when the operator isn't in the middle of something else.  Work in progress.
 
 * **[other_material](other_material)**:
 Related source documentation and reference material.
