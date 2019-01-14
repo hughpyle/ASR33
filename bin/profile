@@ -1,0 +1,25 @@
+# Useful profile settings and aliases
+#
+
+export PS1='% '
+stty brkint
+
+# default terminal settings
+export COLUMNS=72
+export TERM=tty33-amx
+
+
+# For "cooked" mode, just reset
+alias text='stty sane && tput reset'
+
+# For "pass-thru binary" mode, set raw stty (no NL->CRNL, etc) and also send the custom escape to set the firmware into raw mode
+alias binary='stty raw && echo "\033[?7l\033_ab\234"'
+
+
+# Other aliases
+alias zork='dfrotz -r 72 -p -d ~/.games/zork1.dat'
+alias tw='twitter --length 1'
+alias ll='ls -ll'
+alias fig='pyfiglet -w 72'
+alias banner='printerbanner -w 72'
+
