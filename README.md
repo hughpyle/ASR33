@@ -17,7 +17,7 @@ A terminal consists of __data input__ and __data display__, connected to a compu
 Hard-copy terminals were superseded in the 70s by the "glass TTY" and then increasingly smart CRT terminals with nice fonts, even color and graphics.  So the Teletype machinery is obsolete, but the data formats (serial ASCII) and the central expectations of what a terminal could do (interactive input and output) are still baked into everything.  In this sense the Teletype is "compatible".  PC-compatible, Linux-compatible, Android-compatible, Internet-compatible, because it's their foundational I/O device. 
 
 #### Paper Tape
-In the "ASR" (Automatic Send-Receive) Teletype models there are two additional I/O devices: a paper-tape reader for input, and a paper-tape punch for output.  [Punched paper tape](https://en.wikipedia.org/wiki/Punched_tape) is a great way to store and communicate data, although it's limited in capacity (10 characters per inch, or 2.66 kilometers per megabyte), slow (the Teletype can read/write at 10 bytes per second), and tears quite easily.
+In the "ASR" (Automatic Send-Receive) Teletype models there are two additional I/O devices: a paper-tape reader for input, and a paper-tape punch for output.  [Punched paper tape](https://en.wikipedia.org/wiki/Punched_tape) is a great way to store and communicate data, although it's limited in density (10 characters per inch, or 2.66 kilometers per megabyte), slow (the Teletype can read/write at 10 bytes per second), and tears quite easily.
 
 #### ASCII
 The keyboard and printer use ASCII, which is a 7-bit character encoding [standardized in 1963](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.678&rep=rep1&type=pdf), with numbers, upper-case letters (no lowercase!), punctuation, and several _control characters_.  (Some of the punctuation is [unusual](https://twitter.com/33asr/status/1052956789086531584)).
@@ -48,15 +48,18 @@ In the early 1980s, I was lucky to attend a high-school that had a Teletype conn
 
 Although the Teletype hardware and [original Unix software](http://www.lemis.com/grog/Documentation/Lions/index.php) has been superseded by 50 years' of layered improvement, the hard-copy teletype is still the canonical `/dev/tty`.
 
-This project is an ongoing exploration of how to connect its descendents to its operator.  How to use it interactively, for real, as a terminal to modern computers and everything they can do.  The command-line is waiting, more powerful by miles, and its rails were built for these wheels.  
+This project is an ongoing exploration of how to connect its descendents' operators to the Internet.  How to use the Teletype interactively, for real, as a terminal to modern networks and computers and everything they can do.  What that tactile, interactive experience is _like_ for the people and groups that play with it (noisily in the room).  The command-line is waiting, more powerful by miles, and its rails were built for these wheels.  I don't think it'll go out of date just yet.
 
-In this repo you'll find documentation of software and hardware in the process, with tools, mostly Unix-ish software in Python for the Raspberry Pi.
-* The physical connection (current-loop serial to USB),
-* The logical connection as a terminal (`getty`, the line discipline, and related things),
-* Making the Unix commandline and essential software usable with a hard-copy terminal where "carriage return" takes hundreds of milliseconds, with no scroll-back, no "erase" or "clear", no back-space, no lower-case, no color, no graphics, and no cursor, 
-* Connecting to today's information utilities,
+In this repo you'll find documentation of software and hardware in the process, with tools, mostly Unix-ish software in Python for the Raspberry Pi.  This involves making the Unix commandline and essential software usable with a hard-copy terminal where "carriage return" takes hundreds of milliseconds, with no scroll-back, no "erase" or "clear", no back-space, no lower-case, no color, no graphics, and no cursor.  But the paper printout and the punched tape are pretty useful, and tactile, and (yup) fun.
+
+There's information about the physical machine and the electronic connection (current-loop serial to USB).  The way I approached this uses an [Arduino microcontroller](teensytty/teensytty.ino) to handle the slow serial data stream and make the terminal appear halfway "modern" (mostly things that have just become obsolete and removed from stty, such as delays for the hardware carriage return and line feed, converting to lower case) and even "smart" (ANSI escape codes that can be used by Unix apps).  I think that's the best way today; the [Teensy processor](https://www.pjrc.com/store/teensy32.html) is just right for this job.  
+
+With USB the terminal can connect to just about anything, including a Mac, but my main setup is with a Raspberry Pi built into the pedestal.  This runs debian linux (raspbian stretch), and it's a great platform for working on an archaic terminal.  It can boot up and get to the login prompt, and log in just automatically, with `getty`.  That sets up the `stty` (nothing much to do, there) and the way escape codes are handled (terminfo).  The escape codes are pretty involved, I guess, and need more doc than [the source code](teensytty/ansi_escape.h).
+
+The operator is in a room with others, and should certainly be playing with the terminal (its distinctive hardware capabilities) as well as the things it can connect to.
+* Connecting to today's information utilities, with apps and notifications,
 * Connecting to vintage systems and simulations,
-* Fun with printing and paper tape.
+* Lots of fun with printing and paper tape.  Ribbons, streamers, patterns, bookmarks, greetings cards, framed pictures, the works.  If you want me to print something and send it to you, [there's an Etsy store!](https://www.etsy.com/shop/asr33).  Not much there yet, but talk to me on Twitter and whatever.  It'll get more structured eventually.
  
 Follow along – and dive in please! – [here on GitHub](https://github.com/hughpyle/ASR33), and [@33asr on Twitter](https://twitter.com/33asr).
 
@@ -86,10 +89,10 @@ Setting up a getty on Raspberry Pi (raspbian).
 Some command-line utilities for the tty user.  Put this on your PATH.
 
 * **[asciiart](asciiart)**:
-Using the unique features of a hardcopy terminal, including _overstrike_, for [ASCII Art](https://en.wikipedia.org/wiki/ASCII_art).
+Using the unique features of a hardcopy terminal, including _overstrike_.  Not just emoji, but Real Art and stuff.  Pictures and drawings and logos and photos.  Framed, and available online somewhere eventually.
 
 * **[cups](cups)**:
-Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as a network printer.
+Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as a network printer.  That's nice if you want to print from the laptop, but also because it's a message queue.  The print queue can take things from online services, like twitter and the news and SMS, who knows, WhatsApp or something.  But the printing should happen in background, only when the operator isn't in the middle of something else.  
 
 * **[other_material](other_material)**:
 Related source documentation and reference material.
@@ -99,4 +102,4 @@ The contents of this project are published under the [MIT license](LICENSE).
 
 ---
 
-I'm indebted to Wayne Durkee for bringing this machine back to life; Dave Tumey for recreated parts; to many Greenkeys list members and others for their inspiration and vast expertise.
+I'm indebted to Wayne Durkee for bringing this machine back to life; Dave Tumey for recreated parts; to many Greenkeys list members and others for their inspiration and vast expertise.  And my wife plays along and indulges this stuff, for which I'm very happy.
