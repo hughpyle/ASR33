@@ -3,6 +3,9 @@
 
 """Play with some images
 
+This is the single-character version.
+The map is a scan of the printed table of all the ASCII-63 teletype characters.
+
 Reads characters from the map.
 Calculates luminance and gradient histograms.
 Writes them all to a JSON file that can be used for rendering later.
@@ -11,10 +14,10 @@ Writes them all to a JSON file that can be used for rendering later.
 
 import sys
 import json
-import math
 import numpy as np
 import imageio
 import io
+import click
 from skimage import feature, exposure, transform
 
 
@@ -72,7 +75,7 @@ def chars_image(c, index=0, count=1):
     pixY = CHARS_TOPMARGIN + (CHARS_ROWHEIGHT * row)
 
     # Get the full original image
-    full_image = load_image("chars.jpg")
+    full_image = load_image("chars_ascii.jpg")
 
     char = full_image[pixY: pixY + CHARS_ROWHEIGHT, pixX: pixX + count * CHARS_CHARWIDTH]
 
@@ -207,6 +210,35 @@ def main():
     # Save the JSON
     with io.open("ascii.json", "w") as afile:
         json.dump(fds, afile, indent=2)
+
+
+def print_table():
+    # Print the ASCII characters table.
+    print("\n\n\n")
+    print("\n\nASCII character table\n\n")
+
+    data = []
+    for p in range(0, 0x10):
+        data.append("")
+
+    for c in range(0x20, 0x60):
+        index = c % 0x10
+        s = data[index]
+        s = s + "     {}".format(chr(c) * 5)
+        data[index] = s
+
+    for s in data:
+        print(s)
+    print("\n\n\n")
+
+
+@click.command()
+@click.option('--table', is_flag=True, default=False, help='Print the character table')
+def main(table):
+    if table:
+        print_table()
+    else:
+        analyze_table_image()
 
 
 if __name__ == "__main__":
