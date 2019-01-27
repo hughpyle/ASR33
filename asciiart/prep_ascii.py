@@ -128,7 +128,7 @@ def hog_char(image, count, luminance):
     return (fd, img)
 
 
-def main():
+def analyze_table_image():
     # (Later: run this over all 5 of the char instances)
 
     luminances = {}
@@ -194,21 +194,21 @@ def main():
         images.append(image)
 
     # Save a combined image of HOGs
-    im = np.concatenate(tuple(images))
-    im *= 1 / im.max()
-    imageio.imsave("ascii.jpg", im)
+#    im = np.concatenate(tuple(images))
+#    im *= 1 / im.max()
+#    imageio.imsave("ascii.jpg", im)
 
     # Save a conbined image of characters
-    im = np.concatenate(tuple(chars))
-    im *= 1 / im.max()
-    imageio.imsave("ascii1.jpg", im)
+#    im = np.concatenate(tuple(chars))
+#    im *= 1 / im.max()
+#    imageio.imsave("ascii1.jpg", im)
 
-    im = np.concatenate(tuple(chars), axis=1)
-    im *= 1 / im.max()
-    imageio.imsave("ascii2.jpg", im)
+#    im = np.concatenate(tuple(chars), axis=1)
+#    im *= 1 / im.max()
+#    imageio.imsave("ascii2.jpg", im)
 
     # Save the JSON
-    with io.open("ascii.json", "w") as afile:
+    with io.open("chars_ascii.json", "w") as afile:
         json.dump(fds, afile, indent=2)
 
 
