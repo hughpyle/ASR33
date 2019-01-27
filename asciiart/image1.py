@@ -46,10 +46,15 @@ BCOLS = 3
 HOG_ORIENTATIONS = 8
 VISUALIZE = True
 
-# How many overstrike passes
-ROUNDS = 3
 
 PREPARED_FILE = "chars_ascii.json"
+
+FIRSTPASS_CHARS = " .-/\\()+>=?I#V96OZSAHX8QWKM"
+NEXT_PASS_CHARS = [chr(c) for c in range(0x20, 0x7F) if chr(c) not in "?"]
+
+
+LAYER_FACTOR = 0.5
+
 
 
 # Load and pre-process an image file
@@ -71,7 +76,7 @@ def load_image(filename, width, invert, gamma):
     img_height = int(img.shape[0] * 3 * (img_width / (4 * img.shape[1])))
     img = transform.resize(img, (img_height, img_width), anti_aliasing=True, mode='constant')
 
-    # Asjust the exposure
+    # Adjust the exposure
     img = exposure.adjust_gamma(img, gamma)
 
     if invert:
@@ -128,7 +133,7 @@ def process(image):
     return fd
 
 
-def render(fd, outfile, indent=0):
+def render(fd, layers, outfile, indent=0):
     # The fd is a histograms-of-gradients
     n_cells_row = fd.shape[0]
     n_cells_col = fd.shape[1]
@@ -152,10 +157,10 @@ def render(fd, outfile, indent=0):
     charlums = {c: chars[c].mean() for c in chars.keys()}
 
     # Make a place to hold characters
-    block = np.zeros((ROUNDS, n_cells_row // BROWS, n_cells_col // BCOLS), dtype=np.string_)
+    block = np.zeros((layers, n_cells_row // BROWS, n_cells_col // BCOLS), dtype=np.string_)
 
     result = None
-    for r in range(0, ROUNDS):
+    for r in range(0, layers):
         # Look at each 3x5 block in the HOG and match it to the best 3x5 block in the chars.
         for ix in range(0, n_cells_col, BCOLS):
             for iy in range(0, n_cells_row, BROWS):
@@ -168,18 +173,23 @@ def render(fd, outfile, indent=0):
 
                 best = 1e10
                 char = ' '
+                # Look at each character to see whether it's a good match
                 for c in chars.keys():
-                    # if c != cprev and \
-                    if fd_cell.mean() >= charlums[c]:
-                        # Correlation: L2 distance
+                    # On the first pass there's a subset of characters (to try make sure we get lots of letters)
+                    use_this = ((r == 0 and c in FIRSTPASS_CHARS) or (r > 0 and c in NEXT_PASS_CHARS)) and c != cprev
+                    # use_this = c != cprev
+                    # Our "best match" should be: highest correlation, and luminance not greater than necessary
+                    if use_this and fd_cell.mean() >= (charlums[c] * LAYER_FACTOR):
+                        # Correlation: use the L2 distance between the character's histogram and the HOG cell
                         corr = np.linalg.norm(chars[c] - fd_cell)
                         # print("{}: {} = {}: {}".format(c, chars[c].shape, fd_cell.shape, corr))
                         if corr < best:
                             best = corr
                             char = c
+
                 block[r, iy//BROWS, ix//BCOLS] = char
                 # subtract the character-luminance so that the next round can tell where ink is still needed.
-                fd_cell -= (0.4 * (chars[char] + 0.25))
+                fd_cell -= (1-LAYER_FACTOR) * chars[char] #  + 0.25))
                 fd_cell.clip(min=0)
 
         view = "S{}".format(n_cells_col//BCOLS)
@@ -212,8 +222,9 @@ def render(fd, outfile, indent=0):
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='gamma')
 @click.option('--indent', default=0, help='indent')
+@click.option('--layers', default=2, help='layers of overstrike')
 @click.argument('filename')
-def main(filename, width, invert, gamma, indent):
+def main(filename, width, invert, gamma, indent, layers):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
@@ -223,7 +234,7 @@ def main(filename, width, invert, gamma, indent):
     hog_fd = process(img)
 
     # Map to ASCII
-    render(hog_fd, filename + ".txt", indent)
+    render(hog_fd, layers, filename + ".txt", indent)
 
 
 if __name__ == "__main__":
