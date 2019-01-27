@@ -192,7 +192,7 @@ def render(fd, outfile, indent=0):
 
 
 @click.command()
-@click.option('--width', default=70, help='Image width (characters)')
+@click.option('--width', default=66, help='Image width (characters)')
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='gamma')
 @click.option('--indent', default=0, help='indent')
