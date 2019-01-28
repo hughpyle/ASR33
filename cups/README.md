@@ -4,8 +4,11 @@ The teletype is four devices in one: hardcopy display (printer), tape punch, key
 
 ![screenshot](../pix/osx-printers.jpg)
 
-Here's how to configure a Raspberry Pi to share the teletype as a networked printer, using CUPS.
+Here's how to configure a Raspberry Pi to share the teletype as a networked printer, using [CUPS](https://en.wikipedia.org/wiki/CUPS).
+
 This assumes the hardware configuration such as [this](../rpi/) where the teletype is a USB serial device on the Raspberry Pi host.
+
+Having a print spool for the Teletype is nice if you want to print from the laptop, but also because it's a message queue.  The print queue can take things from online services, like twitter and the news and SMS, who knows, WhatsApp or something.  But the printing should happen in background, only when the operator isn't in the middle of something else.
 
 ## TODO
 

@@ -35,7 +35,7 @@ from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 
 # Escape sequence to initialize (turn off wordwrap, NLCR, delays)
 # (Usually a teletype wouldn't have firmware that handles escape sequences, but mine does, for this purpose)
-# (https://github.com/hughpyle/ASR33/tree/master/teensytty)
+# (https://github.com/hughpyle/ASR33/tree/master/firmware)
 INIT = b"\033[?7l\033_ab\234"
 RESET = b"\033[!p"
 
