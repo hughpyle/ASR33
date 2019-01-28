@@ -177,7 +177,9 @@ def render(fd, outfile, indent=0):
             line2 = line2 + char[1]
 
         print(line1 + " " + line2)
-        result.append((" " * indent) + line1 + "\r" + (" " * indent) + line2)
+
+        # Don't forget to strip trailing spaces from each line, they just waste time!
+        result.append((" " * indent) + line1.rstrip() + "\r" + (" " * indent) + line2.rstrip())
 
     # Write a text file with all the iterations
     with io.open(outfile, "wb") as f:
@@ -194,8 +196,8 @@ def render(fd, outfile, indent=0):
 @click.command()
 @click.option('--width', default=66, help='Image width (characters)')
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
-@click.option('--gamma', default=1.0, help='gamma')
-@click.option('--indent', default=0, help='indent')
+@click.option('--gamma', default=1.0, help='Gamma correction')
+@click.option('--indent', default=0, help='Indent with spaces')
 @click.argument('filename')
 def main(filename, width, invert, gamma, indent):
     # Aspect ratio is determined by the input image.

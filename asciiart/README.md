@@ -7,15 +7,18 @@ Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machi
 
 These experiments cover a few layered techniques for converting a graphic image into a text image:
 
-* Convert the source image to grayscale, then match each part of the image to the **luminance** of a printed character.  For example, a sorted list of the Teletype characters by printed weight (e.g. ` .-,/)+>^_=?7I][*J5C#V96$P&%4OZSDAH@GX2U8EBQWKRM`) can be mapped onto grayscale image luminance.  The weights of the printed characters don't make a linear luminance scale, so it can be better to use just a subset of the available characters.  
+* Convert the source image to grayscale, then match each part of the image to the **luminance** of a printed character.  For example, a sorted list of the Teletype characters by printed weight (e.g. `'.-,/^_\)+><(!";=1:?][J7I*YLT35CV49FO6D#AZUGS02$%P&WXEQH8B@KRNM`) can be mapped onto grayscale image luminance.  The weights of the printed characters don't make a linear luminance scale, so it can be better to use just a subset of the available characters (e.g. ` '-/<JIY3OPHKM`).  
 * Add **overstrike**.  The teletype can print a line of text, then CR, then overprint, and this can be repeated several times to put a lot of ink on the paper.  Of course there are gaps in the final print even with heavy overstrike, because it's not possible to print between the lines or between the characters.
-* Divide each printed character, and each region of the image, into several **sub-character pixels** so that (for example) `,` or `'` would be selected differently even if they have the same printed weight.  This can produce noticeably more realistic images for the same amount of printing.
+* Divide each printed character, and each region of the image, into several **sub-character pixels** so that (for example) `,` or `'` would be selected differently even if they had the same printed weight.  This can produce noticeably more realistic images for the same amount of printing.
 * Analyze the **orientation** of lines in the image and the printed character.  For example, ` / ` and ` \ ` would be selected to match the orientation of edges in the image.  Again this can help to produce clearer prints of complex images.   
 
 Here's some Python code that includes all of these aspects, and provides quite high-resolution rendering.
 
 This approach is really more complicated than necessary.  Without orientation-based matching, you can achieve similar results with a simpler approach (and faster runtime).  But I wanted to learn some numpy and skimage, and the results are fun :)
   
+Printing is slow and noisy.  A full-page image is around 8KB and can take up to 15 minutes to print.
+
+
 ## Preparation
 
 First I printed out and scanned a table of all the two-character overstrike combinations.  The first column, and the first row, are overstrike with space, i.e. single-strike characters.  The table is symmetrical about the diagonal, but that doesn't matter for the processing.
@@ -46,10 +49,13 @@ Usage: image2.py [OPTIONS] FILENAME
 Options:
   --width INTEGER   Image width (characters)
   --invert          Invert colors
-  --gamma FLOAT     gamma
-  --indent INTEGER  indent
+  --gamma FLOAT     Gamma correction
+  --indent INTEGER  Indent with spaces
   --help            Show this message and exit.
 ```
+
+For complex images, you may need to experiment with contrast and gamma correction for best results.
+
 [![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
 
  
