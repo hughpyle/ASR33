@@ -71,4 +71,5 @@ There's a large selection of historical text art on [textfiles.com](http://www.t
 
 To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).  It has a vast collection of fonts, although many of them rely on the underscore, which isn't present on the Teletype printwheel.
 
- 
+You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33).
+
