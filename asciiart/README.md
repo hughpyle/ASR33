@@ -1,8 +1,10 @@
 # ASCII Art
 
-I've been experimenting with various ways to create Teletype-printed images.  
+[![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
 
-Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machines, since there's no color, no block-graphic or line-graphic characters, no lowercase, and quite a limited set of punctuation (missing the underscore, vertical-bar, curly braces, etc.)  On the other hand, as a hardcopy printer, we can overstrike multiple characters at the same location.
+I've been experimenting with various ways to print graphics on the Teletype.  
+
+Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machines, since there's no color, no block-graphic or line-graphic characters, no lowercase, and quite a limited set of punctuation (missing the underscore, vertical-bar, curly braces, etc.)  On the other hand, as a hardcopy printer, we can overtype multiple characters at the same location.
 
 
 These experiments cover a few layered techniques for converting a graphic image into a text image:
@@ -56,7 +58,7 @@ Options:
 
 For complex images, you may need to experiment with contrast and gamma correction for best results.
 
-[![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
+[![Minion](minion_x500.jpg)](minion.txt.jpg)  
 
  
 ## Other resources
@@ -67,6 +69,6 @@ There's a large selection of historical text art on [textfiles.com](http://www.t
 
 `jp2a` ([https://csl.name/jp2a/](https://csl.name/jp2a/)) is a fast tool for converting images to text.  It supports ANSI color effects and HTML output, and is quite good for plaintext.  As far as I can tell it doesn't do overstrike.
 
-To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).
+To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).  It has a vast collection of fonts, although many of them rely on the underscore, which isn't present on the Teletype printwheel.
 
  
