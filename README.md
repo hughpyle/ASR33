@@ -8,25 +8,21 @@
     * [About This Project](doc/03-project.md)
 
 * Getting Connected:
-    * [Hardware](hardware/): electronics to operate the 20mA current-loop. 
-    * [Firmware](firmware/): using a Teensy microcontroller for a modern USB connection.
-    * Connecting a serial terminal on [MacOS](osx/) and [Raspberry Pi](rpi/)
+    * [Hardware](hardware/README.md): electronics to operate the 20mA current-loop. 
+    * [Firmware](firmware/README.md): using a Teensy microcontroller for a modern USB connection.
+    * Connecting to [MacOS](osx/README.md) and to a [Raspberry Pi](rpi/README.md) (with some `getty` and `terminfo` Unix archaeology)
     * Using [CUPS](https://en.wikipedia.org/wiki/CUPS) to make the Teletype appear as a network printer.
-    * [Applications](bin/) including command-line utilities for the tty user.  Includes scripts to print [words on papertape](https://twitter.com/33asr/status/1074432596728262656), connect to [LambdaMoo](https://twitter.com/33asr/status/1078698114003943425), print [emoji](https://twitter.com/33asr/status/1046930898321645568), play [zork](https://github.com/hughpyle/ASR33/blob/master/bin/profile), connect to bbs, and more.
+    * [Applications](bin/README.md) including command-line utilities for the tty user.  Includes scripts to print [words on papertape](https://twitter.com/33asr/status/1074432596728262656), connect to [LambdaMoo](https://twitter.com/33asr/status/1078698114003943425), print [emoji](https://twitter.com/33asr/status/1046930898321645568), play [zork](https://github.com/hughpyle/ASR33/blob/master/bin/profile), connect to bbs, and more.
 
 
 * Making It Useful:
-    * [ASCII Art](asciiart/) using the unique features of an antique hard-copy terminal, including _overstrike_.
+    * [ASCII Art](asciiart/README.md) using the unique features of an antique hard-copy terminal, including _overstrike_.
     * [Paper Tape Art](doc/04-papertape.md) too.
 
 * [Photos](pix/)
 
  
-Follow along – and dive in please! – [here on GitHub](https://github.com/hughpyle/ASR33), and [@33asr on Twitter](https://twitter.com/33asr).
-
----
-
-### Check out [my Etsy store](https://www.etsy.com/shop/asr33)!
+Follow along – and dive in please! – [here on GitHub](https://github.com/hughpyle/ASR33), and [@33asr on Twitter](https://twitter.com/33asr).  And check out [my Etsy store](https://www.etsy.com/shop/asr33)!
 
 ---
 
