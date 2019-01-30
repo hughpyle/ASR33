@@ -2,7 +2,7 @@
 
 [![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
 
-I've been experimenting with various ways to print graphics on the Teletype.  
+I've been experimenting with various ways to print graphics on the [Teletype](https://github.com/hughpyle/ASR33).  
 
 Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machines, since there's no color, no block-graphic or line-graphic characters, no lowercase, and quite a limited set of punctuation (missing the underscore, vertical-bar, curly braces, etc.)  On the other hand, as a hardcopy printer, we can overtype multiple characters at the same location.
 
@@ -79,5 +79,5 @@ There's a large selection of historical text art on [textfiles.com](http://www.t
 
 To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).  It has a vast collection of fonts, although many of them rely on the underscore, which isn't present on the Teletype printwheel.
 
-You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33).
+You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33) (soon!).
 
