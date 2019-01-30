@@ -1,8 +1,8 @@
-# ASCII Art
+# ASCII Art with Overstrike
 
 [![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
 
-I've been experimenting with various ways to print graphics on the [Teletype](https://github.com/hughpyle/ASR33).  
+I've been experimenting with various ways to print graphics on the [Teletype ASR33 terminal](https://github.com/hughpyle/ASR33).  
 
 Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machines, since there's no color, no block-graphic or line-graphic characters, no lowercase, and quite a limited set of punctuation (missing the underscore, vertical-bar, curly braces, etc.)  On the other hand, as a hardcopy printer, we can overtype multiple characters at the same location.
 
@@ -29,10 +29,13 @@ python prep_overstrike.py --table
 
 Then, [some code](prep_overstrike.py) reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](chars_overstrike.json).
 
-Small distortions in the print and scan result in some misalignments to the rectangular block for each character.  Future work would improve the way that each printed character is found in the scanned table. 
 ```
 python prep_overstrike.py
 ```
+
+Small distortions in the print and scan result in some misalignments to the rectangular block for each character.  Future work would improve the way that each printed character is found in the scanned table.
+
+## Processing a picture
 
 [![björk - debut](album_covers/album_debut_250.jpg)](album_covers/album_debut.txt.jpg)
 [![primal scream - screamadelica](album_covers/album_screamadelica_250.jpg)](album_covers/album_screamadelica.txt.jpg)
@@ -40,9 +43,6 @@ python prep_overstrike.py
 [![lamb - fear of fours](album_covers/album_fours_250.jpg)](album_covers/album_fours.txt.jpg)
 [![john coltrane - blue train](album_covers/album_bluetrain_250.jpg)](album_covers/album_bluetrain.txt.jpg)
 [![led zeppelin](album_covers/album_ledzep_250.jpg)](album_covers/album_ledzep.txt.jpg)
-
-
-## Processing a picture
 
 The [code to process a picture](image2.py) first resizes to a multiple of 198 pixels (66 characters print width by default, and 3 "sub-character pixels" per character), then analyzes each block using the HOG algorithm.
 
