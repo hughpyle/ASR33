@@ -16,7 +16,7 @@ These experiments cover a few layered techniques for converting a graphic image 
 
 Here's some Python code that includes all of these aspects, and provides quite high-resolution rendering.
 
-This approach is really more complicated than necessary.  Without orientation-based matching, you can achieve similar results with a simpler approach (and faster runtime).  But I wanted to learn some numpy and skimage, and the results are fun :)
+Without orientation-based matching, you can achieve similar results with a simpler approach (and faster runtime).  But I wanted to learn some numpy and skimage, and the results are fun!
   
 Printing is slow and noisy.  A full-page image is around 8KB and can take up to 15 minutes to print.
 
@@ -29,16 +29,24 @@ python image2.py --table
 ```  
 [![overstrike](chars_overstrike_x500.jpg)](chars_overstrike.jpg)
 
-Then, some code reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](chars_overstrike.json).
+Then, [some code](prep_overstrike.py) reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](chars_overstrike.json).
 
 Small distortions in the print and scan result in some misalignments to the rectangular block for each character.  Future work would improve the way that each printed character is found in the scanned table. 
 ```
 python prep_overstrike.py
 ```
 
+[![björk - debut](album_covers/album_debut_250.jpg)](album_covers/album_debut.jpg)
+[![primal scream - screamadelica](album_covers/album_screamadelica_250.jpg)](album_covers/album_screamadelica.jpg)
+[![clash - london calling ](album_covers/album_clash_250.jpg)](album_covers/album_clash.jpg)
+[![lamb - fear of fours](album_covers/album_fours_250.jpg)](album_covers/album_fours.jpg)
+[![john coltrane - blue train](album_covers/album_bluetrain_250.jpg)](album_covers/album_bluetrain.jpg)
+[![led zeppelin](album_covers/album_ledzep_250.jpg)](album_covers/album_ledzep.jpg)
+
+
 ## Processing a picture
 
-To process a picture, it's resized to a multiple of 198 pixels (66 characters print width by default, and 3 "sub-character pixels" per character), and analyzed using the HOG algorithm.
+The [code to process a picture](image2.py) first resizes to a multiple of 198 pixels (66 characters print width by default, and 3 "sub-character pixels" per character), then analyzes each block using the HOG algorithm.
 
 Then, each block in the image's HOG is matched to the blocks in the data.  The best match is the character that's not too dark, and that has the best correlation between the pair of histograms.
 

@@ -1,0 +1,45 @@
+'''''''''''''''''''''''''''''''''''''''''''.''''''''''''''''''''''''''''''''''''''''''' ''''
+''--....---..-..-.----.....----.-----......''
+'''....--......... .---------+.XX*'RT+--.'''                          ,%++([/5-
+'-..       .       .-.--/+X6XXPYXXXXXPX*+-.'                       -%2E##XAR####&+(.
+'---.               -- ,XXXYRDXXXRXXXDRRAX'                     JJ###ATK###T###KTXF+/
+''-.               .' ,XXXXXXDH5XXDXB5KAXXX(.''                  '^J######K!X##K#>X#ER#P_
+'--.               . #XYXWXXA#+XXXHH]N54MXRX1.'                   ^'#A#P##BXR"PPC!M!XH*#TR-
+'-..              -^URRXWXXX=   =;=%BMXXXXMXX,.'                   /TT#P##"+"""_T]_A*RRR#*#P'
+'--.             --,XYXXXX1;.    ' ^.XXNWMXXR1-'                  J#A####P      '"\PRR"P*R#T-
+''-..           -- ARXXRWRX;-    .' ,ZXXXRXXX,'''                JJT##TPT"       '^I;RR#T###L'
+'---.            ''8YXXXRRXTT+-.-.**=.XXXX5RXX.                  .'               ^');A###XTP=>1   -.;]PJR##XT#".
+''--.-..        ' *RXXRXRP1XY,;'';IX,R,=RRXRWY+.                 .''              '^^T##T#TKP+7I '' ^+=<I]TT#TP=+
+'''--.-. .      - /XXXRN8N:;<;;'.':<:<;'AA5XRT>                  -'''              ^J###T"; YT+  ' ':+>+ !FFX#TY
+''--.-...  . ...-'!XDXXRXD; ' ;'-^'''' ]RAXRN)'.-                -''               'J#I##TAJ "'^ '  ''''J'TFRT!('
+'''-...-.      .-'!QXXXRMP1;^  _,(>+^;'#RWXRX3'.                .''''              ')+"##T*R,  JL.-; -  )'TP#T#,'                  '
+'''---..       ..-]V1RRR#X,1(+ :":^.?;'/RRXXN,-..               .-'''               ''PTTTX#I,;.": ^ ;  !OTT##"L
+'''''----.      .-,.XXRRRM  ,- '' " ;;#WRXRNNU.                .-''''''             JK##TTT,NTIYJ''^ T  )PK#T!FL                   '
+'''------........-;&RXXRXWR,,;'.\.. ^,MXPXXRM,.-..              .''''               ;7TA#T#PT[I ' \  :=I,#K##T*L                   '
+''--.---...... -.' !8NXRXRRM,> /-'' ?YYXARXRR1.---.....-....  -..'''               '<\T!#TATT.I    ''^ <A#FT#TT-                   '
+'''-'--......-....-'\BXRXWXX7'''  ''!TRXMNXXX1....---...... .  .-'''' '              '^\FT#Y#",'' ^'''-YT#*F##"-;;-,               '
+''''----.-.----...(+(/'XXXXY  ' ! ' ! XXXRRXZ,.Y,,\(+--.       ..'''''           ,-;;1>*%"##"<" ' ) ' .R###TT#;IY<II:;-            '
+>''''''----'-.,,! :NYYXYY X.-   !-  !:XXXXYXZYY,..,,1+--..     .-- ''''''    ' ;II,TY <<"<<RFY    )   (Y""FF@#;<<IYYII,.
+''''''------'!,,.:,YYY Z..NY\(.-!,-.?,,YYYXXXZ,YZY., 1+---. ....--''''''      ),IIYYI<==R;YY <:;- (' ; II<<<F#";I<;<YIT,.
+''''''-'--- !!;,:Y :YXXN:,, , ,,., ,,,!,YTXXX:#XY:Y., 1+'......--''''''' '   ^,,.IY<RY<"" YIITITIIYITIII,I<Y"##Y'"<Y<YIT+-'        '
+>''''-'''' ^,, !YYXY.XXYY.:Y-,!,YY,,,,;',XXXMYXZYXY,\,,;--.-..---' '''' ''''^=IIT,<="=Y"F==YY<[I,I<>IIII.!I""#+<#;<"<I:II          '
+'''''''''' !,,:.,YMXXYXXX,:Z Y,,:N,,  !'!YXXY.X.?:,, \,1'-...----'''''''''''J,IIYYI<+#"<#F"IY;R<IIY IITT,!,=F#=Y#PEYIIT:I+'        '
+>'''''-'''',!!.YZYYXXYXXX. .:3Y:,X:,,(,!!YXRY.X#YY,,,,,\+''------' ''''' '''?I,,Y<;==#F<##"YTYY,<YIPYII1I,,<#T=Y#\<<IIIII:-''      '
+>''''''''''  ,,,:YXM&YXX.,;;(,,-.XX::.:,':XXYYXXXY:,,,,,;--------' '''''''''?TTIIIY<P+7<#PYI..1II[Y#"YYYYI)YP#=<P""<YIIIII         '
++'''''''''!,,,,::YXXAYX.,Y,  ;,.XXXYYY.[,:.XY:XXY:,: ,\,;''----'''+''''''''',IIIIYY="FF<"YI^ITT.IY##P==<Y IYY#=Y#"<YIYTI:I ''    '''
+>>''''''-.,,,,,.:YXXXX* ?,,, ,.XXXXY.:,1Y-,:YXXXTY:,-,,:\-''-'--''  '''''' ;IIIIIYY<""#"FT IIITIY"##P=YYI(<[IY<"#"Y<YI[IIY: '' '  ''
+>^''''''';.,..::YXXXXZY1! ,,,-TX6XXXY,,,Y.-.,XXXNZY.:,..,'''''''''  ''''''' YIYYYY<""##;>(,TIII[_#E##F=III=Y[YI"## ;<YYIYYI'''''''''
+>^''''''';,,,,.:YYXX..Y. ,-.YX]XXXRAXY,,ZY::,YZXMXXY:Y..,'''''''''  ''''''' IIIIYY<<FFYY=YTI[Y<"K###TF"<II;>YYI<;F+""<Y<YYI'''''''''
+>>'''''' ?,..YYYXMX-.Y Y,.YYT1XXXRXXXX:-  Y.,:::XXY::.,:,'''''''''  ''''''J IYY<<="+"[T<R<IY<<_P###T###"Y[HH>YIYYY""=YYYIYI'''''''''
+;>^^'''' ?,,,YY Z--,YYXY.YYXXXXXXXXXXX+Y:X5 ::Y ::XXYY::,+''''''''    ''''J III<<R;[[I<<"<Y<<"""#P##F###R>Y"YHYY=RYYFF=>YYI-''''''''
+;>>^'>'' ':.YZ1Y..Y.:3ZY3XX?MMXXXXXXXXXXYNXXYYY .Y YXXX.,;''''''''    ' ''J)YY<;P<YY<YY,;<,""E++"F##F##R#"> "F=>=RY>R="F"YI ''''''''
+;>>>^>^^;,YX1YY3Y3,'YYTXXM1MMXNMXXXXXX)X+ NQYNN    YNXXX, ''''''''         I<"P<<,<,X%<<Y""+P++" +##PP##M#RR +@  RRRR= F""I"''''''''
+;>>>>^^ ;,YXXY?X7XXX:XX1XMXXXXXXRRXXXXXXX+XXXXXNN XYXX Y,>''''''''       J I<"#<Y"C"""ZF"P"+##""##TT#F####RNPFFPF  R"=F#R<I ''''''''
+
+BJORK                                                        DEBUT  "
+
+
+
+
+
+
