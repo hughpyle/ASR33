@@ -12,11 +12,9 @@ These experiments cover a few ways to convert a graphic image into a text image:
 * Convert the source image to grayscale, then match each part of the image to the **luminance** of a printed character.  For example, a sorted list of the Teletype characters by printed weight (e.g. `'.-,/^_\)+><(!";=1:?][J7I*YLT35CV49FO6D#AZUGS02$%P&WXEQH8B@KRNM`) can be mapped onto grayscale image luminance.  The weights of the printed characters don't make a linear luminance scale, so it can be better to use just a subset of the available characters (e.g. ` '-/<JIY3OPHKM`).  
 * Add **overstrike**.  The teletype can print a line of text, then CR, then overprint, and this can be repeated several times to put a lot of ink on the paper.  Of course there are gaps in the final print even with heavy overstrike, because it's not possible to print between the lines or between the characters.
 * Divide each printed character, and each region of the image, into several **sub-character pixels** so that (for example) `,` or `'` would be selected differently even if they had the same printed weight.  This can produce noticeably more realistic images for the same amount of printing.
-* Analyze the **orientation** of lines in the image and the printed character.  For example, ` / ` and ` \ ` would be selected to match the orientation of edges in the image.  Again this can help to produce clearer prints of complex images.   
+* Analyze the **orientation of gradients** and edges in the image and the printed character.  For example, ` / ` and ` \ ` would be selected to match the direction of an edge.  Again this can help to produce clearer prints of complex images.  This step is quite compute-heavy and probably gives marginal benefit over subpixel luminance, but it was a fun coding challenge (and a good way to learn numpy and scikit-image)!
 
-Here's some Python code that includes all of these aspects, and provides quite high-resolution rendering.
-
-Without orientation-based matching, you can achieve similar results with a simpler approach (and faster runtime).  But I wanted to learn some numpy and skimage, and the results are fun!
+[Here's some Python code](https://github.com/hughpyle/ASR33/blob/master/asciiart/image2.py) that includes all of these aspects, and provides (relatively!) quite high-resolution rendering.
   
 Printing is slow and noisy.  A full-page image is around 8KB and can take up to 15 minutes to print.
 
@@ -25,7 +23,7 @@ Printing is slow and noisy.  A full-page image is around 8KB and can take up to 
 
 First I printed out and scanned a table of all the two-character overstrike combinations.  The first column, and the first row, are overstrike with space, i.e. single-strike characters.  The table is symmetrical about the diagonal, but that doesn't matter for the processing.
 ```
-python image2.py --table
+python prep_overstrike.py --table
 ```  
 [![overstrike](chars_overstrike_x500.jpg)](chars_overstrike.jpg)
 
@@ -68,12 +66,21 @@ For complex images, you may need to experiment with contrast and gamma correctio
 
 [![Minion](minion_x500.jpg)](minion.txt.jpg)  
 
+
+### Try it yourself
+
+If you don't have a vintage hardcopy printer that can over-strike, it's still pretty easy to run this code and print with modern equipment.  Using [enscript](https://www.gnu.org/software/enscript/):
+```
+enscript -l --output page.ps album_screamadelica.jpg.txt
+```
+The resulting PostScript file `page.ps` can be viewed or printed, and should look pretty close to the renderings you see on this page.  If you install the [Teletype-based font](https://www.dafont.com/teletype-1945-1985.font) you may be able to get `enscript` to render a very close analog.
+
  
 ## Other resources
 
 I haven't found other "sub-character-matching" ASCII art and tools, but I expect there are some.  Also I didn't come across any previous "orientation-matching" approaches.  References welcome!
 
-There's a large selection of historical text art on [textfiles.com](http://www.textfiles.com/art/).  Some of this is drafted by hand, and some with the help of a computer.  In the RTTY collection (images sent over radio-teletype) and the DECUS collection (images from the minicomputer scene) you'll find several that use overstrike, including the famous [Mona Lisa](http://textfiles.com/art/DECUS/mona_lisa_2.txt).  Some of these are for 132-column lineprinters, and some for narrower devices.
+There's a large selection of historical text art on [textfiles.com](http://www.textfiles.com/art/).  Some of this is drafted by hand, and some with the help of a computer.  In the RTTY collection (images sent over radio-teletype) and the DECUS collection (images from the minicomputer scene) you'll find several that use overstrike, including the famous [Mona Lisa](http://textfiles.com/art/DECUS/mona_lisa_2.txt).  The larger images are for 132-column lineprinters (the Teletype only has 72 characters per line), and even for multiple pages horizontally.  [Here's a short interview](http://q7.neurotica.com/Oldtech/ASCII/) with Samuel Harbison, who pioneered this stuff at Princeton in the early 70s.  Another archive of material, including Harbison's files for Buzz Aldrin, Spock, and others (in EBCDIC and ASCII), can be found on [David Gesswein's PDP-8 site](http://www.pdp8online.com/ftp/ascii_art/).
 
 `jp2a` ([https://csl.name/jp2a/](https://csl.name/jp2a/)) is a fast tool for converting images to text.  It supports ANSI color effects and HTML output, and is quite good for plaintext.  As far as I can tell it doesn't do overstrike.
 
