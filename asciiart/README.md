@@ -7,7 +7,7 @@ I've been experimenting with various ways to print graphics on the Teletype.
 Teletype printed art is more constrained than ANSI- or ASCII-Art on modern machines, since there's no color, no block-graphic or line-graphic characters, no lowercase, and quite a limited set of punctuation (missing the underscore, vertical-bar, curly braces, etc.)  On the other hand, as a hardcopy printer, we can overtype multiple characters at the same location.
 
 
-These experiments cover a few layered techniques for converting a graphic image into a text image:
+These experiments cover a few ways to convert a graphic image into a text image:
 
 * Convert the source image to grayscale, then match each part of the image to the **luminance** of a printed character.  For example, a sorted list of the Teletype characters by printed weight (e.g. `'.-,/^_\)+><(!";=1:?][J7I*YLT35CV49FO6D#AZUGS02$%P&WXEQH8B@KRNM`) can be mapped onto grayscale image luminance.  The weights of the printed characters don't make a linear luminance scale, so it can be better to use just a subset of the available characters (e.g. ` '-/<JIY3OPHKM`).  
 * Add **overstrike**.  The teletype can print a line of text, then CR, then overprint, and this can be repeated several times to put a lot of ink on the paper.  Of course there are gaps in the final print even with heavy overstrike, because it's not possible to print between the lines or between the characters.
@@ -36,12 +36,12 @@ Small distortions in the print and scan result in some misalignments to the rect
 python prep_overstrike.py
 ```
 
-[![björk - debut](album_covers/album_debut_250.jpg)](album_covers/album_debut.jpg)
-[![primal scream - screamadelica](album_covers/album_screamadelica_250.jpg)](album_covers/album_screamadelica.jpg)
-[![clash - london calling ](album_covers/album_clash_250.jpg)](album_covers/album_clash.jpg)
-[![lamb - fear of fours](album_covers/album_fours_250.jpg)](album_covers/album_fours.jpg)
-[![john coltrane - blue train](album_covers/album_bluetrain_250.jpg)](album_covers/album_bluetrain.jpg)
-[![led zeppelin](album_covers/album_ledzep_250.jpg)](album_covers/album_ledzep.jpg)
+[![björk - debut](album_covers/album_debut_250.jpg)](album_covers/album_debut.txt.jpg)
+[![primal scream - screamadelica](album_covers/album_screamadelica_250.jpg)](album_covers/album_screamadelica.txt.jpg)
+[![clash - london calling ](album_covers/album_clash_250.jpg)](album_covers/album_clash.txt.jpg)
+[![lamb - fear of fours](album_covers/album_fours_250.jpg)](album_covers/album_fours.txt.jpg)
+[![john coltrane - blue train](album_covers/album_bluetrain_250.jpg)](album_covers/album_bluetrain.txt.jpg)
+[![led zeppelin](album_covers/album_ledzep_250.jpg)](album_covers/album_ledzep.txt.jpg)
 
 
 ## Processing a picture
