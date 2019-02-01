@@ -1,6 +1,6 @@
 # ASCII Art with Overstrike
 
-[![Salvador Dali](dali_x500.jpg)](dali.txt.jpg)  
+[![Salvador Dali](misc_pictures/dali_x500.jpg)](misc_pictures/dali.txt.jpg)  
 
 I've been experimenting with various ways to print graphics on the [Teletype ASR33 terminal](https://github.com/hughpyle/ASR33).  
 
@@ -25,7 +25,7 @@ First I printed out and scanned a table of all the two-character overstrike comb
 ```
 python prep_overstrike.py --table
 ```  
-[![overstrike](chars_overstrike_x500.jpg)](chars_overstrike.jpg)
+[![overstrike](misc_pictures/chars_overstrike_x500.jpg)](chars_overstrike.jpg)
 
 Then, [some code](prep_overstrike.py) reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](chars_overstrike.json).
 
@@ -64,7 +64,7 @@ Options:
 
 For complex images, you may need to experiment with contrast and gamma correction for best results.
 
-[![Minion](minion_x500.jpg)](minion.txt.jpg)  
+[![Minion](misc_pictures/minion_x500.jpg)](misc_pictures/minion.txt.jpg)  
 
 
 ### Try it yourself
@@ -78,11 +78,14 @@ The resulting PostScript file `page.ps` can be viewed or printed, and should loo
  
 ## Other resources
 
-I haven't found other "sub-character-matching" ASCII art and tools, but I expect there are some.  Also I didn't come across any previous "orientation-matching" approaches.  References welcome!
-
 There's a large selection of historical text art on [textfiles.com](http://www.textfiles.com/art/).  Some of this is drafted by hand, and some with the help of a computer.  In the RTTY collection (images sent over radio-teletype) and the DECUS collection (images from the minicomputer scene) you'll find several that use overstrike, including the famous [Mona Lisa](http://textfiles.com/art/DECUS/mona_lisa_2.txt).  The larger images are for 132-column lineprinters (the Teletype only has 72 characters per line), and even for multiple pages horizontally.  [Here's a short interview](http://q7.neurotica.com/Oldtech/ASCII/) with Samuel Harbison, who pioneered this stuff at Princeton in the early 70s.  Another archive of material, including Harbison's files for Buzz Aldrin, Spock, and others (in EBCDIC and ASCII), can be found on [David Gesswein's PDP-8 site](http://www.pdp8online.com/ftp/ascii_art/).
 
-`jp2a` ([https://csl.name/jp2a/](https://csl.name/jp2a/)) is a fast tool for converting images to text.  It supports ANSI color effects and HTML output, and is quite good for plaintext.  As far as I can tell it doesn't do overstrike.
+Thanks to discussions on [Show HN](https://news.ycombinator.com/item?id=19040389) I've learned that ASCII-art generators with better effective resolution than the character-level luminance approach are quite well studied.
+For example: Wang et al. (2004) - [Image quality assessment: From error visibility to structural similarity](http://www.cns.nyu.edu/pub/lcv/wang03-preprint.pdf) introduced a [Structutred Similarity Index Metric](http://en.wikipedia.org/wiki/Structural_similarity) (SSIM), which shows good results.
+Later, Xu al. (2010) - [Structure-based ASCII Art](https://www.cse.cuhk.edu.hk/~ttwong/papers/asciiart/asciiart.html) go further, building very compact ASCII renderings from line-art.  And recently, Fujisawa et el. (2017), and  Matsumoto et al. (2018) - [ASCII Art Classification based on Deep Neural Networks](http://www.jsoftware.us/vol13/355-SE3002.pdf) use the Histogram of Oriented Gradients (HOG) together with a neural-network based classifiers to get really good quality.
+So, my little HOG project is accidentally almost state-of-the-art (-_-)  
+
+`jp2a` ([https://csl.name/jp2a/](https://csl.name/jp2a/)) is a simple fast tool for converting images to text.  It supports ANSI color effects and HTML output, and is quite good for plaintext.  As far as I can tell it doesn't do overstrike.
 
 To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).  It has a vast collection of fonts, although many of them rely on the underscore, which isn't present on the Teletype printwheel.
 
