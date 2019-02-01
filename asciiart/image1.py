@@ -47,14 +47,13 @@ HOG_ORIENTATIONS = 8
 VISUALIZE = True
 
 
-PREPARED_FILE = "chars_ascii.json"
+PREPARED_FILE = os.path.join(os.path.dirname(__file__), "chars_ascii.json")
 
 FIRSTPASS_CHARS = " .-/\\()+>=?I#V96OZSAHX8QWKM"
 NEXT_PASS_CHARS = [chr(c) for c in range(0x20, 0x7F) if chr(c) not in "?"]
 
 
 LAYER_FACTOR = 0.5
-
 
 
 # Load and pre-process an image file

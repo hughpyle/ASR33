@@ -30,13 +30,17 @@ correlation instead of min().
 Take care that empty image regions pick the "space" character!
 """
 
+# TODO: use some triple-strike characters for very dark printing
+# TODO: explore approaches to global optimization (be robust against deformation less than 1 character-size)
+
 import sys
 import json
+import os
 import numpy as np
 import imageio
 import io
 import click
-from skimage import feature, transform, color, exposure
+from skimage import feature, transform, color, exposure, util
 
 
 # The character itself is 4x3
@@ -50,7 +54,7 @@ VISUALIZE = True
 # How many overstrike passes
 ROUNDS = 2
 
-PREPARED_FILE = "chars_overstrike.json"
+PREPARED_FILE = os.path.join(os.path.dirname(__file__), "chars_overstrike.json")
 
 
 # Load and pre-process an image file
@@ -65,18 +69,18 @@ def load_image(filename, width, invert, gamma):
     # Grayscale
     img = color.rgb2gray(img)
 
+    # Adjust the exposure
+    img = exposure.adjust_gamma(img, gamma)
+
+    if invert:
+        img = util.invert(img)
+
     # Resample and adjust the aspect ratio
     width_px = (3 * width) * 16
 
     img_width = 1.0 * width_px
     img_height = int(img.shape[0] * 3 * (img_width / (4 * img.shape[1])))
-    img = transform.resize(img, (img_height, img_width), anti_aliasing=True, mode='constant')
-
-    # Asjust the exposure
-    img = exposure.adjust_gamma(img, gamma)
-
-    if invert:
-        img = 1 - img
+    img = transform.resize(img, (img_height, img_width), anti_aliasing=True, mode='reflect')
 
     return img
 
@@ -97,7 +101,7 @@ def process(image):
                           orientations=HOG_ORIENTATIONS,
                           pixels_per_cell=(cellsize, cellsize),
                           cells_per_block=(1, 1),
-                          block_norm='L2-Hys',
+                          block_norm='L1',  # ''L2-Hys',
                           visualize=VISUALIZE,
                           feature_vector=False)
 

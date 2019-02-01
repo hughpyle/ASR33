@@ -75,15 +75,18 @@ enscript -l --output page.ps album_screamadelica.jpg.txt
 ```
 The resulting PostScript file `page.ps` can be viewed or printed, and should look pretty close to the renderings you see on this page.  If you install the [Teletype-based font](https://www.dafont.com/teletype-1945-1985.font) you may be able to get `enscript` to render a very close analog.
 
- 
+
 ## Other resources
 
 There's a large selection of historical text art on [textfiles.com](http://www.textfiles.com/art/).  Some of this is drafted by hand, and some with the help of a computer.  In the RTTY collection (images sent over radio-teletype) and the DECUS collection (images from the minicomputer scene) you'll find several that use overstrike, including the famous [Mona Lisa](http://textfiles.com/art/DECUS/mona_lisa_2.txt).  The larger images are for 132-column lineprinters (the Teletype only has 72 characters per line), and even for multiple pages horizontally.  [Here's a short interview](http://q7.neurotica.com/Oldtech/ASCII/) with Samuel Harbison, who pioneered this stuff at Princeton in the early 70s.  Another archive of material, including Harbison's files for Buzz Aldrin, Spock, and others (in EBCDIC and ASCII), can be found on [David Gesswein's PDP-8 site](http://www.pdp8online.com/ftp/ascii_art/).
 
-Thanks to discussions on [Show HN](https://news.ycombinator.com/item?id=19040389) I've learned that ASCII-art generators with better effective resolution than the character-level luminance approach are quite well studied.
+Thanks to discussions on [Show HN](https://news.ycombinator.com/item?id=19040389) I've learned that ASCII-art generators with better effective resolution than the character-level luminance approach are quite actively studied.
 For example: Wang et al. (2004) - [Image quality assessment: From error visibility to structural similarity](http://www.cns.nyu.edu/pub/lcv/wang03-preprint.pdf) introduced a [Structutred Similarity Index Metric](http://en.wikipedia.org/wiki/Structural_similarity) (SSIM), which shows good results.
-Later, Xu al. (2010) - [Structure-based ASCII Art](https://www.cse.cuhk.edu.hk/~ttwong/papers/asciiart/asciiart.html) go further, building very compact ASCII renderings from line-art.  And recently, Fujisawa et el. (2017), and  Matsumoto et al. (2018) - [ASCII Art Classification based on Deep Neural Networks](http://www.jsoftware.us/vol13/355-SE3002.pdf) use the Histogram of Oriented Gradients (HOG) together with a neural-network based classifiers to get really good quality.
-So, my little HOG project is accidentally almost state-of-the-art (-_-)  
+Later, Xu al. (2010) - [Structure-based ASCII Art](https://www.cse.cuhk.edu.hk/~ttwong/papers/asciiart/asciiart.html) go further, building very compact ASCII renderings from line-art.  The [PixLab](https://art.pixlab.io/) project uses a trained classifier to render at video speed.
+And recently, Fujisawa et el. (2017), and  Matsumoto et al. (2018) - [ASCII Art Classification based on Deep Neural Networks](http://www.jsoftware.us/vol13/355-SE3002.pdf) use the Histogram of Oriented Gradients (HOG) together with a neural-network based classifiers to get really good quality.
+So, my little HOG retrocomputing project is accidentally almost state-of-the-art (-_-)  
+
+[Akiyama (2017)](https://github.com/OsciiArt/DeepAA) is using convolutional NN trained on hand-drawn ASCII art to make some really amazing images.  Take a look.  
 
 `jp2a` ([https://csl.name/jp2a/](https://csl.name/jp2a/)) is a simple fast tool for converting images to text.  It supports ANSI color effects and HTML output, and is quite good for plaintext.  As far as I can tell it doesn't do overstrike.
 
