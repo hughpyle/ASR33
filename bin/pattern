@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014-2019 Hugh Pyle
+
+# print patterns
+
+import os
+import sys
+import ast
+import click
+
+
+# Escape sequence to initialize (turn off wordwrap, NLCR, delays)
+# (Usually a teletype wouldn't have firmware that handles escape sequences, but mine does, for this purpose)
+# (https://github.com/hughpyle/ASR33/tree/master/firmware)
+INIT = b"\033[?7l\033_ab\234"
+RESET = b"\033[!p"
+
+PATTERN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "patterns")
+ALL_PATTERNS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(PATTERN_PATH)])
+
+
+class Pattern:
+
+    data = {}
+
+    def __init__(self, pattern):
+        self.load_pattern(pattern)
+
+    def load_pattern(self, pattern):
+        """
+        Load a pattern from file.
+        """
+        pattern_filename = os.path.join(PATTERN_PATH, pattern)
+        if not os.path.isfile(pattern_filename):
+            click.get_current_context().fail("Pattern not found ({})".format(pattern_filename))
+        with open(pattern_filename, "r") as fd:
+            self.data = ast.literal_eval(fd.read())
+
+    def parts(self):
+        return self.data.keys()
+
+    def render_value(self, v):
+        return b"".join(list(self.generate_value(v)))
+
+    def generate_value(self, value):
+        if value is None:
+            yield b'\0'
+        elif isinstance(value, bytes):
+            yield value
+        elif isinstance(value, int):
+            yield int.to_bytes(value, 1, byteorder="little")
+        elif isinstance(value, str):
+            yield self.render(value)
+        elif isinstance(value, dict):
+            for k in value.keys():
+                if not isinstance(k, int):
+                    raise ValueError("Expected an integer key, not {}: {}".format(type(k), value))
+                if k > 0:
+                    yield k * self.render_value(value[k])
+                else:
+                    yield (-k) * self.render_value(value[k])[::-1]
+        elif isinstance(value, list):
+            for val in value:
+                yield self.render_value(val)
+        else:
+            raise ValueError("Don't know how to render: {}".format(value))
+
+    def render(self, part):
+        key = part
+        if key not in self.data:
+            raise ValueError("The pattern has no part named '{}'".format(key))
+        value = self.data[key]
+        return self.render_value(value)
+
+
+@click.command()
+@click.argument("pattern", type=click.Path())
+@click.argument("part", default="pattern", required=False)
+@click.option("--test", is_flag=True, help="Write text preview, not binary")
+def main(pattern, part, test):
+    """Print patterns to punchtape"""
+
+    patt = Pattern(pattern)
+    data = patt.render(part)
+
+    if not test:
+        # Put the tty firmware into 'raw binary' mode
+        sys.stdout.buffer.write(INIT)
+
+    if test:
+        for byte in data:
+            sys.stdout.write("{:08b}\n".format(byte).replace("0", ".").replace("1", "*"))
+    else:
+        sys.stdout.buffer.write(bytearray(data))
+
+    if not test:
+        sys.stdout.buffer.write(RESET)
+
+
+main()
+
