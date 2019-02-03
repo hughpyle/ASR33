@@ -1,9 +1,9 @@
 {
 "pattern": [
     {1: "diamondwave"},
-    {1: None},
+    None,
     {-1: "diamondwave"},
-    {1: None}
+    None
 ],
 "diamondwave": [
     0b10000000,

@@ -2,17 +2,17 @@
     "comment": "https://www.reddit.com/r/joyetechlogos/comments/4hz7nj/space_invaders_full_set/ and http://knitty.com/ISSUEspring07/PATTbmp.html",
     "pattern": [
         {5: ["invader3a", {7: None}]},
-        {10:None},
+        {10: None},
         {5: ["invader2a", {3: None}]},
-        {10:None},
+        {10: None},
         {5: ["invader1a", {4: None}]},
-        {10:None},
+        {10: None},
         {5: ["invader3b", {7: None}]},
-        {10:None},
+        {10: None},
         {5: ["invader2b", {3: None}]},
-        {10:None},
+        {10: None},
         {5: ["invader1b", {4: None}]},
-        {10:None},
+        {10: None},
         {1:  [{50: None}, {1: "base"}, {20: None}]}
     ],
     "invader1a": [

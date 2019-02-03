@@ -55,9 +55,25 @@ PATTERN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pattern
 ALL_PATTERNS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(PATTERN_PATH)])
 
 
+class Operator(object):
+    """Decorator, declares a method to be an operator"""
+    def __init__(self, operator_name):
+        self.operator_name = operator_name
+
+    def __call__(self, func):
+        """Called at decoration time"""
+        # Set or extend the function's "operator_name" attribute
+        func.operator_name = self.operator_name
+        # The decorated function is unchanged
+        return func
+
+
 class Pattern:
 
     data = {}
+    operators = [
+        "invert"
+    ]
 
     def __init__(self, pattern):
         self.load_pattern(pattern)
@@ -77,6 +93,55 @@ class Pattern:
         :return: A list of the available parts in the pattern-file.
         """
         return self.data.keys()
+
+    def operator(self, value_tuple):
+        """
+        Apply an operator to a value.
+        :param value_tuple: (operator, value, optional other parameters)
+        :return: the result of the operator.
+        """
+        print(value_tuple)
+        oper = value_tuple[0]
+        value = self.render_value(value_tuple[1])
+        more_args = value_tuple[2:]
+        for attr in dir(self):
+            obj = getattr(self, attr)
+            if callable(obj) and hasattr(obj, "operator_name") and getattr(obj, "operator_name") == oper:
+                print(value)
+                print(more_args)
+                if more_args:
+                    return obj(value, *more_args)
+                else:
+                    return obj(value)
+        raise ValueError("Unknown operator: '{}'".format(oper))
+
+    @Operator("invert")
+    def invert(self, value):
+        """Invert the bits of the value"""
+        return b"".join([int.to_bytes(0xFF ^ byte, 1, byteorder="little") for byte in value])
+
+    @Operator("mirror")
+    def mirror(self, value):
+        """Reverse the bits of the value"""
+        return b"".join([int.to_bytes(int('{:08b}'.format(byte)[::-1], 2), 1, byteorder="little") for byte in value])
+
+    @Operator("shift")
+    def shift(self, value, n):
+        """Shift the bits left by 'n' (right if n is negative)"""
+        if n > 0:
+            return b"".join([int.to_bytes((byte << n) & 0xFF, 1, byteorder="little") for byte in value])
+        else:
+            return b"".join([int.to_bytes((byte >> -n) & 0xFF, 1, byteorder="little") for byte in value])
+
+    @Operator("subset")
+    def subset(self, value, n):
+        """Return a subset of the value"""
+        if n > 0:
+            # The first n bytes of the value
+            return value[:n]
+        else:
+            # The last n bytes of the value
+            return value[n:]
 
     def render_value(self, v):
         """
@@ -101,14 +166,23 @@ class Pattern:
         elif isinstance(value, str):
             yield self.render(value)
         elif isinstance(value, dict):
+            # Dictionary - key is numeric: a number of times that the value should be repeated
+            # - negative numbers mean that the value is repeated in reverse
             for k in value.keys():
-                if not isinstance(k, int):
-                    raise ValueError("Expected an integer key, not {}: {}".format(type(k), value))
-                if k > 0:
-                    yield k * self.render_value(value[k])
+                if isinstance(k, int):
+                    # Key is an integer, number of times to repeat the value
+                    if k > 0:
+                        yield k * self.render_value(value[k])
+                    else:
+                        yield (-k) * self.render_value(value[k])[::-1]
                 else:
-                    yield (-k) * self.render_value(value[k])[::-1]
+                    raise ValueError("Expected an integer key, not {}: {}".format(type(k), value))
+        elif isinstance(value, tuple):
+            # Tuple - first element is the name of an operator that is applied to the other elements
+            # The other elements will vary according to the operator
+            yield self.operator(value)
         elif isinstance(value, list):
+            # List - render each element in turn
             for val in value:
                 yield self.render_value(val)
         else:
