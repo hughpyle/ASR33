@@ -2,7 +2,42 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2014-2019 Hugh Pyle
 
-# print patterns
+"""
+Print patterns on paper-tape.
+
+Source material for patterns are in files in a subdirectory 'patterns'.
+Each pattern-file has data in Python literal format that defines things we can print.
+(The format looks like JSON but isn't... so that we can use expressions like '0b11110000' to write binary).
+
+At the top level are names, so you can call this script with:
+    pattern pattern_file pattern_name
+If no pattern-name is specified, it'll look for the name called "pattern".
+
+
+Things you can do in this file format:
+{
+    # A named pattern which is a list of bytes (as long as you like).
+    # 'None' is the same as a zero byte.
+    "pattern_name": [
+        0b00011000,         # note the first five bits are "below the track" and last three bits are "above the track"
+        0b01111110,
+        0b00100100,
+        None
+    ]
+
+    # A pattern that includes repeating 'pattern_name' 10 times
+    "example2": [
+        0b1111111,
+        { 10: "pattern_name" }
+        0b1111111
+    ]
+
+    # A repeated list... nest these any way you want
+    "example3": [
+        { 10: [1, 2, 3, 4, 5] }
+    ]
+}
+"""
 
 import os
 import sys
@@ -38,12 +73,25 @@ class Pattern:
             self.data = ast.literal_eval(fd.read())
 
     def parts(self):
+        """
+        :return: A list of the available parts in the pattern-file.
+        """
         return self.data.keys()
 
     def render_value(self, v):
+        """
+        Produce bytes from the expression
+        :param v: A part-name, or a simple value, or a string with a Python literal expression.
+        :return: Bytes.
+        """
         return b"".join(list(self.generate_value(v)))
 
     def generate_value(self, value):
+        """
+        Generate the parts from a value.
+        :param value: A part-name, or a simple value, or a string with a Python literal expression.
+        :return: A generator that produces bytes.
+        """
         if value is None:
             yield b'\0'
         elif isinstance(value, bytes):
@@ -67,6 +115,11 @@ class Pattern:
             raise ValueError("Don't know how to render: {}".format(value))
 
     def render(self, part):
+        """
+        Generate bytes from a part
+        :param part: A part-name, or a string with a Python literal expression.
+        :return: Bytes.
+        """
         key = part
         if key in self.data:
             value = self.data[key]
@@ -86,7 +139,11 @@ class Pattern:
 def main(pattern, part, test):
     """Print patterns to punchtape"""
 
+    # Load the pattern-definition file
     patt = Pattern(pattern)
+
+    # Render the named part from the file.
+    # Instead of a name, you can also supply a string containing a Python literal.
     data = patt.render(part)
 
     if not test:
