@@ -3,15 +3,6 @@
     "pattern": {8: [None, "heart", None, None, "heart_solid", None]},
     "slim_pattern": {8: [None, "slim", None, None, "slim_solid", None]},
     "small_pattern": {8: [None, "small", None, None, "small_solid", None]},
-    "variations": [
-        # just for testing!
-        "heart",
-        ("invert", "heart"),
-        ("mirror", "heart"),
-        None,
-        ("shift", "solid", -1),
-        ("shift", [None, "heart", None, "solid"], 2)
-    ],
     "heart": [
         0b00001110,
         0b00010001,

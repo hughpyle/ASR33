@@ -1,0 +1,45 @@
+{
+    "pattern": [
+        {1: [
+            0b00000011,
+            0b00000100,
+            0b00000100,
+            0b00011000,
+            {3: None}
+            ]
+         }
+    ],
+    "test_reverse": [
+        "pattern",
+        {-1: "pattern"},
+    ],
+    "test_squeeze": [
+        "pattern",
+        ("squeeze", "pattern"),
+        ("squeeze", "pattern", False)
+    ],
+    "test_invert": [
+        "pattern",
+        ("invert", "pattern"),
+        ("invert", ("invert", "pattern"))
+    ],
+    "test_mirror": [
+        "pattern",
+        ("mirror", "pattern"),
+        ("mirror", ("mirror", "pattern"))
+    ],
+    "test_shift": [
+        ("shift", "pattern", 1),
+        "pattern",
+        ("shift", "pattern", -1),
+        ("shift9", "pattern", 1),
+        "pattern",
+        ("shift9", "pattern", -1),
+    ],
+    "test_random": [
+        {5: ("random", 0, 256)},
+        None,
+        {("random", 0, 256): 0b11111111},
+    ]
+
+}

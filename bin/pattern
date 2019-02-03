@@ -37,11 +37,14 @@ Things you can do in this file format:
         { 10: [1, 2, 3, 4, 5] }
     ]
 }
+
 """
 
 import os
 import sys
 import ast
+import types
+import random
 import click
 
 
@@ -52,7 +55,24 @@ INIT = b"\033[?7l\033_ab\234"
 RESET = b"\033[!p"
 
 PATTERN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "patterns")
-ALL_PATTERNS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(PATTERN_PATH)])
+
+
+def byte8(value):
+    """Convert an 8-bit value to a byte"""
+    return int.to_bytes(value & 0xFF, 1, byteorder="little")
+
+
+def byte9(value):
+    """Convert a 9-bit value to a byte.  The 4th bit is the "tape track" and gets dropped."""
+    value = ((value & 0b111110000) >> 1) + (value & 0b111)
+    return int.to_bytes(value & 0xFF, 1, byteorder="little")
+
+
+class MovableBytes(bytes):
+    """Bytes and a number that says where to position them in the final rendering"""
+    def __new__(cls, *args, pos=0, **kwargs):
+        cls.pos = pos
+        return bytes.__new__(cls, *args, **kwargs)
 
 
 class Operator(object):
@@ -68,7 +88,7 @@ class Operator(object):
         return func
 
 
-class Pattern:
+class Pattern(object):
 
     data = {}
     operators = [
@@ -97,18 +117,16 @@ class Pattern:
     def operator(self, value_tuple):
         """
         Apply an operator to a value.
-        :param value_tuple: (operator, value, optional other parameters)
+        :param value_tuple: (operator name, value, optional other parameters)
         :return: the result of the operator.
         """
-        print(value_tuple)
         oper = value_tuple[0]
-        value = self.render_value(value_tuple[1])
+        value = value_tuple[1]
         more_args = value_tuple[2:]
         for attr in dir(self):
             obj = getattr(self, attr)
             if callable(obj) and hasattr(obj, "operator_name") and getattr(obj, "operator_name") == oper:
-                print(value)
-                print(more_args)
+                # We don't render the arguments -- pass into the operator, so e.g. list operators can iterate
                 if more_args:
                     return obj(value, *more_args)
                 else:
@@ -118,24 +136,44 @@ class Pattern:
     @Operator("invert")
     def invert(self, value):
         """Invert the bits of the value"""
-        return b"".join([int.to_bytes(0xFF ^ byte, 1, byteorder="little") for byte in value])
+        value = self.render_value(value)
+        return b"".join([byte8(0xFF ^ byte) for byte in value])
 
     @Operator("mirror")
     def mirror(self, value):
         """Reverse the bits of the value"""
-        return b"".join([int.to_bytes(int('{:08b}'.format(byte)[::-1], 2), 1, byteorder="little") for byte in value])
+        value = self.render_value(value)
+        return b"".join([byte8(int('{:08b}'.format(byte)[::-1], 2)) for byte in value])
 
     @Operator("shift")
     def shift(self, value, n):
-        """Shift the bits left by 'n' (right if n is negative)"""
+        """
+        Shift the bits left by 'n' (right if n is negative)
+        """
+        value = self.render_value(value)
+        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
         if n > 0:
-            return b"".join([int.to_bytes((byte << n) & 0xFF, 1, byteorder="little") for byte in value])
+            return b"".join([byte8(byte << n) for byte in value])
         else:
-            return b"".join([int.to_bytes((byte >> -n) & 0xFF, 1, byteorder="little") for byte in value])
+            return b"".join([byte8(byte >> -n) for byte in value])
+
+    @Operator("shift9")
+    def shift9(self, value, n):
+        """
+        Shift the bits left by 'n' (right if n is negative) using a 9-bit grid
+        """
+        value = self.render_value(value)
+        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        if n > 0:
+            return b"".join([byte9(byte << n) for byte in value])
+        else:
+            return b"".join([byte9(byte >> -n) for byte in value])
 
     @Operator("subset")
     def subset(self, value, n):
         """Return a subset of the value"""
+        value = self.render_value(value)
+        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
         if n > 0:
             # The first n bytes of the value
             return value[:n]
@@ -143,52 +181,121 @@ class Pattern:
             # The last n bytes of the value
             return value[n:]
 
+    @Operator("squeeze")
+    def squeeze(self, value, whitespace_only=True):
+        """
+        Squeeze all the duplicate lines out of the value (e.g. consolidate whitespace)
+        Usage: ("squeeze", "pattern"), or ("squeeze", "pattern", False) to remove all dups not just whitespace
+        """
+        value = self.render_value(value)
+        squeezed = []
+        for byte in value:
+            b = byte8(byte)
+            use = False
+            if not squeezed:
+                use = True
+            elif whitespace_only and (b != squeezed[-1] or b != b'\0'):
+                use = True
+            elif b != squeezed[-1]:
+                use = True
+            if use:
+                squeezed.append(b)
+        return b"".join(squeezed)
+
+    @Operator("move")
+    def move(self, value, n):
+        """Move the value forward or backward by 'n' positions along the tape."""
+        value = self.render_value(value)
+        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        return MovableBytes(value, pos=n)
+
+    @Operator("random_choice")
+    def random_choice(self, value):
+        """Choose one from a list"""
+        return random.choice(value)
+
+    @Operator("random")
+    def random(self, value, value2):
+        """Produce a random number from (int)value to (int)value2"""
+        return random.randint(value, value2)
+
     def render_value(self, v):
         """
         Produce bytes from the expression
         :param v: A part-name, or a simple value, or a string with a Python literal expression.
         :return: Bytes.
         """
-        return b"".join(list(self.generate_value(v)))
+        # Generate a list by evaluating the expression
+        values = list(self.generate_value(v))
+        # Join them all
+        result = bytearray()
+        for value in values:
+            if isinstance(value, MovableBytes):
+                # MovableBytes are bytes to be overlaid on the existing result, backed up by 'value.pos'
+                pos = min(value.pos, len(result) - 1)
+                startpos = len(result) - pos
+                for j in range(0, min(pos, len(value))):
+                    result[startpos + j] |= value[j]
+                result.extend(value[(pos):])
+            else:
+                # Bytes extend the result
+                result.extend(value)
+        return bytes(result)
 
     def generate_value(self, value):
         """
-        Generate the parts from a value.
+        Recursively generate all the renderings from a value.
         :param value: A part-name, or a simple value, or a string with a Python literal expression.
-        :return: A generator that produces bytes.
+        :return: A generator producing a series of bytes-type values.
         """
+        if isinstance(value, types.GeneratorType):
+            value = list(value)
+
         if value is None:
             yield b'\0'
         elif isinstance(value, bytes):
             yield value
         elif isinstance(value, int):
-            yield int.to_bytes(value, 1, byteorder="little")
+            yield byte8(value)
         elif isinstance(value, str):
-            yield self.render(value)
+            yield self.render_part(value)
         elif isinstance(value, dict):
             # Dictionary - key is numeric: a number of times that the value should be repeated
             # - negative numbers mean that the value is repeated in reverse
             for k in value.keys():
+                if isinstance(k, tuple):
+                    # Evaluate the tuple and expect it produces an integer
+                    k = self.operator(k)
                 if isinstance(k, int):
-                    # Key is an integer, number of times to repeat the value
                     if k > 0:
-                        yield k * self.render_value(value[k])
+                        # Repeat the value 'k' times
+                        for i in range(0, k):
+                            for v in list(self.generate_value(value[k])):
+                                yield v
                     else:
-                        yield (-k) * self.render_value(value[k])[::-1]
+                        # Repeat the rendering 'k' times with bytes reversed
+                        for i in range(0, -k):
+                            yield self.render_value(value[k])[::-1]
                 else:
                     raise ValueError("Expected an integer key, not {}: {}".format(type(k), value))
         elif isinstance(value, tuple):
             # Tuple - first element is the name of an operator that is applied to the other elements
             # The other elements will vary according to the operator
-            yield self.operator(value)
+            # Result of the operator is bytes or anything else...
+            results = self.operator(value)
+            for v in list(self.generate_value(results)):
+                yield v
+            # yield self.generate_value(results)
         elif isinstance(value, list):
             # List - render each element in turn
             for val in value:
-                yield self.render_value(val)
+                for v in list(self.generate_value(val)):
+                    yield v
+#                yield val
         else:
             raise ValueError("Don't know how to render: {}".format(value))
 
-    def render(self, part):
+    def render_part(self, part):
         """
         Generate bytes from a part
         :param part: A part-name, or a string with a Python literal expression.
@@ -206,19 +313,32 @@ class Pattern:
         return self.render_value(value)
 
 
+def list_patterns(ctx, param, value):
+    """Click callback to print a list of the available patterns."""
+    if not value or ctx.resilient_parsing:
+        return
+    all_patterns = sorted([os.path.splitext(filename)[0] for filename in os.listdir(PATTERN_PATH)])
+    print("Available patterns:", file=sys.stderr)
+    for pattern in all_patterns:
+        print("  " + pattern, file=sys.stderr)
+    ctx.exit()
+
+
 @click.command()
 @click.argument("pattern", type=click.Path())
 @click.argument("part", default="pattern", required=False)
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
+@click.option("--list", is_flag=True, help="List the available patterns", is_eager=True, callback=list_patterns, expose_value=False)
 def main(pattern, part, test):
-    """Print patterns to punchtape"""
-
+    """
+    Print patterns to punchtape.
+    """
     # Load the pattern-definition file
     patt = Pattern(pattern)
 
     # Render the named part from the file.
     # Instead of a name, you can also supply a string containing a Python literal.
-    data = patt.render(part)
+    data = patt.render_part(part)
 
     if not test:
         # Put the tty firmware into 'raw binary' mode
