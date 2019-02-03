@@ -68,9 +68,14 @@ class Pattern:
 
     def render(self, part):
         key = part
-        if key not in self.data:
-            raise ValueError("The pattern has no part named '{}'".format(key))
-        value = self.data[key]
+        if key in self.data:
+            value = self.data[key]
+        else:
+            # Hmm, maybe the key is a python literal
+            try:
+                value = ast.literal_eval(key)
+            except ValueError:
+                raise ValueError("The pattern has no part named '{}'".format(key))
         return self.render_value(value)
 
 
