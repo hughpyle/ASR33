@@ -1,8 +1,8 @@
 {
     "pattern": ("squeeze",
-    {25:
+    {50:
         ("move",
-            ("shift", "choose", ("random", -5, 5)),
+            ("shift9", "choose", ("random", -5, 5)),
             1 # ("random", 0, 3)
         )
     }),
