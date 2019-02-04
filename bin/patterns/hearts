@@ -1,7 +1,7 @@
 {
     "comment": "hearts, after https://twitter.com/ef1j95/status/1084149533842518016",
     "pattern": {8: [None, "heart", None, None, "heart_solid", None]},
-    "slim_pattern": {8: [None, "slim", None, None, "slim_solid", None]},
+    "slim_pattern": {8: [None, "heart", None, None, "slim_solid", None]},
     "small_pattern": {8: [None, "small", None, None, "small_solid", None]},
     "heart": [
         0b00001110,
