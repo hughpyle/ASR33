@@ -1,5 +1,17 @@
 {
-    "pattern": { 5: [None, "skull", None, "xbone", None, "skull", None] },
+    "pattern": [
+        {10: None},
+        {3: ["skull", None, "bones", None]},
+        "skull",
+        {10: None}
+    ],
+    "just_skulls": [
+        {10: None},
+        {6: ["skull", None, None]},
+        "skull",
+        {10: None}
+    ],
+
     "skull": [
         # badass
         0b00011100,
@@ -22,7 +34,7 @@
         0b01110110,
         0b00011100,
     ],
-    "xbone": [
+    "bones": [
         0b01010000,
         0b11011000,
         0b01010000,

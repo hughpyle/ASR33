@@ -36,7 +36,21 @@ Things you can do in this file format:
     "example3": [
         { 10: [1, 2, 3, 4, 5] }
     ]
+
+    # There are various 'operators' that let you transform data in various ways
+    # The syntax is in parentheses: (operator-name, values...)
+    "example4": [
+        ("invert", "pattern_name"),     # invert set/unset bits in the pattern
+        ("shift", "pattern_name", 2)    # shift bits left
+    ]
+
+    # Write text using the "text" operator
+    "example5": [
+        ("squeeze", ("text", "hello", "mod3270"))   # using 'squeeze' to convert fixed-pitch fonts to proportional!
+    ]
 }
+
+The operators are identified with '@Operator(..name..)' below.  See each operator for details.
 
 """
 
@@ -46,6 +60,7 @@ import ast
 import types
 import random
 import click
+from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 
 
 # Escape sequence to initialize (turn off wordwrap, NLCR, delays)
@@ -219,6 +234,11 @@ class Pattern(object):
         """Produce a random number from (int)value to (int)value2"""
         return random.randint(value, value2)
 
+    @Operator("text")
+    def text(self, value, font_name="small"):
+        # TODO render text from bdf fonts
+        pass
+
     def render_value(self, v):
         """
         Produce bytes from the expression
@@ -349,9 +369,10 @@ def main(pattern, part, test):
             sys.stdout.write("{:08b}\n".format(byte).replace("0", ".").replace("1", "*"))
     else:
         sys.stdout.buffer.write(bytearray(data))
-
     if not test:
         sys.stdout.buffer.write(RESET)
+
+    print("Length: {} bits, {} inches".format(len(data), len(data)/10), file=sys.stderr)
 
 
 main()
