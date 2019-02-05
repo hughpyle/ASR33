@@ -1,15 +1,15 @@
 {
     "pattern": [
-        {10: None},
+        {5: None},
         {3: ["skull", None, "bones", None]},
         "skull",
-        {10: None}
+        {15: None}
     ],
     "just_skulls": [
-        {10: None},
+        {5: None},
         {6: ["skull", None, None]},
         "skull",
-        {10: None}
+        {15: None}
     ],
 
     "skull": [
