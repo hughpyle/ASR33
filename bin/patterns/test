@@ -39,7 +39,14 @@
     "test_random": [
         {5: ("random", 0, 256)},
         None,
-        {("random", 0, 256): 0b11111111},
+        {("random", 0, 256): 0xAA},
+    ],
+    "test_text": [
+        ("squeeze", ("text", "hello")),
+        ("invert", ("mirror", ("shift", ("text", "hello", "small"), 3))),
+        ("shift9", ("shift", ("text", "hello", "mod3270"), 3), -3)
+    ],
+    "test_image": [
+        ("width", ("image", "$*"))
     ]
-
 }

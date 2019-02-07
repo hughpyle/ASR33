@@ -59,8 +59,10 @@ import sys
 import ast
 import types
 import random
+import tempfile
 import click
 from PIL import Image, ImageFont, ImageDraw, BdfFontFile
+from PIL.Image import FLOYDSTEINBERG  # dither
 
 
 # Escape sequence to initialize (turn off wordwrap, NLCR, delays)
@@ -69,7 +71,14 @@ from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 INIT = b"\033[?7l\033_ab\234"
 RESET = b"\033[!p"
 
+# Pattern files are in a subdirectory 'patterns'
+# (https://github.com/hughpyle/ASR33/tree/master/bin/patterns)
 PATTERN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "patterns")
+
+# Font files are in a subdirectory 'fonts'
+# (https://github.com/hughpyle/ASR33/tree/master/bin/fonts)
+DEFAULT_FONT = "chicago"
+FONT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
 
 
 def byte8(value):
@@ -93,7 +102,7 @@ class MovableBytes(bytes):
 class Operator(object):
     """Decorator, declares a method to be an operator"""
     def __init__(self, operator_name):
-        self.operator_name = operator_name
+        self.operator_name = "_" + operator_name
 
     def __call__(self, func):
         """Called at decoration time"""
@@ -103,14 +112,21 @@ class Operator(object):
         return func
 
 
+def memoize(f):
+    """ Memoization decorator for a function taking a single argument """
+    class memodict(dict):
+        def __missing__(self, key):
+            ret = self[key] = f(key)
+            return ret
+    return memodict().__getitem__
+
+
 class Pattern(object):
 
     data = {}
-    operators = [
-        "invert"
-    ]
 
-    def __init__(self, pattern):
+    def __init__(self, pattern, words=None):
+        self.words = words
         self.load_pattern(pattern)
 
     def load_pattern(self, pattern):
@@ -129,6 +145,12 @@ class Pattern(object):
         """
         return self.data.keys()
 
+    def substitute_args(self, value):
+        return value.replace("$*", " ".join(self.words))
+
+    def substitute_path(self, value):
+        return os.path.expanduser(self.substitute_args(value))
+
     def operator(self, value_tuple):
         """
         Apply an operator to a value.
@@ -140,7 +162,7 @@ class Pattern(object):
         more_args = value_tuple[2:]
         for attr in dir(self):
             obj = getattr(self, attr)
-            if callable(obj) and hasattr(obj, "operator_name") and getattr(obj, "operator_name") == oper:
+            if callable(obj) and hasattr(obj, "operator_name") and getattr(obj, "operator_name") == "_" + oper:
                 # We don't render the arguments -- pass into the operator, so e.g. list operators can iterate
                 if more_args:
                     return obj(value, *more_args)
@@ -166,11 +188,11 @@ class Pattern(object):
         Shift the bits left by 'n' (right if n is negative)
         """
         value = self.render_value(value)
-        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        n = self.render_value(n)[0]
         if n > 0:
-            return b"".join([byte8(byte << n) for byte in value])
+            return [byte << n for byte in value]
         else:
-            return b"".join([byte8(byte >> -n) for byte in value])
+            return [byte >> -n for byte in value]
 
     @Operator("shift9")
     def shift9(self, value, n):
@@ -178,7 +200,7 @@ class Pattern(object):
         Shift the bits left by 'n' (right if n is negative) using a 9-bit grid
         """
         value = self.render_value(value)
-        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        n = self.render_value(n)[0]
         if n > 0:
             return b"".join([byte9(byte << n) for byte in value])
         else:
@@ -188,7 +210,7 @@ class Pattern(object):
     def subset(self, value, n):
         """Return a subset of the value"""
         value = self.render_value(value)
-        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        n = self.render_value(n)[0]
         if n > 0:
             # The first n bytes of the value
             return value[:n]
@@ -221,7 +243,7 @@ class Pattern(object):
     def move(self, value, n):
         """Move the value forward or backward by 'n' positions along the tape."""
         value = self.render_value(value)
-        n = int.from_bytes(self.render_value(n), byteorder="little", signed=True)
+        n = self.render_value(n)[0]
         return MovableBytes(value, pos=n)
 
     @Operator("random_choice")
@@ -234,22 +256,155 @@ class Pattern(object):
         """Produce a random number from (int)value to (int)value2"""
         return random.randint(value, value2)
 
+    @Operator("sequence")
+    def sequence(self, value, value2, stride=1):
+        """Produce the numbers from (int)value to (int)value2 inclusive, incrementing by stride"""
+        return [n for n in range(value, value2+1, stride)]
+
+    @Operator("gray_sequence")
+    def gray(self, value, value2, stride=1):
+        """Produce the gray codes from (int)value to (int)value2 inclusive"""
+        return [n ^ (n >> 1) for n in range(value, value2+1, stride)]
+
+    @Operator("monotonic_gray_sequence")
+    def monogray(self, value, value2):
+        """Produce a sequence of monotonic Gray codes"""
+        # from: https://sciyoshi.com/2010/12/gray-codes/
+        def rotate_right(x, n):
+            return x[-n:] + x[:-n]
+
+        @memoize
+        def pi(n):
+            if n <= 1:
+                return (0,)
+            x = pi(n - 1) + (n - 1,)
+            return rotate_right(tuple(x[k] for k in x), 1)
+
+        def p(n, j, reverse=False):
+            if n == 1 and j == 0:
+                if not reverse:
+                    yield (0,)
+                    yield (1,)
+                else:
+                    yield (1,)
+                    yield (0,)
+            elif j >= 0 and j < n:
+                perm = pi(n - 1)
+                if not reverse:
+                    for x in p(n - 1, j - 1):
+                        yield (1,) + tuple(x[k] for k in perm)
+                    for x in p(n - 1, j):
+                        yield (0,) + x
+                else:
+                    for x in p(n - 1, j, reverse=True):
+                        yield (0,) + x
+                    for x in p(n - 1, j - 1, reverse=True):
+                        yield (1,) + tuple(x[k] for k in perm)
+
+        def monotonic(n):
+            for i in range(n):
+                for x in (p(n, i) if i % 2 == 0 else p(n, i, reverse=True)):
+                    yield x
+
+        def bintuple(t):
+            return int("".join(map(str, t)), 2)
+
+        seq = list(map(bintuple, monotonic(8)))
+        return seq[value:value2+1]
+
     @Operator("text")
-    def text(self, value, font_name="small"):
-        # TODO render text from bdf fonts
-        pass
+    def text(self, value, font_name="smallcaps"):
+        """Render text using BDF fonts"""
+        value = self.substitute_args(value)
+        font_filename = os.path.join(FONT_PATH, "{}.bdf".format(font_name))
+        with open(font_filename, 'rb') as font_file:
+            # Read the BDF font description
+            bdf = BdfFontFile.BdfFontFile(font_file)
+
+            # PIL requires we write the font as a .pil file before it can be used
+            pil_filename = tempfile.mktemp(suffix=".pil")
+            bdf.save(pil_filename)
+            font = ImageFont.load(pil_filename)
+
+            # Make a new image just the right size for the text
+            line_w, line_h = font.getsize(value)
+            img = Image.new('1', (line_w, line_h), color=0)
+
+            # Write the text
+            ImageDraw.Draw(img).text((0, 0), value, font=font, fill=1)
+
+        os.unlink(pil_filename)
+        os.unlink(os.path.splitext(pil_filename)[0] + ".pbm")
+
+        if line_h <= 8:
+            y0 = 0
+            y1 = line_h
+            height = line_h
+        else:
+            # The vertical positioning of the text varies by font, but we want "automatic" layout.
+            # Scan the top and bottom of the bitmap to find and remove any blank lines.
+            (_, y0, _, y1) = img.getbbox()
+            height = y1 - y0
+
+        img = img.crop((0, y0, line_w, y1))
+
+        # Write the image as PNG for debugging
+        # img.save("tf.png")
+
+        # Read out the bits of the image, one column at a time, from the left.
+        # Result is returned as an array of integers.  They may be larger than a byte,
+        # but we want the full data to be available for shift() and other operations.
+        pixels = img.load()
+        result = []
+        for pos_x in range(line_w):
+            byte = 0
+            for pos_y in reversed(range(height)):
+                byte = (byte << 1) | pixels[pos_x, pos_y]
+            result.append(byte)
+        return result
+
+    @Operator("image")
+    def image(self, value, dither=None):
+        """Read bits out of a bitmap image file (in black-and-white, of course)"""
+        if dither:
+            dither = FLOYDSTEINBERG
+        value = self.substitute_path(value)
+        img = Image.open(value).convert("L").convert("1", dither=dither)
+        (width, height) = img.size
+        pixels = img.load()
+        result = []
+        for pos_x in range(width):
+            # Convert the whole column into a bitwise integer.  May be slow on large images.
+            byte = 0
+            for pos_y in reversed(range(height)):
+                byte = (byte << 1) | (pixels[pos_x, pos_y] & 1)
+            result.append(byte)
+        return result
+
+    @Operator("width")
+    def width(self, value):
+        """Return the width of the value in bits."""
+        if not isinstance(value, list):
+            return 8
+        # TODO
+        return 8
 
     def render_value(self, v):
         """
-        Produce bytes from the expression
+        Produce a list of integers, or 8-bit bytes, from the expression
         :param v: A part-name, or a simple value, or a string with a Python literal expression.
-        :return: Bytes.
+        :return: Integer array or bytes.
         """
         # Generate a list by evaluating the expression
         values = list(self.generate_value(v))
-        # Join them all
-        result = bytearray()
+        # Join them all to a list of integers (or bytes if that's what we have)
+        aresult = []
+        bresult = bytearray()
         for value in values:
+            if aresult:
+                result = aresult
+            else:
+                result = bresult
             if isinstance(value, MovableBytes):
                 # MovableBytes are bytes to be overlaid on the existing result, backed up by 'value.pos'
                 pos = min(value.pos, len(result) - 1)
@@ -257,10 +412,21 @@ class Pattern(object):
                 for j in range(0, min(pos, len(value))):
                     result[startpos + j] |= value[j]
                 result.extend(value[(pos):])
-            else:
-                # Bytes extend the result
+            elif isinstance(value, bytes):
                 result.extend(value)
-        return bytes(result)
+            else:
+                if bresult:
+                    # convert the bytearray so we can add integers to it, which might overflow the byte
+                    aresult = [int(b) for b in bresult]
+                    bresult = bytearray()
+                if isinstance(value, list):
+                    aresult.extend(value)
+                else:
+                    aresult.append(value)
+        if aresult:
+            return aresult
+        else:
+            return bytes(result)
 
     def generate_value(self, value):
         """
@@ -276,9 +442,14 @@ class Pattern(object):
         elif isinstance(value, bytes):
             yield value
         elif isinstance(value, int):
-            yield byte8(value)
+            yield value
         elif isinstance(value, str):
-            yield self.render_part(value)
+            try:
+                thing = self.render_part(value)
+            except SyntaxError:
+                # Uh, that's not the name of a part, it must be literally text
+                thing = value.encode("utf-8")
+            yield thing
         elif isinstance(value, dict):
             # Dictionary - key is numeric: a number of times that the value should be repeated
             # - negative numbers mean that the value is repeated in reverse
@@ -290,12 +461,14 @@ class Pattern(object):
                     if k > 0:
                         # Repeat the value 'k' times
                         for i in range(0, k):
-                            for v in list(self.generate_value(value[k])):
+                            values = list(self.generate_value(value.get(k)))
+                            for v in values:
                                 yield v
                     else:
                         # Repeat the rendering 'k' times with bytes reversed
                         for i in range(0, -k):
-                            yield self.render_value(value[k])[::-1]
+                            values = self.render_value(value.get(k))
+                            yield values[::-1]
                 else:
                     raise ValueError("Expected an integer key, not {}: {}".format(type(k), value))
         elif isinstance(value, tuple):
@@ -311,7 +484,6 @@ class Pattern(object):
             for val in value:
                 for v in list(self.generate_value(val)):
                     yield v
-#                yield val
         else:
             raise ValueError("Don't know how to render: {}".format(value))
 
@@ -330,7 +502,10 @@ class Pattern(object):
                 value = ast.literal_eval(key)
             except ValueError:
                 raise ValueError("The pattern has no part named '{}'".format(key))
-        return self.render_value(value)
+        bytes_or_ints = self.render_value(value)
+        if isinstance(bytes_or_ints, bytes):
+            return bytes_or_ints
+        return bytes([(v or 0) & 0xFF for v in bytes_or_ints])
 
 
 def list_patterns(ctx, param, value):
@@ -346,19 +521,27 @@ def list_patterns(ctx, param, value):
 
 @click.command()
 @click.argument("pattern", type=click.Path())
-@click.argument("part", default="pattern", required=False)
+@click.argument('words', nargs=-1, type=click.UNPROCESSED)
+@click.option("--part", default="pattern", required=False)
+@click.option("--all", is_flag=True)
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 @click.option("--list", is_flag=True, help="List the available patterns", is_eager=True, callback=list_patterns, expose_value=False)
-def main(pattern, part, test):
+def main(pattern, part, all, test, words):
     """
     Print patterns to punchtape.
     """
     # Load the pattern-definition file
-    patt = Pattern(pattern)
+    patt = Pattern(pattern, words=words)
 
-    # Render the named part from the file.
-    # Instead of a name, you can also supply a string containing a Python literal.
-    data = patt.render_part(part)
+    if all:
+        barray = bytearray()
+        for part in patt.parts():
+            barray.extend(patt.render_part(part))
+        data = bytes(barray)
+    else:
+        # Render the named part from the file.
+        # Instead of a name, you can also supply a string containing a Python literal.
+        data = patt.render_part(part)
 
     if not test:
         # Put the tty firmware into 'raw binary' mode
@@ -366,7 +549,7 @@ def main(pattern, part, test):
 
     if test:
         for byte in data:
-            sys.stdout.write("{:08b}\n".format(byte).replace("0", ".").replace("1", "*"))
+            sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
     else:
         sys.stdout.buffer.write(bytearray(data))
     if not test:

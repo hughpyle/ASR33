@@ -1,0 +1,7 @@
+{
+    "pattern": "mono",
+    "gray": ("gray_sequence", 0, 255),
+    "binary": ("sequence", 0, 255),
+    "fives": ("sequence", 0, 255, 5),
+    "mono": ("monotonic_gray_sequence", 0, 255)
+}
