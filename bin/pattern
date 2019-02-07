@@ -249,7 +249,15 @@ class Pattern(object):
     @Operator("random_choice")
     def random_choice(self, value):
         """Choose one from a list"""
+        value = self.render_value(value)
         return random.choice(value)
+
+    @Operator("random_shuffle")
+    def random_shuffle(self, value):
+        """Produce the elements of a list in random order"""
+        value = self.render_value(value)
+        random.shuffle(value)
+        return value
 
     @Operator("random")
     def random(self, value, value2):

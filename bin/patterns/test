@@ -41,6 +41,12 @@
         None,
         {("random", 0, 256): 0xAA},
     ],
+    "test_choice": [
+        {10: ("random_choice", ("sequence", 0, 255))},
+    ],
+    "test_shuffle": [
+        ("random_shuffle", ("sequence", 0, 255)),
+    ],
     "test_text": [
         ("squeeze", ("text", "hello")),
         ("invert", ("mirror", ("shift", ("text", "hello", "small"), 3))),
