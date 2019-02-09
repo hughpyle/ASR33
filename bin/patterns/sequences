@@ -3,5 +3,12 @@
     "gray": ("gray_sequence", 0, 255),
     "binary": ("sequence", 0, 255),
     "fives": ("sequence", 0, 255, 5),
-    "mono": ("monotonic_gray_sequence", 0, 255)
+    "mono": ("monotonic_gray_sequence", 0, 255),
+    "fade": {5: [
+        ("random_bits", ("sequence", 0, 255, 4)),
+        ("random_bits", ("sequence", 255, 0, -4))
+    ]},
+    "fire": {100: [
+        ("random_fire", 8),
+    ]}
 }

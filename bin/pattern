@@ -59,6 +59,7 @@ import sys
 import ast
 import types
 import random
+import math
 import tempfile
 import click
 from PIL import Image, ImageFont, ImageDraw, BdfFontFile
@@ -90,6 +91,11 @@ def byte9(value):
     """Convert a 9-bit value to a byte.  The 4th bit is the "tape track" and gets dropped."""
     value = ((value & 0b111110000) >> 1) + (value & 0b111)
     return int.to_bytes(value & 0xFF, 1, byteorder="little")
+
+
+def random_bit(prob):
+    """A random bit with a given probability"""
+    return random.choices([0, 1], weights=[1-prob, prob])[0]
 
 
 class MovableBytes(bytes):
@@ -259,14 +265,36 @@ class Pattern(object):
         random.shuffle(value)
         return value
 
+    @Operator("random_bits")
+    def random_bits(self, value):
+        """Produce a random number with 'value/256' probability of each bit being set"""
+        value = self.render_value(value)
+        data = bytearray()
+        for val in value:
+            byte = 0
+            for bit in range(0, 8):
+                byte = byte << 1
+                byte |= random_bit(val/256)
+            data.append(byte & 0xFF)
+        return bytes(data)
+
+    @Operator("random_fire")
+    def random_fire(self, value):
+        """Produce a random number with growing probability of each bit being set"""
+        byte = 0
+        for val in range(0, value, int(math.copysign(1, value))):
+            byte = byte << 1
+            byte |= random_bit(val/value)
+        return byte
+
     @Operator("random")
     def random(self, value, value2):
-        """Produce a random number from (int)value to (int)value2"""
+        """Produce a random integer from (int)value to (int)value2"""
         return random.randint(value, value2)
 
     @Operator("sequence")
     def sequence(self, value, value2, stride=1):
-        """Produce the numbers from (int)value to (int)value2 inclusive, incrementing by stride"""
+        """Produce the integers from (int)value to (int)value2 inclusive, incrementing by stride"""
         return [n for n in range(value, value2+1, stride)]
 
     @Operator("gray_sequence")
