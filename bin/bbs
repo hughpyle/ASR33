@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 log_user 0
 set timeout 3600
-spawn telnet bbs.fozztexx.com
+spawn telnetlib3-client --speed 110 --encoding US-ASCII bbs.fozztexx.com
 expect "User:"
 send "$env(BBSUSER)\n"
 expect "Password:"
