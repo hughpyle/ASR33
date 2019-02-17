@@ -3,6 +3,16 @@
     "pattern": [{5:None}, {3: [None, "heart", None, "slim_solid"]}, None, "heart", {15:None}],
     "pattern2": [{5:None}, {3: [None, "heart", None, "solid"]}, None, "heart", {15:None}],
     "small_pattern": [{5:None}, {4: [None, "small", None, None, "small_solid", None]}, None, "small", {15:None}],
+    "long": [
+        {4: [
+            "small_pattern",
+            ("text", "LOVE"),
+            {10: None},
+            "pattern",
+            ("shift9", ("text", "LOVE", "chicago"), 0),
+            {10: None},
+        ]},
+    ],
     "heart": [
         0b00001110,
         0b00010001,
