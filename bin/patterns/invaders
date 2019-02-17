@@ -18,6 +18,33 @@
         ("shift9", "credit01", 1),
         {40: None}
     ],
+    "long": [ {15: None},
+      {2: [
+        {7: ["invader3a", {9: None}]},
+        {12: None},
+        {7: ["invader2a", {4: None}]},
+        {12: None},
+        {7: ["invader1a", {6: None}]},
+        {18: None},
+        "ship",
+        {24: None},
+        {7: ["invader3b", {9: None}]},
+        {12: None},
+        {7: ["invader2b", {4: None}]},
+        {12: None},
+        {7: ["invader1b", {6: None}]},
+        {18: None},
+        "base",
+        {24: None},
+      ]},
+      [
+        {7: ["invader3a", {9: None}]},
+        {12: None},
+        {7: ["invader2a", {4: None}]},
+        {12: None},
+        {7: ["invader1a", {6: None}]},
+      ]
+    ],
     "invader1a": [
         0b01110000,
         0b00011000,
