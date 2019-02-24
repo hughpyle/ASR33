@@ -29,6 +29,7 @@ correlation instead of min().
 Take care that empty image regions pick the "space" character!
 """
 
+import os
 import sys
 import json
 import numpy as np

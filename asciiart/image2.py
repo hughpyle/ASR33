@@ -180,12 +180,16 @@ def render(fd, outfile, indent=0):
             line1 = line1 + char[0]
             line2 = line2 + char[1]
 
-        print(line1 + " " + line2)
+        if outfile != "-":
+            print(line1 + " " + line2)
 
         # Don't forget to strip trailing spaces from each line, they just waste time!
         result.append((" " * indent) + line1.rstrip() + "\r" + (" " * indent) + line2.rstrip())
 
     # Write a text file with all the iterations
+    if outfile == "-":
+        outfile = 1
+
     with io.open(outfile, "wb") as f:
         f.write("\r\n".join(result).encode("utf-8"))
         f.write(b"\r\n")
@@ -202,8 +206,9 @@ def render(fd, outfile, indent=0):
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='Gamma correction')
 @click.option('--indent', default=0, help='Indent with spaces')
+@click.option('--output', help='Output filename')
 @click.argument('filename')
-def main(filename, width, invert, gamma, indent):
+def main(filename, width, invert, gamma, indent, output):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
@@ -213,7 +218,9 @@ def main(filename, width, invert, gamma, indent):
     hog_fd = process(img)
 
     # Map to ASCII
-    render(hog_fd, filename + ".txt", indent)
+    if not output:
+        output = filename + ".txt"
+    render(hog_fd, output, indent)
 
 
 if __name__ == "__main__":

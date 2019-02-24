@@ -15,8 +15,11 @@ alias text='stty sane && tput reset'
 # For "pass-thru binary" mode, set raw stty (no NL->CRNL, etc) and also send the custom escape to set the firmware into raw mode
 alias binary='stty raw && echo "\033[?7l\033_ab\234"'
 
+# Modified python telnet client
+alias telnet='telnetlib3-client --speed 110 --encoding US-ASCII'
 
 # Other aliases
+alias ed='ed -p"* "'
 alias zork='dfrotz -r 72 -p -d ~/.games/zork1.dat'
 alias tw='twitter --length 1'
 alias ll='ls -ll'
