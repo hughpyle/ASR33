@@ -1,0 +1,90 @@
+learn 'ed'
+twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
+news e.g. headlines from reuters or somewhere
+twitter background subscribe -> to print queue
+sms send
+sms receive -> to print queue
+slack bot
+reddit reader
+weather report app
+
+
+finish print services:	
+
+   lpadmin -E -p tempfile -v 2file:/tmp/tempfile.prn -m drv:///tty.drv/tty.ppd
+
+    find whether login-shell is topmost
+       find pid of the login shell:
+        
+        # The login-shell args begins with dash
+        loginpid=$((ps -t /dev/ttyACM9 -o args -o pid 2>/dev/null || echo "nope") | grep '^-' | awk '{print $2;}')
+
+        # Find any processes that are child of this pid
+        pgrep -P $loginpid && ...stuff...
+
+
+    backend/filter into
+
+    Go for "bold"
+
+    custom backend
+        lpadmin -p teletype3 -E -v tty:/dev/ttyACM0 -m drv:///tty.drv/tty.ppd
+    - report status ("other", "busy (interactve)")
+    - test with: lpstat -v
+
+
+"print from Word" doesn't work yet
+    it sends a postscript doc to the server
+    it sends a pdf that gets rasterized by ghostscript and whatevs, fails
+    should send plaintext
+    or at least, catch pdf and get it into plaintext
+
+    finish mime.types
+        /usr/share/cups/mime/mime.convs
+        /usr/share/cups/mime/mime.types
+
+
+look for "is the process 'bash' the login process" (i.e. the shell is on top)
+    then look for "idle > 1m" 
+    then unblock the print queue.
+
+    maybe to block and unblock, use ipptool
+        #!/usr/bin/env ipptool -tv ipp://localhost/printers/your_queue
+        {
+                OPERATION Resume-Printer
+                GROUP operation-attributes-tag
+                ATTR charset attributes-charset utf-8
+                ATTR language attributes-natural-language en
+                ATTR uri printer-uri $uri
+        }
+
+
+potentially, the cache image would be wiped out (although I don't yet understand when the cache clears)
+    ln -s the cachefile instead of installing it there
+    then recreate every time the filter backend is run
+
+
+-------------------------------------------------------------------------------------------------------
+
+. CUPS icon
+    PPD file: 
+        APPrinterIconPath (MacOS extension)
+        *APPrinterIconPath: "/Library/Printers/vendor/filename.icns"
+        This keyword defines the location of a printer icon file to use when displaying the printer. The file must be in the Apple icon format.
+        - doesn't work in rpi cups (Apple extension)
+    ippfind
+    ipptool -tv ipp://upstairs.local:631/printers/teletype get-printer-attributes.test
+        Get-Printer-Attributes
+            printer-icons (uri) = http://upstairs.local:631/icons/teletype.png
+            (128x128 png, 8-bit sRGB)
+    /var/cache/cups/teletype.png
+        (just name it for the cups printer destination)
+
+
+. python tape: termios set raw while it runs
+
+# incoming spool... background... only when idle
+# internet-visible url to post to spool...
+
+
+
