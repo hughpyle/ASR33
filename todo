@@ -1,5 +1,12 @@
-learn 'ed'
+clear the screen
+practice 'ed'
 twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
+  set the stream title to ~/.project when startup
+  !bell
+  !editor
+  !whatamidoing
+  - new base: pip install git+https://github.com/TwitchIO/TwitchIO.git
+
 news e.g. headlines from reuters or somewhere
 twitter background subscribe -> to print queue
 sms send
