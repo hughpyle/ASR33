@@ -5,6 +5,15 @@ export PS1='% '
 stty brkint
 
 # default terminal settings
+if [ "$(tty)" == "/dev/ttyACM0" ]; then
+  # use the standard editor
+  export EDITOR=ed
+  alias vi='echo "ed is the standard editor for"'
+else
+  export EDITOR=vim
+fi
+
+# TERM is set by the getty but I want to have it set for other terminals for experimentation
 export COLUMNS=72
 export TERM=tty33-amx
 
@@ -25,4 +34,5 @@ alias tw='twitter --length 1'
 alias ll='ls -ll'
 alias fig='pyfiglet -w 72'
 alias banner='printerbanner -w 72'
+alias clear='tput clear'
 
