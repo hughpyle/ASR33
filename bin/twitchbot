@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Based on (link below) which is copyright (c) 2017-2019 TwitchIO
+# https://github.com/TwitchIO/TwitchIO/blob/rewrite/examples/subclass_bot.py
+
+import click
+from twitchio.ext import commands
+
+
+class Bot(commands.Bot):
+
+    def __init__(self, irctok=None, apitok=None, nick=None, ch=None):
+        super().__init__(
+            irc_token=irctok,
+            api_token=apitok,
+            nick=nick,
+            prefix='!',
+            initial_channels=[ch]
+        )
+
+    # Events don't need decorators when subclassed
+    async def event_ready(self):
+        print(f'Ready | {self.nick}')
+
+    async def event_message(self, message):
+        print(message.author.name + ": " + message.content)
+        await self.handle_commands(message)
+
+    # Commands use a different decorator
+    @commands.command(name='test')
+    async def my_command(self, ctx):
+        await ctx.send(f'Hello {ctx.author.name}!')
+
+
+@click.command()
+@click.option("--token", envvar='TWITCH_TOKEN', required=True)
+@click.option("--nick", envvar='TWITCH_NICK', required=True)
+@click.option("--ch", envvar='TWITCH_CHANNEL', required=True)
+def main(token, nick, ch):
+    if not token.startswith("oauth:"):
+        print("Token should be 'oauth:xxxx'")
+        sys.exit(1)
+    bot = Bot(irctok=token, apitok=token, nick=nick, ch=ch)
+    bot.run()
+
+
+if __name__ == "__main__":
+    main()
