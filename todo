@@ -7,6 +7,7 @@ twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
   !whatamidoing
   - new base: pip install git+https://github.com/TwitchIO/TwitchIO.git
 
+dig into the getty and login and /etc/issue
 news e.g. headlines from reuters or somewhere
 twitter background subscribe -> to print queue
 sms send
