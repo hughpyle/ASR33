@@ -31,7 +31,7 @@ class Bot(commands.Bot):
         print(f'Ready | {self.nick}')
 
     async def event_message(self, message):
-        if not message.content.startswith("!"):
+        if not (self.quiet or message.content.startswith("!")):
             print(message.author.name + ": " + message.content)
         await self.handle_commands(message)
 
@@ -49,7 +49,7 @@ class Bot(commands.Bot):
 @click.option("--token", envvar='TWITCH_TOKEN', required=True)
 @click.option("--nick", envvar='TWITCH_NICK', required=True)
 @click.option("--ch", envvar='TWITCH_CHANNEL')
-@click.option("--quiet", "-q", default=False, help="quiet mode")
+@click.option("--quiet", "-q", is_flag=True, default=False, help="quiet mode")
 def main(token, nick, ch, quiet):
     if not token.startswith("oauth:"):
         print("Token should be 'oauth:xxxx'")
