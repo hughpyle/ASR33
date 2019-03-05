@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+"""
+set the tty to be group-writeable, like mesg(1),
+when the following conditions are true:
+1- the foreground process is the login shell,
+   so the user isn't busy with something else;
+2- the user has been idle for at least some
+   specified number of seconds (commandline arg).
+This can just be run in background, i.e.
+in your login script, 'automesg &'
+
+This is probably linux-only due to reading
+the "/proc/.../cmdline"
+"""
+
+import os
+import sys
+import stat
+import time
+from datetime import datetime
+
+
+def main():
+    fd = 1  # work with the tty attached to stdout of this process
+    try:
+        idletime = int(sys.argv[1])
+    except(ValueError, IndexError):
+        idletime = 10
+
+    while 1:
+        time.sleep(1)
+        ok_to_mesg = False
+
+        # Check whether the terminal is idle
+        lasttime = os.fstat(fd).st_mtime
+        difftime = datetime.now() - datetime.fromtimestamp(lasttime)
+        if difftime.seconds >= idletime:
+            # Check whether the login shell is in the foreground.
+            # First get the group-PID of the foreground process
+            fg_pid = os.tcgetpgrp(fd)
+            # The "login shell" process commandline starts with "-"
+            with open("/proc/{}/cmdline".format(fg_pid)) as proc:
+                if proc.readline().startswith("-"):
+                    ok_to_mesg = True
+
+        # OK, let's make the tty group-writeable or not
+        mode = os.fstat(fd).st_mode
+        if ok_to_mesg:
+            mode |= stat.S_IWGRP
+        else:
+            mode &= ~stat.S_IWGRP
+        if mode != os.fstat(fd).st_mode:
+            os.fchmod(fd, mode)
+#            if ok_to_mesg:
+#                print("hey idler!")
+            # By changing the mode, we just reset the last-modification
+            # time! Don't check again for another (idletime) seconds.
+            time.sleep(idletime)
+
+
+if __name__ == "__main__":
+    main()
