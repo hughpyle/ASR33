@@ -1,11 +1,22 @@
-practice 'ed'
+talk about mesg, write, who -w, (etc) (and finger)
+    src/util-linux/term-utils
+
 twitchbot:
+  !bell to stderr (without any mesg checking)
+  other messages to stdout (with mesg checking)
   !whatamidoing or !task -> report contents of ~/.project
   await asyncio.ensure_future(mesg())?
   async def mesg():
-    # Sleep until the tty is group-writable
+      # Sleep until the tty is group-writable
+      while not (os.fstat(1).st_mode & stat.S_IWGRP):
+          asyncio.sleep(1)
 
+talk about
 dig into the getty and login and /etc/issue
+    make the getty non-automatic again
+
+firmware to slash->uppercase
+
 news e.g. headlines from reuters or somewhere
 twitter background subscribe -> to print queue
 sms send
@@ -111,3 +122,4 @@ x look for "is the process 'bash' the login process" (i.e. the shell is on top)
         (no, just loop and sleep)
 . twitchbot: !bell
 x twitchbot: set the stream title to ~/.project when startup
+. practice 'ed'
