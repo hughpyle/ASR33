@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-set the tty to be group-writeable, like mesg(1),
+Set the tty to be group-writeable, like mesg(1),
 when the following conditions are true:
 1- the foreground process is the login shell,
    so the user isn't busy with something else;
@@ -59,4 +59,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Detach and run in the background
+    if not os.fork():
+        try:
+            main()
+        finally:
+            os._exit(os.EX_OK)

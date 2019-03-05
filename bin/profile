@@ -36,3 +36,6 @@ alias fig='pyfiglet -w 72'
 alias banner='printerbanner -w 72'
 alias clear='tput clear'
 
+# do 'mesg' automatically when idle
+~/asr33/bin/automesg
+
