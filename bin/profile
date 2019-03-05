@@ -15,7 +15,7 @@ fi
 
 # TERM is set by the getty but I want to have it set for other terminals for experimentation
 export COLUMNS=72
-export TERM=tty33-amx
+# export TERM=tty33-amx
 
 
 # For "cooked" mode, just reset
@@ -37,5 +37,5 @@ alias banner='printerbanner -w 72'
 alias clear='tput clear'
 
 # do 'mesg' automatically when idle
-~/asr33/bin/automesg
+automesg 30 &
 

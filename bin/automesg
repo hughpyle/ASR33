@@ -59,9 +59,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # Detach and run in the background
-    if not os.fork():
-        try:
-            main()
-        finally:
-            os._exit(os.EX_OK)
+    main()
