@@ -1,11 +1,9 @@
-clear the screen
 practice 'ed'
-twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
-  set the stream title to ~/.project when startup
-  !bell
-  !editor
-  !whatamidoing
-  - new base: pip install git+https://github.com/TwitchIO/TwitchIO.git
+twitchbot:
+  !whatamidoing or !task -> report contents of ~/.project
+  await asyncio.ensure_future(mesg())?
+  async def mesg():
+    # Sleep until the tty is group-writable
 
 dig into the getty and login and /etc/issue
 news e.g. headlines from reuters or somewhere
@@ -19,17 +17,9 @@ weather report app
 
 finish print services:	
 
-   lpadmin -E -p tempfile -v 2file:/tmp/tempfile.prn -m drv:///tty.drv/tty.ppd
+    lpadmin -E -p tempfile -v 2file:/tmp/tempfile.prn -m drv:///tty.drv/tty.ppd
 
-    find whether login-shell is topmost
-       find pid of the login shell:
-        
-        # The login-shell args begins with dash
-        loginpid=$((ps -t /dev/ttyACM9 -o args -o pid 2>/dev/null || echo "nope") | grep '^-' | awk '{print $2;}')
-
-        # Find any processes that are child of this pid
-        pgrep -P $loginpid && ...stuff...
-
+    only if mesg()
 
     backend/filter into
 
@@ -51,11 +41,7 @@ finish print services:
         /usr/share/cups/mime/mime.convs
         /usr/share/cups/mime/mime.types
 
-
-look for "is the process 'bash' the login process" (i.e. the shell is on top)
-    then look for "idle > 1m" 
-    then unblock the print queue.
-
+unblock the print queue depending on mesg()
     maybe to block and unblock, use ipptool
         #!/usr/bin/env ipptool -tv ipp://localhost/printers/your_queue
         {
@@ -93,6 +79,35 @@ potentially, the cache image would be wiped out (although I don't yet understand
 
 # incoming spool... background... only when idle
 # internet-visible url to post to spool...
-
-
-
+. clear the screen
+. twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
+    - new base: pip install git+https://github.com/TwitchIO/TwitchIO.git
+x look for "is the process 'bash' the login process" (i.e. the shell is on top)
+    then look for "idle > 1m" 
+    then unblock the print queue.
+. "automesg": 
+    background job that does mesg() automatically so 
+    don't print unless
+        "the login shell is foreground"
+        and "tty has been idle for a while"
+    w -> idletime
+        os.stat("/dev/ttyACM0"), or os.fstat(1) or 2) -> time of last input
+    w -> "foreground process"
+        os.tcgetpgrp(fd) -> pid for the foreground process
+    is it the login shell?
+        /proc/xxx/cmdline begins with "-"
+        with open("/proc/521/cmdline") as proc:
+            if proc.readline().startswith("-"):
+                is_login = bool(1)
+    use this to set
+        like "mesg"
+            tty is group-writeable
+            (so other people can send you messages)
+        mode = os.stat(1).st_mode
+        if not mode & stat.S_IWGRP:
+            os.chmod(1, mode | stat.S_IWGRP)
+    inotify so we see when the writeable flag changes
+        (or any attrib)
+        (no, just loop and sleep)
+. twitchbot: !bell
+x twitchbot: set the stream title to ~/.project when startup
