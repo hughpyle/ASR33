@@ -1,8 +1,13 @@
-talk about mesg, write, who -w, (etc) (and finger)
+automesg check isatty for stderr, stdin, stdout
+automesg check atime/mtime/ctime
+automesg check S_IWOTH as well as GRP
+good stuff here: http://tilde.club/~phooky/logging_wall.html
+
+talk about mesg, write, who -w, wall, (etc) (and finger)
     src/util-linux/term-utils
 
 twitchbot:
-  !bell to stderr (without any mesg checking)
+  . !bell to stderr (without any mesg checking)
   other messages to stdout (with mesg checking)
   !whatamidoing or !task -> report contents of ~/.project
   await asyncio.ensure_future(mesg())?
@@ -11,11 +16,15 @@ twitchbot:
       while not (os.fstat(1).st_mode & stat.S_IWGRP):
           asyncio.sleep(1)
 
-talk about
 dig into the getty and login and /etc/issue
     make the getty non-automatic again
 
 firmware to slash->uppercase
+
+tour of the CDC6500, and Fortran
+punchtape input (fix the firmware flakiness first)
+tour of the LambdaMoo
+tour of the PRIMOS emulators
 
 news e.g. headlines from reuters or somewhere
 twitter background subscribe -> to print queue
