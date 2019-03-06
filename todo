@@ -1,4 +1,4 @@
-automesg check isatty for stderr, stdin, stdout
+automesg check os.isatty(fd) for stderr, stdin, stdout
 automesg check atime/mtime/ctime
 automesg check S_IWOTH as well as GRP
 good stuff here: http://tilde.club/~phooky/logging_wall.html
@@ -18,6 +18,8 @@ twitchbot:
 
 dig into the getty and login and /etc/issue
     make the getty non-automatic again
+
+dig into termios and stty, and anything we can move out of firmware
 
 firmware to slash->uppercase
 
