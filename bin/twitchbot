@@ -24,22 +24,32 @@ class Bot(commands.Bot):
             prefix='!',
             initial_channels=[ch]
         )
+        self.channel = ch
         self.quiet = quiet
 
-    # Events don't need decorators when subclassed
+    # Handle the "ready" event
     async def event_ready(self):
-        print(f'Ready | {self.nick}')
+        print(f'[twitch {self.channel}] Ready.')
 
+    # Handle the "message" event
     async def event_message(self, message):
         if not (self.quiet or message.content.startswith("!")):
-            print(message.author.name + ": " + message.content)
+            print(f'[twitch {self.channel}] {message.author.name}: {message.content}')
         await self.handle_commands(message)
 
-    # Commands use a different decorator
+    # Handle errors, and report 'no such command' to the author
+    async def event_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.send('{}'.format(error))
+        else:
+            await super().event_command_error(ctx, error)
+
+    # Command: !test
     @commands.command(name='test')
     async def my_command(self, ctx):
         await ctx.send(f'Hello {ctx.author.name}!')
 
+    # Command: !bell - ring the bell on stderr
     @commands.command(name='bell')
     async def bell_command(self, ctx):
         sys.stderr.write(chr(7))

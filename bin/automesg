@@ -31,7 +31,9 @@ def main():
         time.sleep(1)
         ok_to_mesg = False
 
-        # Check whether the terminal is idle
+        # Check whether the terminal is idle:
+        # - mtime: last time there was input at the tty
+        # - atime: last time there was input or output at the tty
         lasttime = os.fstat(fd).st_mtime
         difftime = datetime.now() - datetime.fromtimestamp(lasttime)
         if difftime.seconds >= idletime:
