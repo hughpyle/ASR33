@@ -4,9 +4,18 @@
 # Based on (link below) which is copyright (c) 2017-2019 TwitchIO
 # https://github.com/TwitchIO/TwitchIO/blob/rewrite/examples/subclass_bot.py
 
+import os
+import stat
 import sys
 import click
+import asyncio
 from twitchio.ext import commands
+
+
+async def wait_for_mesg():
+    # sleep until the tty is group-writeable
+    while not (os.fstat(1).st_mode & stat.S_IWGRP):
+        await asyncio.sleep(1)
 
 
 class Bot(commands.Bot):
@@ -34,6 +43,7 @@ class Bot(commands.Bot):
     # Handle the "message" event
     async def event_message(self, message):
         if not (self.quiet or message.content.startswith("!")):
+            await asyncio.ensure_future(wait_for_mesg())
             print(f'[twitch {self.channel}] {message.author.name}: {message.content}')
         await self.handle_commands(message)
 
