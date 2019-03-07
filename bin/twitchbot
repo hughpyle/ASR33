@@ -62,7 +62,8 @@ class Bot(commands.Bot):
     # Command: !bell - ring the bell on stderr
     @commands.command(name='bell')
     async def bell_command(self, ctx):
-        sys.stderr.write(chr(7))
+        # Don't wait for mesg(). Also flush stderr (because python3!)
+        print(chr(7), end="", file=sys.stderr, flush=True)
 
 
 @click.command()
