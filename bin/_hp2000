@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+# log_user 0
+set timeout 3600
+spawn telnet hp2000.brighton.ac.uk
+expect "GANDALF"
+sleep 0.5
+send "\r\n"
+expect "PLEASE LOG IN"
+send "HELLO-T001,HP2000\n"
+expect "Welcome"
+# log_user 1
+interact
+

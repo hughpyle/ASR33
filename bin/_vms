@@ -1,0 +1,10 @@
+#!/usr/bin/expect -f
+# Interactive access to the VMS system USER@eisner.decus.org
+log_user 0
+set timeout 3600
+spawn ssh $env(VMS_ADDRESS)
+log_user 1
+expect "password:"
+send "$env(VMS_PASSWORD)\n"
+interact
+

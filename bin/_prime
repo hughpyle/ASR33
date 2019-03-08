@@ -4,10 +4,10 @@ set timeout 3600
 spawn telnet em.prirun.com 8001
 expect {
 	"Login please." {
-            send "login $env(PRISUER)\r"
+            send "login $env(PRI_USERNAME)\r"
             exp_continue
 	} "Password?" {
-	    send "$env(PRIPASS)\r"
+	    send "$env(PRI_PASSWORD)\r"
 	    exp_continue
         } "Welcome to PRIMOS" {
             log_user 1
