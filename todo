@@ -1,20 +1,29 @@
+hardware lid off
+getty and login and /etc/issue
+    https://github.com/karelzak/util-linux/blob/master/term-utils/agetty.c
+    https://github.com/shadow-maint/shadow/blob/master/src/login.c
+
+make getty non-automatic
+dig into termios and stty, and anything we can move out of firmware
+    https://github.com/coreutils/coreutils/blob/master/src/stty.c
+    https://github.com/torvalds/linux/tree/master/drivers/tty
+
 twitchbot:
   . !bell to stderr (without any mesg checking)
-  !whatamidoing or !task -> report contents of ~/.project
+  !task -> report contents of ~/.project
   input (from file? from stdin?) to make it an interactive client
-
-dig into the getty and login and /etc/issue
-    make the getty non-automatic again
 
 dig into termios and stty, and anything we can move out of firmware
 
 firmware to slash->uppercase
-hardware lid off
 tour of the CDC6500, and Fortran
 punchtape input (fix the firmware flakiness first)
 tour of the LambdaMoo
 tour of the PRIMOS emulators
 tour of the VAX
+pdp7-unix0 for 50th anniv
+    https://github.com/DoctorWkt/pdp7-unix/blob/master/README.md
+
 google search
 clipboard
 news e.g. headlines from reuters or somewhere
