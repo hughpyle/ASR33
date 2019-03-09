@@ -1,13 +1,3 @@
-hardware lid off
-getty and login and /etc/issue
-    https://github.com/karelzak/util-linux/blob/master/term-utils/agetty.c
-    https://github.com/shadow-maint/shadow/blob/master/src/login.c
-
-make getty non-automatic
-dig into termios and stty, and anything we can move out of firmware
-    https://github.com/coreutils/coreutils/blob/master/src/stty.c
-    https://github.com/torvalds/linux/tree/master/drivers/tty
-
 twitchbot:
   . !bell to stderr (without any mesg checking)
   !task -> report contents of ~/.project
@@ -147,3 +137,11 @@ x automesg check S_IWOTH as well as GRP
       # Sleep until the tty is group-writable
       while not (os.fstat(1).st_mode & stat.S_IWGRP):
           asyncio.sleep(1)
+. hardware lid off
+. getty and login and /etc/issue
+    https://github.com/karelzak/util-linux/blob/master/term-utils/agetty.c
+    https://github.com/shadow-maint/shadow/blob/master/src/login.c
+. make getty non-automatic
+. dig into termios and stty, and anything we can move out of firmware
+    https://github.com/coreutils/coreutils/blob/master/src/stty.c
+    https://github.com/torvalds/linux/tree/master/drivers/tty
