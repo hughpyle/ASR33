@@ -3,8 +3,13 @@ twitchbot:
   !task -> report contents of ~/.project
   input (from file? from stdin?) to make it an interactive client
 
+coral; serial console
+  https://coral.withgoogle.com/tutorials/devboard/
+  http://0pointer.de/blog/projects/serial-console.html
+
 dig into termios and stty, and anything we can move out of firmware
 
+night mode
 firmware to slash->uppercase
 tour of the CDC6500, and Fortran
 punchtape input (fix the firmware flakiness first)
@@ -13,6 +18,9 @@ tour of the PRIMOS emulators
 tour of the VAX
 pdp7-unix0 for 50th anniv
     https://github.com/DoctorWkt/pdp7-unix/blob/master/README.md
+sdf.org shell
+    compare menu-driven & command-driven
+cloud shell (goog or azure)
 
 google search
 clipboard
