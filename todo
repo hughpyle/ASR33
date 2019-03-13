@@ -1,11 +1,13 @@
-twitchbot:
-  . !bell to stderr (without any mesg checking)
-  !task -> report contents of ~/.project
-  input (from file? from stdin?) to make it an interactive client
+www
 
 coral; serial console
   https://coral.withgoogle.com/tutorials/devboard/
   http://0pointer.de/blog/projects/serial-console.html
+
+twitchbot:
+  . !bell to stderr (without any mesg checking)
+  !task -> report contents of ~/.project
+  input (from file? from stdin?) to make it an interactive client
 
 dig into termios and stty, and anything we can move out of firmware
 

@@ -1,17 +1,23 @@
 {
     "comment": "for twitch.tv ident video",
+    "part0": [
+        {10: None},
+        ("shift", ("text", "READY...", "small"), 3),
+        {10: None},
+    ],
     "part1": [
         {10: None},
-        ("text", "WAITING...", "smallcaps"),
+        ("shift", ("text", "WAITING...", "small"), 3),
         {10: None},
     ],
     "part2": [
-        ("text", "CONNECTING...", "smallcaps"),
+        ("shift", ("text", "CONNECTING...", "small"), 3),
         {10: None},
     ],
     "part3": [
         ("shift9", ("text", "/DEV/TTY", "mod3270"), 0),
-        ("text", "  ONLINE IN ", "smallcaps"),
+        ("shift", ("text", "  going online in ", "small"), 1),
+        {10: None},
         ("shift9", [
             ("text", "5", "6x13"), {4: None},
             ("text", "4", "6x13"), {4: None},
@@ -20,11 +26,12 @@
             ("text", "1", "6x13"), {4: None},
             ], 
         0),
+        {7: [7, 0]},
         {10: None},
     ],
     "pattern": [
         "part1",
         "part2",
         "part3"
-    ]
+    ],
 }
