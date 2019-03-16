@@ -1,4 +1,5 @@
 getty and ssh on the coral
+night-mode teletype
 
 twitchbot:
   . !bell to stderr (without any mesg checking)
