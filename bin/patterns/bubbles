@@ -1,11 +1,11 @@
-{
+<
     "pattern": ("squeeze",
-    {50:
+    <50:
         ("move",
             ("shift9", "choose", ("random", -5, 5)),
             1 # ("random", 0, 3)
         )
-    }),
+    >),
     "choose": [
         ("random_choice",
             [# "bub1", "bub1", "bub1",
@@ -73,4 +73,4 @@
         0b01000010,
         0b00111100
     ],
-}
+>

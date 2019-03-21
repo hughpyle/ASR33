@@ -1,15 +1,15 @@
-{
+<
     "pattern": [
-        {5: None},
-        {3: ["skull", None, "bones", None]},
+        < 5: None >,
+        < 3: ["skull", None, "bones", None] >,
         "skull",
-        {15: None}
+        < 15: None >
     ],
     "just_skulls": [
-        {5: None},
-        {6: ["skull", None, None]},
+        < 5: None >,
+        < 6: ["skull", None, None] >,
         "skull",
-        {15: None}
+        < 15: None >
     ],
 
     "skull": [
@@ -46,4 +46,4 @@
         0b01010000
     ]
 
-}
+>

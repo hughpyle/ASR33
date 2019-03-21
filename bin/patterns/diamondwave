@@ -1,8 +1,8 @@
-{
+<
 "pattern": [
-    {1: "diamondwave"},
+    < 1: "diamondwave" >,
     None,
-    {-1: "diamondwave"},
+    < -1: "diamondwave" >,
     None
 ],
 "diamondwave": [
@@ -54,4 +54,4 @@
     0b00000000,
     0b00000001
     ]
-}
+>

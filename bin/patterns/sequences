@@ -1,4 +1,4 @@
-{
+<
     "pattern": "mono",
     "gray": ("gray_sequence", 0, 255),
     "binary": ("sequence", 0, 255),
@@ -7,14 +7,14 @@
     "fade": [
         ("random_bits", ("sequence", 0, 255, 4)),
         ("random_bits", ("sequence", 255, 0, -4)),
-        {10: None}
+        <10: None>
     ],
     "fade1": [
         ("random_bits", ("sequence", 0, 255, 3)),
-        {10: None}
+        <10: None>
     ],
-    "fire": {100: [
+    "fire": <100: [
         ("random_fire", 8),
-    ]},
+    ]>,
     "fire1": ("mirror", "fire")
-}
+>

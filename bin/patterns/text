@@ -1,5 +1,8 @@
-{
+<
     "pattern": [
-        ("text", "welcome $*!")
+        ("shift9", ("text", "$*"), 0)
+    ],
+    "inverted": [
+        ("invert", ("shift9", ("text", "$*"), 0))
     ]
-}
+>

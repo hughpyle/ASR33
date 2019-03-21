@@ -1,48 +1,48 @@
-{
+<
     "comment": "https://twitter.com/ef1j95/status/1088836086535806976 and https://www.reddit.com/r/joyetechlogos/comments/4hz7nj/space_invaders_full_set/ and http://knitty.com/ISSUEspring07/PATTbmp.html",
     "pattern": [
-        {5: None}, {2: ["invader1a", {3:None}, "invader1b", {3:None}]}, "invader1a", {15:None}
+        <5: None>, <2: ["invader1a", <3:None>, "invader1b", <3:None>]>, "invader1a", <15:None>
     ],
     "pattern2": [
-        {5: None}, {2: ["invader2a", {2:None}, "invader2b", {2:None}]}, "invader2a", {15:None}
+        <5: None>, <2: ["invader2a", <2:None>, "invader2b", <2:None>]>, "invader2a", <15:None>
     ],
     "pattern3": [
-        {5: None}, {2: ["invader3a", {6:None}, "invader3b", {6:None}]}, "invader3a", {15: None}
+        <5: None>, <2: ["invader3a", <6:None>, "invader3b", <6:None>]>, "invader3a", <15: None>
     ],
     "extras": [
-        {40: None},
+        <40: None>,
         "base",
-        {40: None},
+        <40: None>,
         "splod",
-        {40: None},
+        <40: None>,
         ("shift9", "credit01", 1),
-        {40: None}
+        <40: None>
     ],
-    "long": [ {15: None},
-      {2: [
-        {7: ["invader3a", {9: None}]},
-        {12: None},
-        {7: ["invader2a", {4: None}]},
-        {12: None},
-        {7: ["invader1a", {6: None}]},
-        {18: None},
+    "long": [ <15: None >,
+      <2: [
+        <7: ["invader3a", <9: None>]>,
+        <12: None>,
+        <7: ["invader2a", <4: None>]>,
+        <12: None>,
+        <7: ["invader1a", <6: None>]>,
+        <18: None>,
         "ship",
-        {24: None},
-        {7: ["invader3b", {9: None}]},
-        {12: None},
-        {7: ["invader2b", {4: None}]},
-        {12: None},
-        {7: ["invader1b", {6: None}]},
-        {18: None},
+        <24: None>,
+        <7: ["invader3b", <9: None>]>,
+        <12: None>,
+        <7: ["invader2b", <4: None>]>,
+        <12: None>,
+        <7: ["invader1b", <6: None>]>,
+        <18: None>,
         "base",
-        {24: None},
-      ]},
+        <24: None>,
+      ]>,
       [
-        {7: ["invader3a", {9: None}]},
-        {12: None},
-        {7: ["invader2a", {4: None}]},
-        {12: None},
-        {7: ["invader1a", {6: None}]},
+        <7: ["invader3a", <9: None>]>,
+        <12: None>,
+        <7: ["invader2a", <4: None>]>,
+        <12: None>,
+        <7: ["invader1a", <6: None>]>,
       ]
     ],
     "invader1a": [
@@ -253,7 +253,7 @@
         0b1111111,
         0b0000001,
         0b0000001,
-        {5: None},
+        <5: None>,
         0b0111110,
         0b1010001,
         0b1001001,
@@ -265,4 +265,4 @@
         0b1111111,
         0b1000000,
     ]
-}
+>

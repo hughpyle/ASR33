@@ -13,6 +13,7 @@ At the top level are names, so you can call this script with:
     pattern pattern_file pattern_name
 If no pattern-name is specified, it'll look for the name called "pattern".
 
+Also: you can substitute "<" for "{", and ">" for "}".
 
 Things you can do in this file format:
 {
@@ -28,13 +29,13 @@ Things you can do in this file format:
     # A pattern that includes repeating 'pattern_name' 10 times
     "example2": [
         0b1111111,
-        { 10: "pattern_name" }
+        < 10: "pattern_name" >
         0b1111111
     ]
 
     # A repeated list... nest these any way you want
     "example3": [
-        { 10: [1, 2, 3, 4, 5] }
+        < 10: [1, 2, 3, 4, 5] >
     ]
 
     # There are various 'operators' that let you transform data in various ways
@@ -80,6 +81,7 @@ PATTERN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pattern
 # (https://github.com/hughpyle/ASR33/tree/master/bin/fonts)
 DEFAULT_FONT = "chicago"
 FONT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")
+ALL_FONTS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(FONT_PATH) if filename.endswith(".bdf")])
 
 
 def byte8(value):
@@ -131,9 +133,23 @@ class Pattern(object):
 
     data = {}
 
-    def __init__(self, pattern, words=None):
+    def __init__(self, pattern, words=None, default_font="smallcaps"):
         self.words = words
+        self.default_font = default_font
         self.load_pattern(pattern)
+
+    @staticmethod
+    def eval(expr):
+        """
+        Evaluate a literal string
+        Before parsing to AST, brute-force replace <> to {}
+        so that you can write patterns without using curly-braces.
+        :param string:
+        :return: object
+        """
+        expr = expr.replace("<", "{")
+        expr = expr.replace(">", "}")
+        return ast.literal_eval(expr)
 
     def load_pattern(self, pattern):
         """
@@ -143,7 +159,7 @@ class Pattern(object):
         if not os.path.isfile(pattern_filename):
             click.get_current_context().fail("Pattern not found ({})".format(pattern_filename))
         with open(pattern_filename, "r") as fd:
-            self.data = ast.literal_eval(fd.read())
+            self.data = self.eval(fd.read())
 
     def parts(self):
         """
@@ -349,9 +365,13 @@ class Pattern(object):
         return seq[value:value2+1]
 
     @Operator("text")
-    def text(self, value, font_name="smallcaps"):
+    def text(self, value, font_name=None):
         """Render text using BDF fonts"""
         value = self.substitute_args(value)
+        if value is None or value == "":
+            return []
+        if font_name is None:
+            font_name = self.default_font
         font_filename = os.path.join(FONT_PATH, "{}.bdf".format(font_name))
         with open(font_filename, 'rb') as font_file:
             # Read the BDF font description
@@ -436,6 +456,7 @@ class Pattern(object):
         # Join them all to a list of integers (or bytes if that's what we have)
         aresult = []
         bresult = bytearray()
+        result = []
         for value in values:
             if aresult:
                 result = aresult
@@ -493,6 +514,13 @@ class Pattern(object):
                 if isinstance(k, tuple):
                     # Evaluate the tuple and expect it produces an integer
                     k = self.operator(k)
+                if isinstance(k, str):
+                    # To support repeats based on commandline args, e.g. {"$*": something}
+                    try:
+                        k = self.substitute_args(k)
+                        k = int(k)
+                    except ValueError:
+                        raise ValueError("Expected an integer key, not {}: {}".format(type(k), k))
                 if isinstance(k, int):
                     if k > 0:
                         # Repeat the value 'k' times
@@ -529,15 +557,14 @@ class Pattern(object):
         :param part: A part-name, or a string with a Python literal expression.
         :return: Bytes.
         """
-        key = part
-        if key in self.data:
-            value = self.data[key]
+        if part in self.data:
+            value = self.data[part]
         else:
             # Hmm, maybe the key is a python literal
             try:
-                value = ast.literal_eval(key)
+                value = self.eval(part)
             except ValueError:
-                raise ValueError("The pattern has no part named '{}'".format(key))
+                raise ValueError("The pattern has no part named '{}'".format(part))
         bytes_or_ints = self.render_value(value)
         if isinstance(bytes_or_ints, bytes):
             return bytes_or_ints
@@ -558,16 +585,17 @@ def list_patterns(ctx, param, value):
 @click.command()
 @click.argument("pattern", type=click.Path())
 @click.argument('words', nargs=-1, type=click.UNPROCESSED)
-@click.option("--part", default="pattern", required=False)
-@click.option("--all", is_flag=True)
+@click.option("--font", default=DEFAULT_FONT, type=click.Path(), help="Font: {}".format(", ".join(ALL_FONTS)))
+@click.option("--part", default="pattern", required=False, help="Write only one named part of a pattern-file")
+@click.option("--all", is_flag=True, help="Write all the available parts in a pattern-file (slow!)")
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 @click.option("--list", is_flag=True, help="List the available patterns", is_eager=True, callback=list_patterns, expose_value=False)
-def main(pattern, part, all, test, words):
+def main(pattern, part, all, test, words, font):
     """
     Print patterns to punchtape.
     """
     # Load the pattern-definition file
-    patt = Pattern(pattern, words=words)
+    patt = Pattern(pattern, words=words, default_font=font)
 
     if all:
         barray = bytearray()
@@ -578,6 +606,7 @@ def main(pattern, part, all, test, words):
         # Render the named part from the file.
         # Instead of a name, you can also supply a string containing a Python literal.
         data = patt.render_part(part)
+    l = len(data)
 
     if not test:
         # Put the tty firmware into 'raw binary' mode
@@ -591,7 +620,7 @@ def main(pattern, part, all, test, words):
     if not test:
         sys.stdout.buffer.write(RESET)
 
-    print("Length: {} bits, {} inches".format(len(data), len(data)/10), file=sys.stderr)
+    print("Length: {} bits, {} inches".format(l, l/10), file=sys.stderr)
 
 
 main()

@@ -1,8 +1,8 @@
-{
-    "pattern": [{8: "grid1"}, "grid1-edge"],
+<
+    "pattern": [<8: "grid1">, "grid1-edge"],
     "grid1": [
         0b10101101,
         0b01010010
     ],
     "grid1-edge": ("subset", "grid1", 1)
-}
+>
