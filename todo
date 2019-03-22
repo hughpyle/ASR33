@@ -1,4 +1,5 @@
-getty and ssh on the coral
+fix 'ed' weirdness on the coral
+
 night-mode teletype
 
 twitchbot:
@@ -8,7 +9,6 @@ twitchbot:
 
 dig into termios and stty, and anything we can move out of firmware
 
-night mode
 firmware to slash->uppercase
 tour of the CDC6500, and Fortran
 punchtape input (fix the firmware flakiness first)
@@ -158,3 +158,4 @@ x automesg check S_IWOTH as well as GRP
 . coral; serial console
   https://coral.withgoogle.com/tutorials/devboard/
   http://0pointer.de/blog/projects/serial-console.html
+. getty and ssh on the coral
