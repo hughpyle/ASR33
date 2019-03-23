@@ -60,10 +60,14 @@ def suggest(arg):
     if arg == "":
         popular()
     else:
-        choices = emoji_data_python.find_by_shortname(arg)
-        if choices == []:
-            choices = emoji_data_python.find_by_name(arg)
-        if choices == []:
+        choices = set()
+        while len(choices) == 0 and len(arg)>=2:
+            choices = emoji_data_python.find_by_shortname(arg)
+            choices.extend(emoji_data_python.find_by_name(arg))
+            choices = set(choices)
+            if len(choices) == 0:
+                arg = arg[:len(arg)-1]
+        if len(choices) == 0:
             sys.stderr.write("Not found! ")
             popular()
         else:
