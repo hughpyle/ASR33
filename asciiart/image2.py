@@ -46,7 +46,7 @@ from skimage import feature, transform, color, exposure, util
 # The character itself is 4x3
 BROWS = 4
 BCOLS = 3
-
+CELLPX = 16
 
 HOG_ORIENTATIONS = 8
 VISUALIZE = True
@@ -64,7 +64,7 @@ def load_image(filename, width, invert, gamma):
 
     if img.shape[-1] == 4:
         # Blend the alpha channel
-        img = color.rgba2rgb(img)
+        img = color.rgba2rgb(img, background=(0, 0, 0))
 
     # Grayscale
     img = color.rgb2gray(img)
@@ -76,18 +76,19 @@ def load_image(filename, width, invert, gamma):
         img = util.invert(img)
 
     # Resample and adjust the aspect ratio
-    width_px = (3 * width) * 16
+    width_px = (3 * width) * CELLPX
 
     img_width = 1.0 * width_px
     img_height = int(img.shape[0] * 3 * (img_width / (4 * img.shape[1])))
     img = transform.resize(img, (img_height, img_width), anti_aliasing=True, mode='reflect')
 
+    img = (img - img.min()) / (img.max() - img.min())
     return img
 
 
 def process(image):
     (rows, cols) = image.shape
-    cellsize = 16
+    cellsize = CELLPX
 
     # Make sure the image is a multiple of 3x5 x cellsize in both dimensions
     rn = cellsize * BROWS
@@ -95,6 +96,20 @@ def process(image):
     newshape = (((rows + rn - 1) // rn) * rn, ((cols + cn - 1) // cn) * cn)
     if newshape != image.shape:
         image = np.resize(image, newshape)
+        (rows, cols) = image.shape
+    n_cells_row = int(rows // cellsize)  # number of cells along row-axis
+    n_cells_col = int(cols // cellsize)  # number of cells along col-axis
+
+    # Put a dot in the middle of each cell, so that the HOG
+    # doesn't end up as exactly zero for areas with no gradient
+    for iy in range(0, n_cells_row):
+        for ix in range(0, n_cells_col):
+            px = ix * cellsize
+            py = iy * cellsize
+            image[py + int(cellsize / 2), px + int(cellsize / 2)] += 0.001
+            image[py + int(cellsize / 2), px + int(cellsize / 2)+1] += 0.001
+            image[py + int(cellsize / 2)+1, px + int(cellsize / 2)] += 0.001
+            image[py + int(cellsize / 2)+1, px + int(cellsize / 2)+1] += 0.001
 
     # HOG the whole image
     fd, img = feature.hog(image,
@@ -110,8 +125,6 @@ def process(image):
     fd = np.squeeze(fd)
 
     # Normalize each histogram to the luminance of the block it derived from
-    n_cells_row = int(rows // cellsize)  # number of cells along row-axis
-    n_cells_col = int(cols // cellsize)  # number of cells along col-axis
     for iy in range(0, n_cells_row):
         for ix in range(0, n_cells_col):
             px = ix * cellsize
@@ -120,10 +133,12 @@ def process(image):
             luminance = cell.mean()
             if VISUALIZE:
                 hog_cell = img[py: py + cellsize, px: px + cellsize]
-                hog_cell *= luminance / (hog_cell.mean() + sys.float_info.epsilon)
+                hcm = hog_cell.mean()
+                hog_cell *= luminance / (hcm + sys.float_info.epsilon)
 
             fd_cell = fd[iy, ix]
-            fd_cell *= luminance / (fd_cell.mean() + sys.float_info.epsilon)
+            fdm = fd_cell.mean()
+            fd_cell *= luminance / (fdm + sys.float_info.epsilon)
 
     if VISUALIZE:
         # Normalize the image-of-HOG and save it just so we can see
