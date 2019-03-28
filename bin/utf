@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Translate
+# Translate utf8-text into a reasonable printable
+# representation for Teletype ASR33, by decomposing
+# Latin1 characters into ASCII plus combining marks
+# and printing the combining marks with overstrike.
 
 import sys
 import unicodedata
@@ -52,12 +55,18 @@ def main():
                     layer2 = layer2[:-1] + "/"  # COMBINING SHORT SOLIDUS OVERLAY
                 elif code == 0x338:
                     layer2 = layer2[:-1] + "/"  # COMBINING LONG SOLIDUS OVERLAY
-                elif code == 0x00a5:  # YEN SIGN
+                elif code == 0xa1:  # INVERTED EXCLAMATION MARK	
+                    layer1 += " "
+                    layer2 += "!"
+                elif code == 0xa5:  # YEN SIGN
                     layer1 += "Y"
                     layer2 += "="
-                elif code == 0x00a8:  # DIAERESIS
+                elif code == 0xa8:  # DIAERESIS
                     layer1 += '"'
                     layer2 += " "
+                elif code == 0xbf:  # INVERTED QUESTION MARK
+                    layer1 += " "
+                    layer2 += "?"
                 elif code == 0xc6 or code == 0xe6:  # LATIN LETTER AE
                     layer1 += "A"
                     layer2 += "E"
@@ -75,4 +84,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        sys.exit(1)
+
