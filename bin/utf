@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Translate
+
+import sys
+import unicodedata
+
+
+def main():
+    for line in sys.stdin:
+        nfd = unicodedata.normalize("NFD", line).rstrip()
+        layer1 = ""
+        layer2 = ""
+        for char in nfd:
+            if len(char.encode("ascii", "ignore")) > 0:
+                layer1 += char
+                layer2 += " "
+            else:
+                # Map the combining-character to a Teletype-printable overstrike
+                # print(hex(ord(char)))
+                code = ord(char)
+                if code == 0x300:
+                    layer2 = layer2[:-1] + "'"  # COMBINING GRAVE ACCENT
+                elif code == 0x301:
+                    layer2 = layer2[:-1] + "'"  # COMBINING ACUTE ACCENT
+                elif code == 0x302:
+                    layer2 = layer2[:-1] + "^"  # COMBINING CIRCUMFLEX ACCENT
+                elif code == 0x303:
+                    layer2 = layer2[:-1] + "_"  # COMBINING TILDE
+                elif code == 0x304:
+                    layer2 = layer2[:-1] + "_"  # COMBINING MACRON
+                elif code == 0x305:
+                    layer2 = layer2[:-1] + "_"  # COMBINING OVERLINE
+                elif code == 0x306:
+                    layer2 = layer2[:-1] + "_"  # COMBINING BREVE
+                elif code == 0x307:
+                    layer2 = layer2[:-1] + "'"  # COMBINING DOT ABOVE
+                elif code == 0x308:
+                    layer2 = layer2[:-1] + '"'  # COMBINING DIAERESIS
+                elif code == 0x30a:
+                    layer2 = layer2[:-1] + "'"  # COMBINING RING ABOVE
+                elif code == 0x30b:
+                    layer2 = layer2[:-1] + '"'  # COMBINING DOUBLE ACUTE ACCENT
+                elif code == 0x326:
+                    layer2 = layer2[:-1] + ","  # COMBINING COMMA BELOW
+                elif code == 0x327:
+                    layer2 = layer2[:-1] + ","  # COMBINING CEDILLA
+                elif code == 0x328:
+                    layer2 = layer2[:-1] + ","  # COMBINING OGONEK
+                elif code == 0x337:
+                    layer2 = layer2[:-1] + "/"  # COMBINING SHORT SOLIDUS OVERLAY
+                elif code == 0x338:
+                    layer2 = layer2[:-1] + "/"  # COMBINING LONG SOLIDUS OVERLAY
+                elif code == 0x00a5:  # YEN SIGN
+                    layer1 += "Y"
+                    layer2 += "="
+                elif code == 0x00a8:  # DIAERESIS
+                    layer1 += '"'
+                    layer2 += " "
+                elif code == 0xc6 or code == 0xe6:  # LATIN LETTER AE
+                    layer1 += "A"
+                    layer2 += "E"
+                elif code == 0xd0 or code == 0xf0:  # LATIN LETTER ETH
+                    layer1 += "D"
+                    layer2 += "-"
+                elif code == 0xd8 or code == 0xf8:  # LATIN LETTER O WITH STROKE
+                    layer1 += "O"
+                    layer2 += "/"
+                elif code == 0x00df:  # LATIN SMALL LETTER SHARP S
+                    layer1 += "ss"
+                    layer2 += "  "
+                pass
+        print(layer1 + "\r" + layer2.rstrip())
+
+
+if __name__ == "__main__":
+    main()
