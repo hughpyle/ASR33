@@ -1,0 +1,11 @@
+#!/bin/bash
+# wrapper for zork
+
+function cleanup() {
+    wrap off
+}
+trap cleanup EXIT
+
+wrap on
+~/.games/glulxe/glulxe -q -u -w 72 ~/.games/zork.gblorb | utf
+

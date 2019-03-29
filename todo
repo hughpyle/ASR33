@@ -1,3 +1,5 @@
+zes and word-wrap (put wrap logic in 'utf')
+
 Brickyard workshop: ASCII-Art
     bring your own photos (or mail them in advance)
     process on the laptop (or the design-team's PCs)
@@ -10,6 +12,7 @@ Brickyard workshop: Plotter Art
 fix 'ed' weirdness on the coral
 ex-vi "open mode"
 night-mode teletype
+test suite
 
 twitchbot:
   . !bell to stderr (without any mesg checking)
