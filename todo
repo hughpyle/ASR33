@@ -1,4 +1,7 @@
-zes and word-wrap (put wrap logic in 'utf')
+hack a python ipp server instead of cups
+    https://github.com/h2g2bob/ipp-server
+
+zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
 Brickyard workshop: ASCII-Art
     bring your own photos (or mail them in advance)
