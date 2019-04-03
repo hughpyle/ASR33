@@ -7,21 +7,29 @@
 
 import sys
 import requests
+import random
 import emoji_data_python
-from emoji_unicode import Emoji
-from emoji_unicode.models import JOINER_CHARS
+from emoji_unicode.models import EMO_VARIATION, JOINER_CHARS
 from emoji_unicode.utils import code_point_to_unicode
 
 
-# Images: Use twemoji SVG from their CDN.
-# Filenames are lowercase, with hyphens separating codepoints, e.g. "1f1e8-1f1f3.svg"
-# BASE_URL = "https://twemoji.maxcdn.com/svg/{}.svg"
-BASE_URL = "https://cdnjs.cloudflare.com/ajax/libs/twemoji/11.1.0/2/svg/{}.svg"
+EMOJI_SOURCE = "noto"
 
-SEP = "-"
+if EMOJI_SOURCE == "twemoji":
+    # Images: Use twemoji SVG from their CDN.
+    # Filenames are lowercase, with hyphens separating codepoints, e.g. "1f1e8-1f1f3.svg"
+    # BASE_URL = "https://twemoji.maxcdn.com/svg/{}.svg"
+    BASE_URL = "https://cdnjs.cloudflare.com/ajax/libs/twemoji/11.1.0/2/svg/{}.svg"
+    SEP = "-"
+elif EMOJI_SOURCE == "noto":
+    # Images: Use noto SVG from github.
+    # Filenames are lowercase, with underscore separating codepoints, e.g. "emoji_u1f9d7_200d_2642.svg"
+    BASE_URL = "https://raw.githubusercontent.com/googlei18n/noto-emoji/master/svg/emoji_u{}.svg"
+    SEP = "_"
+
 
 # max suggestions
-MAX_SUGGEST = 30
+MAX_SUGGEST = 6
 
 
 def with_joiners(thing):
@@ -33,8 +41,18 @@ def with_joiners(thing):
     )
 
 
+def without_variations(thing):
+    # Emoji codes excluding Variations
+    hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
+    return SEP.join(
+        c.lstrip('0').lower()
+        for c in hexcodes
+        if code_point_to_unicode(c) not in {EMO_VARIATION}
+    )
+
+
 def without_joiners(thing):
-    # Emoji codes excluding ZWJ characters
+    # Emoji codes excluding ZWJ characters and Variations
     hexcodes = ["{pt:x}".format(pt=ord(c)) for c in thing]
     return SEP.join(
         c.lstrip('0').lower()
@@ -55,6 +73,13 @@ def popular():
     sys.stderr.write("Try: {}\n".format(" ".join(popular)))
 
 
+def selection():
+    # Suggest some randomly
+    emojis = random.sample(emoji_data_python.emoji_data, MAX_SUGGEST)
+    selected = [emoj.short_name for emoj in emojis]
+    sys.stderr.write("Try: {}\n".format(" ".join(selected)))
+
+
 def suggest(arg):
     # Suggest based on the argument
     if arg == "":
@@ -69,13 +94,21 @@ def suggest(arg):
                 arg = arg[:len(arg)-1]
         if len(choices) == 0:
             sys.stderr.write("Not found! ")
-            popular()
+            selection()
         else:
             cn = sorted([(choice.short_name or choice.name).lower() for choice in choices])[:MAX_SUGGEST]
             sys.stderr.write("Not found! Try: {}\n".format(", ".join(cn)))
 
 
 def main():
+
+    # Prep the dict for emoji
+
+    # Build a cached dictionary of short names for quicker access, short code keys are normalized with underscores
+    emoji_dict = {
+        emoji.unified: emoji for emoji in emoji_data_python.emoji_data
+    }
+
     s = requests.Session()
     for arg in sys.argv[1:]:
         arg = arg.lower()
@@ -90,19 +123,29 @@ def main():
 
         # print(emoji.__dict__)
 
-        # Get the SVG URL: first try 'unified'
-        uri = BASE_URL.format(emoji.unified.lower())
-        r = s.head(uri)
-        if r.status_code != 200:
-            # Try with joiners
-            uri = BASE_URL.format(with_joiners(emoji.char))
-            r = s.head(uri)
-        if r.status_code != 200:
-            # Try without joiners
-            uri = BASE_URL.format(without_joiners(emoji.char))
-            r = s.head(uri)
+        # Get the SVG URL: first try 'obsoleted_by', 'unified', and variations thereof
+        uris = []
+        if emoji.obsoleted_by in emoji_dict:
+            emoji1 = emoji_dict[emoji.obsoleted_by]
+            uris.append(BASE_URL.format(emoji1.unified.replace("-", SEP).lower()))
+            uris.append(BASE_URL.format(with_joiners(emoji1.char)))
+            uris.append(BASE_URL.format(without_variations(emoji1.char)))
+            uris.append(BASE_URL.format(without_joiners(emoji1.char)))
+        uris.append(BASE_URL.format(emoji.unified.replace("-", SEP).lower()))
+        uris.append(BASE_URL.format(with_joiners(emoji.char)))
+        uris.append(BASE_URL.format(without_variations(emoji.char)))
+        uris.append(BASE_URL.format(without_joiners(emoji.char)))
 
-        if r.status_code == 200:
+        found = False
+        uri = None
+        for one_uri in uris:
+            r = s.head(one_uri)
+            if r.status_code == 200:
+                found = True
+                uri = one_uri
+                break
+
+        if found:
             # OK, found it
             print(uri)
             sys.exit(0)
@@ -111,7 +154,7 @@ def main():
             suggest(arg)
             sys.exit(1)
 
-    suggest(arg)
+    selection()
     sys.exit(1)
 
 
