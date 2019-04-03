@@ -145,7 +145,7 @@ def hog_char(image, luminance):
                           orientations=8,
                           pixels_per_cell=(rows_cellsize, cols_cellsize),  # (16, 16),
                           cells_per_block=(1, 1),
-                          block_norm='L2-Hys',
+                          block_norm='L1',
                           visualize=True,
                           feature_vector=False)
 
