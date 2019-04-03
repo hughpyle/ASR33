@@ -49,7 +49,7 @@ BCOLS = 3
 CELLPX = 16
 
 HOG_ORIENTATIONS = 8
-VISUALIZE = True
+VISUALIZE = False  # True
 
 # How many overstrike passes
 ROUNDS = 2
@@ -117,7 +117,7 @@ def process(image):
                           pixels_per_cell=(cellsize, cellsize),
                           cells_per_block=(1, 1),
                           block_norm='L1',  # ''L2-Hys',
-                          visualize=VISUALIZE,
+                          visualize=True,  # VISUALIZE,
                           feature_vector=False)
 
     # With 1x1 blocks we don't care about some of the fd dimensions
@@ -227,7 +227,7 @@ def main(filename, width, invert, gamma, indent, output):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
-    imageio.imsave("test.jpg", img)
+    # imageio.imsave("test.jpg", img)
 
     # Analyze the image
     hog_fd = process(img)
