@@ -50,6 +50,7 @@ def load_image(filename):
         return loaded_files[filename]
     img = imageio.imread(filename, as_gray=True).astype(np.float)
 
+    # Warp it to be reasonably squared
     tf = transform.AffineTransform(rotation=ROTATION, shear=SHEAR, translation=TRANSLATION)
     img = transform.warp(img, inverse_map=tf)
 
@@ -70,7 +71,8 @@ def load_image(filename):
 # The character at (x, y) should be the same as the character at (y, x) but due to printing may be slightly
 # different.  We just analyze them all anyway, and it'll sort out in the final mapping.
 # (Could double the performance by folding in half, but we don't care really)
-def chars_image(c1, c2):
+def one_chars_image(c1, c2):
+    cc = c1 + c2
     oc1 = ord(c1)
     if oc1 < ord(' '):
         raise ValueError("Character? " + c1)
@@ -92,16 +94,40 @@ def chars_image(c1, c2):
     # Get the full original image
     full_image = load_image("chars_overstrike.jpg")
 
-    char = full_image[pixY: pixY + int(CHARS_ROWHEIGHT), pixX: pixX + int(CHARS_CHARWIDTH)]
+    # Pull out the character from its (x,y) position
+    img = full_image[pixY: pixY + int(CHARS_ROWHEIGHT), pixX: pixX + int(CHARS_CHARWIDTH)]
 
     # invert so ink>paper
     # char = 1 - char
+
+    # Find the bounding-box of the printed character.
+    # (Many are way off center, e.g. comma and apostrophe)
+    edges1 = (0, 0)
+    edges2 = (int(CHARS_ROWHEIGHT), int(CHARS_CHARWIDTH))
+    if cc != '  ':
+        # Top and left bounds
+        edges1 = np.unravel_index(np.argmax(img > 0.4, axis=None), img.shape)
+        # Bottom and right bounds
+        flp = np.flip(img)
+        edges2 = np.unravel_index(np.argmax(flp > 0.4, axis=None), img.shape)
+        # edges2 = (img.shape[0] - edges[0], img.shape[1] - edges[1])
 
     # Save some cropped images.  Each should ideally be just a single character-cell.
 #    if c1 in " #$01JKXY^_" and c2 in " !@123AJKZ[]_":
 #        imageio.imsave("char_{:x}_{:x}.jpg".format(oc2, oc1), char)
 
-    return char
+    return img, edges1, edges2
+
+
+def chars_image(c1, c2):
+    img, edges1a, edges2a = one_chars_image(c1, c2)
+    _, edges1b, edges2b = one_chars_image(c2, c1)
+    topdiff = edges1b[0] - edges1a[0]
+    leftdiff = 0  # edges1b[1] - edges1a[1]
+    img = np.roll(img, int(topdiff/2), axis=0)
+    # img = np.roll(img, -int(leftdiff/2), axis=1)
+    return img, (edges1a[0] + int(topdiff/2), edges1a[1] + int(leftdiff/2)), (edges2a[0] + int(topdiff/2), edges2a[1] + int(leftdiff/2))
+    # return img, (edges1a[0], edges1a[1]), (edges2a[0], edges2a[1])
 
 
 # Calculate the average luminance for a character
@@ -151,28 +177,31 @@ def analyze_table_image():
     luminances = {}
 
     # Find the minimum bounding-box for each character-pair
+
+    # rowbounds/colbounds will be the largest box of any character
     rowbounds = [1e10, 0]
     colbounds = [1e10, 0]
+
     for i in range(STARTCHAR, ENDCHAR+1):
         for j in range(STARTCHAR, ENDCHAR+1):
             c1 = chr(i)
             c2 = chr(j)
             cc = c1 + c2
-            img = chars_image(c1, c2)
+            # Pull out the character-pair from the whole image
+            img, edges1, edges2 = chars_image(c1, c2)
             luminances[cc] = img.mean()
+
+            # Find the bounding-box of the printed character.
+            # (Many are way off center, e.g. comma and apostrophe)
             if cc != '  ':
-                edges = np.unravel_index(np.argmax(img > 0.4, axis=None), img.shape)
-                if edges[0] < rowbounds[0]:
-                    rowbounds[0] = edges[0]
-                if edges[1] < colbounds[0]:
-                    colbounds[0] = edges[1]
-                flp = np.flip(img)
-                edges = np.unravel_index(np.argmax(flp > 0.4, axis=None), img.shape)
-                if img.shape[0] - edges[0] > rowbounds[1]:
-                    rowbounds[1] = img.shape[0] - edges[0]
-                if img.shape[1] - edges[1] > colbounds[1]:
-                    colbounds[1] = img.shape[1] - edges[1]
-                edges = None
+                if edges1[0] < rowbounds[0]:
+                    rowbounds[0] = edges1[0]
+                if edges1[1] < colbounds[0]:
+                    colbounds[0] = edges1[1]
+                if img.shape[0] - edges2[0] > rowbounds[1]:
+                    rowbounds[1] = img.shape[0] - edges2[0]
+                if img.shape[1] - edges2[1] > colbounds[1]:
+                    colbounds[1] = img.shape[1] - edges2[1]
 
     # characters sorted by increasing luminance
     sl = sorted(luminances, key=luminances.get)
@@ -208,9 +237,11 @@ def analyze_table_image():
             c2 = chr(j)
             cc = c1 + c2
 
-            img = chars_image(c1, c2)
+            img, edges1, edges2 = chars_image(c1, c2)
             char = img[rowbounds[0]: rowbounds[1], colbounds[0]: colbounds[1]]
-            if c1 in " #$012345JKLMWXXY^_" and c2 in " _":
+
+            # Keep a small set for visual inspection
+            if c1 in " #$012345AFJKLMWXY^_" and c2 in " =_":
                 chars.append(char)
 
             (fd, image) = hog_char(char, luminances[cc])
@@ -226,11 +257,11 @@ def analyze_table_image():
 #    # Save a combined image of characters
     im = np.concatenate(tuple(chars))
     im *= 1 / im.max()
-    imageio.imsave("overstrike1.png", im)
+    # imageio.imsave("overstrike1.png", im)
 
     im = np.concatenate(tuple(chars), axis=1)
     im *= 1 / im.max()
-    imageio.imsave("overstrike2.png", im)
+    # imageio.imsave("overstrike2.png", im)
 
     # Save the JSON
     with io.open("chars_overstrike.json", "w") as afile:

@@ -15,25 +15,20 @@ if [[ "$1" == "-big" ]]; then
 fi
 
 tmps=$(mktemp -t XXXXXX.svg)
-tmpj=$(mktemp -t XXXXXX.jpg)
+tmpp=$(mktemp -t XXXXXX.png)
 function cleanup() {
     rm $tmps
-    rm $tmpj
+    rm $tmpp
 }
 trap cleanup EXIT
 
-# ASR33 typewheel characters approximately sorted by print density
-chars=" .-,/)+>^_=?7I][*J5C#V96$P&%4OZSDAH@GX2U8EBQWKRM"
-# same with a more linear distribution
-# chars=" '-/<JIY3OPHKM"
-
 url=$(emojiurl "$1")
 if [[ $? == 0 ]]; then
-    # fetch the SVG and convert to a JPG
+    # fetch the SVG and convert to a PNG
     wget -q -O "$tmps" "$url"
-    convert -density 200 -background white "$tmps" -background none -colorspace Gray -gamma 2 -auto-level jpg:"$tmpj"
+    rsvg-convert -w 480 "$tmps" > "$tmpp"
+    # cp "$tmpp" emoji.png
 
-    # convert to ascii (and trim blanks from line endings, to save printing time)
-    # jp2a --invert --chars="$chars" --width=$width --height=$height "$tmpj" | sed 's/[[:blank:]]*$//'
-    ../asciiart/image2.py --width $width  "$tmpj" --output emoji.txt
+    # convert to ascii
+    ../asciiart/image2.py --width $width "$tmpp" --gamma 2.0 --output -
 fi

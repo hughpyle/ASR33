@@ -221,7 +221,7 @@ def render(fd, outfile, indent=0):
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='Gamma correction')
 @click.option('--indent', default=0, help='Indent with spaces')
-@click.option('--output', help='Output filename')
+@click.option('--output', help='Output filename (use "-" for stdout)')
 @click.argument('filename')
 def main(filename, width, invert, gamma, indent, output):
     # Aspect ratio is determined by the input image.
