@@ -1,0 +1,194 @@
+
+hack a python ipp server instead of cups
+    https://github.com/h2g2bob/ipp-server
+
+    lp -d coral.local thing.txt  => sends (1, b'document-format', 73): [b'application/pdf', b'application/octet-stream']
+
+    reject if wrong mime type
+
+     'document-format-supported':
+      [ 'application/vnd.hp-PCL',
+        'image/jpeg',
+        'application/PCLm',
+        'image/urf',
+        'application/octet-stream' ],
+
+   print with:
+    lp -d localhost -o raw=true testpage.txt
+    or
+    lpr -l -P localhost testpage.txt
+   (sends document-format: application/octet-stream, not text/plain)
+
+zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
+
+Brickyard workshop: ASCII-Art
+    bring your own photos (or mail them in advance)
+    process on the laptop (or the design-team's PCs)
+    print to the Teletype (hands-on)
+
+Brickyard workshop: Plotter Art
+    work with old-fashioned Logo on tty https://linuxgazette.net/166/silva.html https://linuxgazette.net/167/silva.html
+    directly connected to a pen-plotter
+
+fix 'ed' weirdness on the coral
+ex-vi "open mode"
+night-mode teletype
+test suite
+
+twitchbot:
+  . !bell to stderr (without any mesg checking)
+  !task -> report contents of ~/.project
+  input (from file? from stdin?) to make it an interactive client
+
+dig into termios and stty, and anything we can move out of firmware
+
+firmware to slash->uppercase
+tour of the CDC6500, and Fortran
+punchtape input (fix the firmware flakiness first)
+tour of the LambdaMoo
+tour of the PRIMOS emulators
+tour of the VAX
+pdp7-unix0 for 50th anniv
+    https://github.com/DoctorWkt/pdp7-unix/blob/master/README.md
+sdf.org shell
+    compare menu-driven & command-driven
+cloud shell (goog or azure)
+
+google search
+clipboard
+news e.g. headlines from reuters or somewhere
+twitter background subscribe -> to print queue
+sms send
+sms receive -> to print queue
+slack bot
+reddit reader
+weather report app
+
+
+finish print services:	
+
+    lpadmin -E -p tempfile -v 2file:/tmp/tempfile.prn -m drv:///tty.drv/tty.ppd
+
+    only if mesg()
+
+    backend/filter into
+
+    Go for "bold"
+
+    custom backend
+        lpadmin -p teletype3 -E -v tty:/dev/ttyACM0 -m drv:///tty.drv/tty.ppd
+    - report status ("other", "busy (interactve)")
+    - test with: lpstat -v
+
+
+"print from Word" doesn't work yet
+    it sends a postscript doc to the server
+    it sends a pdf that gets rasterized by ghostscript and whatevs, fails
+    should send plaintext
+    or at least, catch pdf and get it into plaintext
+
+    finish mime.types
+        /usr/share/cups/mime/mime.convs
+        /usr/share/cups/mime/mime.types
+
+unblock the print queue depending on mesg()
+    maybe to block and unblock, use ipptool
+        #!/usr/bin/env ipptool -tv ipp://localhost/printers/your_queue
+        {
+                OPERATION Resume-Printer
+                GROUP operation-attributes-tag
+                ATTR charset attributes-charset utf-8
+                ATTR language attributes-natural-language en
+                ATTR uri printer-uri $uri
+        }
+
+
+potentially, the cache image would be wiped out (although I don't yet understand when the cache clears)
+    ln -s the cachefile instead of installing it there
+    then recreate every time the filter backend is run
+
+
+-------------------------------------------------------------------------------------------------------
+
+. CUPS icon
+    PPD file: 
+        APPrinterIconPath (MacOS extension)
+        *APPrinterIconPath: "/Library/Printers/vendor/filename.icns"
+        This keyword defines the location of a printer icon file to use when displaying the printer. The file must be in the Apple icon format.
+        - doesn't work in rpi cups (Apple extension)
+    ippfind
+    ipptool -tv ipp://upstairs.local:631/printers/teletype get-printer-attributes.test
+        Get-Printer-Attributes
+            printer-icons (uri) = http://upstairs.local:631/icons/teletype.png
+            (128x128 png, 8-bit sRGB)
+    /var/cache/cups/teletype.png
+        (just name it for the cups printer destination)
+
+
+. python tape: termios set raw while it runs
+
+# incoming spool... background... only when idle
+# internet-visible url to post to spool...
+. clear the screen
+. twitch chatbot (use git@github.com:hughpyle/chat-samples.git)
+    - new base: pip install git+https://github.com/TwitchIO/TwitchIO.git
+x look for "is the process 'bash' the login process" (i.e. the shell is on top)
+    then look for "idle > 1m" 
+    then unblock the print queue.
+. "automesg": 
+    background job that does mesg() automatically so 
+    don't print unless
+        "the login shell is foreground"
+        and "tty has been idle for a while"
+    w -> idletime
+        os.stat("/dev/ttyACM0"), or os.fstat(1) or 2) -> time of last input
+    w -> "foreground process"
+        os.tcgetpgrp(fd) -> pid for the foreground process
+    is it the login shell?
+        /proc/xxx/cmdline begins with "-"
+        with open("/proc/521/cmdline") as proc:
+            if proc.readline().startswith("-"):
+                is_login = bool(1)
+    use this to set
+        like "mesg"
+            tty is group-writeable
+            (so other people can send you messages)
+        mode = os.stat(1).st_mode
+        if not mode & stat.S_IWGRP:
+            os.chmod(1, mode | stat.S_IWGRP)
+    inotify so we see when the writeable flag changes
+        (or any attrib)
+        (no, just loop and sleep)
+. twitchbot: !bell
+x twitchbot: set the stream title to ~/.project when startup
+. practice 'ed'
+x automesg check os.isatty(fd) for stdin, stdout, stderr
+    (fails ENOTTY, let's just leave it working on stdout)
+. automesg check atime/mtime/ctime
+x automesg check S_IWOTH as well as GRP
+    - no need, we're just setting it
+. good stuff here: http://tilde.club/~phooky/logging_wall.html
+. talk about mesg, write, who -w, wall, (etc) (and finger)
+.     src/util-linux/term-utils
+. twitchbot:   other messages to stdout (with mesg checking)
+. twitchbot:
+  await asyncio.ensure_future(wait_for_mesg())?
+  async def wait_for_mesg():
+      # Sleep until the tty is group-writable
+      while not (os.fstat(1).st_mode & stat.S_IWGRP):
+          asyncio.sleep(1)
+. hardware lid off
+. getty and login and /etc/issue
+    https://github.com/karelzak/util-linux/blob/master/term-utils/agetty.c
+    https://github.com/shadow-maint/shadow/blob/master/src/login.c
+. make getty non-automatic
+. dig into termios and stty, and anything we can move out of firmware
+    https://github.com/coreutils/coreutils/blob/master/src/stty.c
+    https://github.com/torvalds/linux/tree/master/drivers/tty
+. www
+. gopher
+
+. coral; serial console
+  https://coral.withgoogle.com/tutorials/devboard/
+  http://0pointer.de/blog/projects/serial-console.html
+. getty and ssh on the coral
