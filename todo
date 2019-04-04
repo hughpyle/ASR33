@@ -1,6 +1,22 @@
 hack a python ipp server instead of cups
     https://github.com/h2g2bob/ipp-server
 
+    lp -d coral.local thing.txt  => sends (1, b'document-format', 73): [b'application/pdf', b'application/octet-stream']
+
+    reject if wrong mime type
+     'document-format-supported':
+      [ 'application/vnd.hp-PCL',
+        'image/jpeg',
+        'application/PCLm',
+        'image/urf',
+        'application/octet-stream' ],
+
+   print with:
+    lp -d localhost -o raw=true testpage.txt
+    or
+    lpr -l -P localhost testpage.txt
+   (sends document-format: application/octet-stream, not text/plain)
+
 zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
 Brickyard workshop: ASCII-Art
