@@ -17,7 +17,7 @@
 * Making It Useful:
     * [Applications](bin/README.md) including command-line utilities for the tty user.  Includes scripts to print [words on papertape](https://twitter.com/33asr/status/1074432596728262656), connect to [LambdaMoo](https://twitter.com/33asr/status/1078698114003943425), print [emoji](https://twitter.com/33asr/status/1046930898321645568), play [zork](https://github.com/hughpyle/ASR33/blob/master/bin/profile), connect to bbs, and more.
     * [ASCII Art](asciiart/README.md) using the unique features of an antique hard-copy terminal, including _overstrike_.
-    * [Paper Tape Art](doc/04-papertape.md) too.
+    * [Paper Tape Art](bin/patterns/README.md) too.
 
 * [Photos](pix/)
 
