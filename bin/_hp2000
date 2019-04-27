@@ -1,13 +1,14 @@
 #!/usr/bin/expect -f
-# log_user 0
+log_user 0
 set timeout 3600
-spawn telnet hp2000.brighton.ac.uk
+spawn telnetlib3-client --speed 110 --encoding US-ASCII hp2000.brighton.ac.uk
 expect "GANDALF"
 sleep 0.5
 send "\r\n"
+log_user 1
 expect "PLEASE LOG IN"
 send "HELLO-T001,HP2000\n"
-expect "Welcome"
+# expect "Welcome"
 # log_user 1
 interact
 
