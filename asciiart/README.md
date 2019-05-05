@@ -14,7 +14,7 @@ These experiments cover a few ways to convert a graphic image into a text image:
 * Divide each printed character, and each region of the image, into several **sub-character pixels** so that (for example) `,` or `'` would be selected differently even if they had the same printed weight.  This can produce noticeably more realistic images for the same amount of printing.
 * Analyze the **orientation of gradients** and edges in the image and the printed character.  For example, ` / ` and ` \ ` would be selected to match the direction of an edge.  Again this can help to produce clearer prints of complex images.  This step is quite compute-heavy and probably gives marginal benefit over subpixel luminance, but it was a fun coding challenge (and a good way to learn numpy and scikit-image)!
 
-[Here's some Python code](https://github.com/hughpyle/ASR33/blob/master/asciiart/image2.py) that includes all of these aspects, and provides (relatively!) quite high-resolution rendering.
+[Here's some Python code](https://github.com/hughpyle/ASR33/blob/master/asciiart/code/image2.py) that includes all of these aspects, and provides (relatively!) quite high-resolution rendering.
   
 Printing is slow and noisy.  A full-page image is around 8KB and can take up to 15 minutes to print.
 
@@ -25,9 +25,9 @@ First I printed out and scanned a table of all the two-character overstrike comb
 ```
 python prep_overstrike.py --table
 ```  
-[![overstrike](misc_pictures/chars_overstrike_x500.jpg)](chars_overstrike.jpg)
+[![overstrike](misc_pictures/chars_overstrike_x500.jpg)](code/chars_overstrike.jpg)
 
-Then, [some code](prep_overstrike.py) reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](chars_overstrike.json).
+Then, [some code](code/prep_overstrike.py) reads this image, pulls out each character-sized box, and analyzes it using a [Histogram of Oriented Gradients](http://scikit-image.org/docs/dev/auto_examples/features_detection/plot_hog.html) (HOG).  Actually, each character box is subdivided into 3x4 squares, and the HOG is calculated for each "pixel".  The results are saved in a [data file](code/chars_overstrike.json).
 
 ```
 python prep_overstrike.py
@@ -44,7 +44,7 @@ Small distortions in the print and scan result in some misalignments to the rect
 [![john coltrane - blue train](album_covers/album_bluetrain_250.jpg)](album_covers/album_bluetrain.txt.jpg)
 [![led zeppelin](album_covers/album_ledzep_250.jpg)](album_covers/album_ledzep.txt.jpg)
 
-The [code to process a picture](image2.py) first resizes to a multiple of 198 pixels (66 characters print width by default, and 3 "sub-character pixels" per character), then analyzes each block using the HOG algorithm.
+The [code to process a picture](code/image2.py) first resizes to a multiple of 198 pixels (66 characters print width by default, and 3 "sub-character pixels" per character), then analyzes each block using the HOG algorithm.
 
 Then, each block in the image's HOG is matched to the blocks in the data.  The best match is the character that's not too dark, and that has the best correlation between the pair of histograms.
 
