@@ -3,10 +3,7 @@
 log_user 0
 set timeout 3600
 spawn ssh cdc6500@tty.livingcomputermuseum.org
-log_user 1
 expect "USER NUMBER"
-send "$env(CDC_USERNAME)\n"
-expect "PASSWORD"
-send "$env(CDC_PASSWORD)\n"
+log_user 1
 interact
 

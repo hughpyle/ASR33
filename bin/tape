@@ -1,0 +1,3 @@
+#!/bin/bash
+text=$(echo $* | awk '{print toupper($0)}')
+pattern text --font mod6x13 "$text"
