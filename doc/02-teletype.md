@@ -12,6 +12,10 @@ _oops, no word-wrap_
 #### Paper Tape
 In the "ASR" (Automatic Send-Receive) Teletype models there are two additional I/O devices: a paper-tape reader for input, and a paper-tape punch (reperforator) for output.  [Punched paper tape](https://en.wikipedia.org/wiki/Punched_tape) is a great way to store and communicate data, although it's limited in density (10 characters per inch, or 2.66 kilometers per megabyte), slow (the Teletype can read/write at 10 bytes per second, 29 hours per megabyte), and tears quite easily.
 
+For example, here's what the [HP2000/ACCESS BASIC manual](http://bitsavers.trailing-edge.com/pdf/hp/2000TSB/22687-90001_AccessBasic9-75.pdf) has to say: use tape to store your programs if you don't need them very often:
+
+![punch command](../pix/punch_tape_why.jpg)
+
 The reader is mechanical, which is pretty cool.  I don't understand it yet.
 
 ![tape](../pix/tape_and_paper.jpg)
