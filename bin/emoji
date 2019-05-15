@@ -30,5 +30,5 @@ if [[ $? == 0 ]]; then
     # cp "$tmpp" emoji.png
 
     # convert to ascii
-    $(dirname $0)/../asciiart/code/image2.py --width $width "$tmpp" --gamma 2.0 --indent 20 --output -
+    $(dirname $0)/../asciiart/code/image2.py --width $width "$tmpp" --gamma 2.0 --indent 18 --output -
 fi
