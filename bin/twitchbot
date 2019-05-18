@@ -9,6 +9,8 @@ import stat
 import sys
 import click
 import asyncio
+import requests
+from urllib.parse import quote_plus
 from twitchio.ext import commands
 
 
@@ -35,6 +37,7 @@ class Bot(commands.Bot):
         )
         self.channel = ch
         self.quiet = quiet
+        self.msgs = []
 
     # Handle the "ready" event
     async def event_ready(self):
@@ -43,6 +46,7 @@ class Bot(commands.Bot):
     # Handle the "message" event
     async def event_message(self, message):
         if not (self.quiet or message.content.startswith("!")):
+            self.msgs.append(message.author.name + ": " + message.content)
             await asyncio.ensure_future(wait_for_mesg())
             print(f'[twitch {self.channel}] {message.author.name}: {message.content}')
         await self.handle_commands(message)
@@ -58,6 +62,16 @@ class Bot(commands.Bot):
     @commands.command(name='test')
     async def my_command(self, ctx):
         await ctx.send(f'Hello {ctx.author.name}!')
+
+    # command: !gpt2
+    @commands.command(name='gpt2')
+    async def gpt2_command(self, ctx):
+        gpt_uri = "http://3.93.163.156:5599/asr33bot/"
+        ms = "\n".join(self.msgs[-5:])
+        gpt_uri = gpt_uri + quote_plus(ms)
+        gpttext = requests.get(gpt_uri).text
+        await ctx.send(gpttext)
+
 
     # Command: !bell - ring the bell on stderr
     @commands.command(name='bell')
