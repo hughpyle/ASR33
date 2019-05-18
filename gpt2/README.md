@@ -24,8 +24,11 @@ New Tool - The Polar Relay washers werehers werehers werehers werehers were also
 Now, to actually run this from the Teletype,
 * I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`),
 * There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt and produces some text in response,
-* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot),
+* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), with a chat command `!gpt2` that triggered a call to the web server, and then sent the result into the channel.
 * and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
 
+[![teletype with generated text](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
+
 It's quite a trip.
+
 [![teletype with generated text](https://pbs.twimg.com/media/D64QvkcWwAE2lDW.jpg)](https://twitter.com/33asr/status/1129858972419330049) 
