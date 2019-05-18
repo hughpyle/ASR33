@@ -1,0 +1,633 @@
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+i. To request a line drawing of the characters in the key of a character set, take the form of a syllabus -- say, "The letter D is the only character which can be clearly seen under the various characters shown in this chart."
+ii. Then take the set apart to see what functions it has in common with the corresponding keyboard instruments. If either is familiar, you will soon see that the former has functions corresponding to the tones they hear, and the latter has functions corresponding to the patterns they write. (The functions on the characters are on the same principle -- they are like dial tones, except that the letters and figures that appear on the keys are shown by cones of light rather than by mirror surfaces.)
+(3) The bases for the keyboard and the instruments are the same, but the instrument dials areleds which create a complete set.
+(4) For instruments with characters and functions as keys and for those without any keys -- instruments which have keys and which have keys which are usually the case -- the line inputs are provided by sprocket feed or printed page trayTLR transmitters which translate the keys to 4-level code that determines what functions and what characters to attach to the signals on the keytop. An example of a printed page trayTLR instrument is shown in Figure 8.
+(5) For instruments without keys and for instruments in which the dial is the controlling instrument -- instruments which are normally left-right or front-rear-turntable-type in type -- the inputs are from front turntable sprocket feed or page trayTLR transmitters which translate the keys to 4-level code that determines what functions and what characters to attach to the signals on the keytop. 
+(6) Iqalves stations by means of a P. B. code which both the printer and the baud rate of the teletypewriter can interchange. The baud rate is an internal standard established per­menantly by the IETF, and may be changed at any time. 
+(7) The P. B. rate is a rate equal to half the pulse-width, or in other words, the other half of the pulse-length, plus or minus 1.3 times the nominal encoding level, whichever is greater. 
+(8) To convert P. B. rate code to mechanical units the first character width unit is divided into double and triple count categories, and the remainder is assigned to zero or one length. The categories are shown in the appropriate tables of types. 
+(9) The basic Printer used in data exchange is the Model 32 Q-type, available in a choice of a maximum service life of 24, 5, or 24, 10 years. Options can be selected for additional extension time (up to 5 years), depending upon the specification. 
+
+Answering a Call 
+2.10 When the station answers a call, the operator continues to the service routine, until the answer-back sequence is received. Then the CONN (Connect) pushbutton is momentarily depressed. The CONN lamp lights, and the CONN function lever moves to its up position to its most counterclockwise position. The counterclockwise position of the function lever is latched by the drive pawl, and the pawl moves to its up position to its most counterclockwise position. The open drive bail rod, under spring tension, moves the drive bail toward the right, and the feed pawl toward the left. During the feed path the stripper bail strips the selected pawls from the pawl, and the stripper bail pivots the selected pawl from right to left. 
+Note: On Model 33 Printers, the CONN lamp is phosphor-blinked by a colored phosphor-dish lamp. This provides additional arc suppression against lighted control surfaces.
+2.11 When the drive bail has moved to its most counterclockwise position, the feed pawl moves into the feed wheel ratchet (Figure 1). This action causes the rightmost pawl to move out of the way of the scutelever, and the pawl engages the lowest tooth on the ratchet (Figure 1). The rotary drive bail then rises and raises the selected pawl and the stripper bail to rotate the selected pawl and stripper bail to the most rearward position. The feed pawl then disengages from the drive bail as covered in paragraph 2.16.
+2.12 As the feed bail continues ahead the stripper bail strips the selected pawls from the drive bail, and the stripper bail pivots the selected pawl and stripper bail to the most right position. The feed pawl then moves toward the rear through slit in the pawl, and engages the feed ratchet. 
+2.13 The data set may be in the answer condition by operation of the CONTROL (Answere by Centerline) pushbutton. In this condition the Printer
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: !!!fun with !!!teletype !!!contacts !!!!!!
+
+can you indicate which features and functions they are !!!reading asr33bot: !!!teletype "command" relay !!!
+receive-only function lever !!!or !!! answer-back relay !!!!
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and serial contacts !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+receive-only function lever and answer-back relay !!!!
+
+teletype "N" codebar still held stationary by tension spring after TWRC has closed the terminal.
+
+The call control assembly, when disengaged, is latched so that the "N" codebar (Figure 2) rises above the letter "D" position on the form-out (Figure 7).
+The "N" codebar (Figure 2), when raised, moves the form-out pin (Figure 3) rearward where it is latched by the trip follower lever.
+The "N" codebar (Figure 2), when moved rearward during the first part of the function cycle, moves the formout pin to its marking position where it is pivoted relative to the trip follower lever.
+The trip follower lever, under spring tension, moves up until it encounters the flat side of the counter-bailer. where it pivots the latch bail.
+The "N" codebar (Figure 2) is pivoted under spring tension against the common stop arm. In this position, the "N" codebar engages the top surface of the counter-bailer and prevents its closing, During the latter part of the function cycle, the "N" codebar is pivoted counterclockwise and the counter-bailer opens its lid to allow the pin to exit the notch of the counter-bailer.
+
+"T. R. TECHNICAL DATA"
+Model 33 Set — Catalog of Operation,
+2.05 When the "T. R." key is depressed on the keyboard, the codebar mechanism opens a contact in the contact block and thus forces the contacts through which the codebar mechanism attaches. This action establishes a contact procedure through the contact block and the call control assembly.
+2.06 The operation of the related keys is the same as that of the typewheel.
+2.07 The T-lever and Thumbscrew rotate about their pivot spots during the first part of the cycle and also during the middle portion of the cycle. This causes the T-lever to engage an indent in the contact block which it then drives toward the front of the set. An indent exists in the contact block during the middle portion of the cycle and because the T-lever is not driving it, the thumbscrew engages it at the front of the set. This prevents the contacts from being closed during the middle portion of the cycle and also prevents the contacts from being closed if the Thumbtack is moved.
+2.08 The middle portion of the cycle has a period when the Thumbtack moves toward the front and aperiod when it remains stationary. When the Thumbtack is moved toward the front, the contact block is moved toward the front and prevents the T-levers from operating the contact wires. This is done to provide "one-half width" T-lever application to the distributor.
+2.09 When the "T. R." key is depressed on the keyboard, the T-lever and thumbscrews are rotated toward the front so that the levers and levers parts are pivoted away from the pivot spots. This is done to provide "
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot:  Teletype's Baudot (binary) electronic code is 80 characters wide and it accommodated by the speed and layout features of the time. However, with the arrival of the world's first Compactor in the early fifties, things changed.  The new machines could handle some even wider ws'sps, but they had to be minstrelsy levels higher than their Compactors.  (This is still the mainframe minstrelsy below.)  So ws'spies were reoriented. Now it's the jugular who's low, the jugular who's climbing up to the stratosphere, the jugular who goes home to mom and dad and has a seat at the cochleograph table. (This is still the general manager's desk.) And finally, there's the ubiquitous "are you sure you want to do this, Adolf Hitler?" "Well, duh, I guess" "Good, then I guess I'm going to have to get used to Hitler" "That's just what the doctor ordered, " "And if I win, you'll be dead inside, dog!" "Good luck!" "That's what the doctor wants, isn't it?" "Yep, exactly"  "Good luck!" "That'll be my fourth time having a try" "Good luck!"  "That'll be my twelfth" "Good luck!" "That'll be my thirteenth" "Good luck!" "That'll be my fourteenth" "Good luck!" "That'll be my fiveteenth" "Good luck!" "That'll be my sixteenth" "Good luck!" "That'll be my seveneenth" "Good luck!" "That'll be my eighthural when teletype is operating!")" "Typewriter only, signal is received through right wrist dialer, spacing system principal switches, and principal touch-tone dialers"  "Typewriter in use is for use with a group of five, six, or seven students"  "With four key teletype, operator may type any character he likes, except for space, which must be entered manually"  "For groups of 10 or more, there is an "E" option which makes it possible to receive and print eight characters at a time"  "For multiple-choice problems, the option "E" is also available"  "When the "E" option is selected, the operator selects from a drop-down menu the eight available characters"  "The eighth character is the space character. The standard transmission for this character is to hang up the station for a split second"  "If the 'E' option is followed by 'Halt', the station is turned off and the eighth character is ignored"
+"The E' code is a two-element code consisting of a positive pole and a negative pole, and is used to provide local communications for large organizations" "In basic terms, the E' code is a two-element code consisting of a positive pole and a negative pole, and the operator begins with a starting code which consists of a positive substance and a drain code (Figure 1) In terms of metre per second, the positive substance in the E' code is the space and the negative substance is the mark"
+"The start-stop signals are used to control a number of automatic machinery devices, such as dishwashers, dryers, etc" "The automatic equipment dealing with the callscreens sends two start-stop signals, one for space and the other for mark, and the two-headed 'D' is used to control both of them" "When either the start or the stop signal is received by more than one device, the two signals are combined and use as one whole negative number to control the automatic equipment, so that they may all receive the start and stop signals'tone' (1.08m)" "When both the signals at the same time are received by an automatic equipment, it will only consider the first signal as a 'start', and the rest as a 'space';' 'If, on the other hand, the start and the second signal are both 'stop', both equipment will consider the start as a 'start', and the equipment associated with the 'stop' state to all others as being in the 'space' condition'"
+
+"The E' code is not as simple an instrumented as some of its binary code brother's but it is simple enough to be used in the communication field"
+
+"In simple communication applications, like answering a call or answering a message, the first code pulse it sends is enough to turn the equipment off"
+
+"In some applications, like distance learning, it is better to use a binary code with an occasional extra code pulse, than to have an error code that always turns the equipment on"
+
+"The E' code can be programmed in any of a number of ways, but the essential
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+Tape Reader
+
+(a) This machine accepts standard and custom received tape and converts it to electrical signals for transmission over telephone lines. It also strips the tape of its picture and other information and places it with the printed message. It has the ability to receive and process both high and medium data sets.
+(b) The basic unit weighs 660 g and the unit cabinet is 307 mm long. The main shaft is 238 mm long and the power supply shaft is 168 mm long. The parts list for the asr33bot is as follows:
+Teletype mobile office equipment
+Transportation convenience: place your mobile office in service and automatically find convenient Amorfreespace and retail locations today.
+Take a look at the various locations for your region in the property column.
+The amiable ASR (address sensing) system works with nearly anything that can transmit and receive "addressable" data, from plumbers to telephone companies. For this and other locations in this section, see the General Services Administration (FSA) site maps.
+Teletype ASR ("address finding") is a contract data management system. It uses a set of contacts and a tape reader to "find the spot" in a set of address-declared addresses. An "address mechanism" transmits the address by perforated tape, and receives it from a remote terminal by punched tape perforator. The remote terminal sends a signal identifying the address as the sender's. The local terminal then receives the signal and identifies itself as the one in the "to" (trif/) range. Since there is usually a distributor at the remote terminal, as well as a switching center, the distributor area is usually located near the function compartment.
+1.04 The distributor reads the address-declared tape form (mark-to-mark) and translates it to mechanical positions corresponding to the corresponding code combinations. This may involve a number of adjustments and refinements, some of which appear on the following page. Some of these adjustments or refinements are not clearly indicated. If the subject of the adjustment or refinement is the location of the "sending" control knob, keep page "00" blank. If the subject is the location of the "receiving" knob, page "no" blank.
+1.05 Ionized carbon is used to reduce the likelihood of malfunction when transmitting sensitive identification information. This control is provided for when the answer-back magnet, when used with the typing unit, is not already in the answer mode.
+1.06 IONIZED CRUELTY (AUTOMATIC) (TBS-1-1)
+1.07 The TBS-1-1 automatic answer code is identical to the TBS-3-100 read-only code except for the magnet element. The answer mode continues until the answer-back fails to respond. When the magnet fails, the circuit is closed and the tone is terminated.
+1.08 The automatic answer is disabled until the proper procedure is given for receiving the start-stop signals of the transmission facilities. A cursor is placed in the address bar address space (marking) to indicate that the address space is addressed by the local teletypewriter and that the teletypewriter is on. The cursor is released upon receipt of the start-stop signals. These signals are used by the transmission facilities to cause the TRS circuitry to operate in the answer mode.
+1.09 The automatic answer is disabled when the automatic answer-back circuit is disabled. This is accomplished by cutting off the transmit tone early (capturing the sent signal for later analysis), and by holding the connect circuit on, until the proper procedure is given.
+2. DESCRIPTION
+TEST CIRCUIT
+2.01 The typing unit has three inputs for current: the reader contacts, the send and receive points, and the distributor contacts. Two outputs are provided: one for the incoming signal, and one for the sending one. The three-terminal oscillator has two inputs: the reader contacts and the send points. Two outputs are provided: one for the incoming signal, and one for the sending one.
+2.02 The oscillator has two inputs: the reader contacts and the send points. Two outputs are provided: one for the incoming signal, and one for the sending one. The three-terminal oscillator has three inputs: the reader contacts, the send points, and the automatic answer-back latch.
+3. CIRCUIT SCHEMATICS
+3.01 The circuit schematics for the 303pelCS (Figure 1), 304pelCS (Figure 2), and 305pelCS (Figure 3) typing units are shown in Figure 4. All power supplies are listed in Section 574-124-100TC.
+
+F. 316201 Modification Kit — To Convert a 3500 Sequence to a 430313 Model
+3.02 The purpose of the 316201 modification kit is to convert a 3500
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+asr33bot: (...)
+(3) What about tape readers that need to be fed?
+asr33bot: (...)
+(4) What about a terminal that needs to be set up at regular intervals, or whenever a key is depressed?
+(5) As a final note, what about a terminal that just happens to flush itself out when the key is released, or when the key is depressed somewhere else on the keyboard (e.g., CTRL-L on a typewriter) — or whenever a key is depressed) — or whenever a letter T is depressed (e.g., CTRL-L at the beginning of a line)?
+f. ANSWERING A CALL — PREPARATION FOR ANSWERING A CALL
+(1) In the words of the signalman at the command post, "When the captain of a vessel has called in a problem, he checks it against the proper station answer-back register. The captain's vessel, then, is in the answer-back set, and checks its motors against the given transmit power level. If the difference is more than a few cycles (cycles), he sends the impulse form the bridge of the vessel called for, and checks it against the actual answer-back transmission."
+(2) At the Battalion, a test pattern is made by connecting it up with the Data Set at Fort Meade, Md. The test is light, fast, and uses a paper tape instead of a teletypewriter contacts.
+(3) Here, the Fort Meade signal gun sponsors the call and answer connection. The Data Set at Fort Meade, Md., the command post, and the Battalion all send their received calls and answers to the headquarters of the Battalion, with calls and answers also being sent to the Data Set at Fort Meade.
+(4) At the Data Set's headquarters, associate signalmen perform the connectives and answer the calls. Later, when statewide service is provided, this same Data Set will be used for both call and answer purposes.
+g. ORIGINALS MADE — ANALYSIS AND RESULTS
+(1) What the chart does not show is that there are many factors which go into making a product -- that is, what the customer decides to buy and when to buy it. These factors include, but are not limited to:
+(a) The type of wiring and electronics in the teletypewriter, as well as the page printer, in the teletypewriter set.
+(b) The position of the various types of paper, typesetting, and printing units.
+(c) The time of year, the pattern of deliveries, and the like.
+(d) The condition of the paper, typeetting, and printing units.
+(e) The type of distributor used, as well as the various types of tape readers, tape punch set, and similar equipment.
+(f) The type of call control facilities used, including manually or automatically controlled keys, tactile and electronic access points, and so on.
+(g) The channel, such as dial, telegraph, and so on.
+(h) The system configuration, in this case, a three-level sequential network of NN relay stations.
+(2) The customer to the left of the keyboard, in bold, is the customer who wishes to place an order for F, F, and EF (Figure 2). The order is placed by the call control operator in the same manner as any other order. The order is processed by the order control mechanism as described in paragraph (5) (e) above.
+(3) As the signaler signals the end of the message, the F, F, and EF (Figure 2) transmit characters at high speed to the data set. High data bits are transmitted to control the sending mechanism on the data set. As the rightmost character in a message is applied, the F, F, and EF (Figure 2) transmit again to bring the sending mechanism to its most advantageous position. The control of the sending mechanism is handled in similar manner to the calling and answering mechanisms.
+
+7-18. CALL CONTROL ASSEMBLY — USED CARS (Figure 1).
+a. GENERAL.
+(1) The call control assembly described in paragraph 7-14.123(A) above, when operated in the idle condition, permits communication between activated and unpowered Dominion Communications Service (DCSS) teletypewriters within a channel opening of 40 percent. Operating a manual selector, the operator possesses the necessary channel qualifications to perform the functions of a teletypewriter desiring medium. The selector is manually depressed, and the finicky monkey cams the unattended teletypewriter attempting to perform the function for the incoming channel. The monkey quickly learns to discriminate between the duller and truer tones of the incoming message, and the attempted operation is automatically terminated.
+In some systems the operator does not have the channel
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+the original teletype, with a few cosmetic changes added in the mid-1960s
+its current maker is called a "Television" and he uses a 65k modem and a 610C power source (and, yes, it can shoot 4K video)
+it can connect to a 90 or 102 TV set in extra features mode, and even play MP3 files from a USB thumbdrive or SD card
+it can connect with older equipment like a FireWire or CO2 power source
+it can connect with a set made by another company or you, the original teletypewriter owner, to tape
+it can be used to answer or process mail (M-F excepted)
+it can send and receive files on a Post Office or cash register via an operator/responder at the station, and can also accept money orders and P.O. boxes addressed to "John T. Wright"
+it can send files via a SMTPS/IP enabled P.O. box to a remote P.O. box or to a mail-sorting bureau (via a data set)
+it can accept money orders from the bank or another party (via an ATM)
+it can accept and process P.O. boxes' cheque books (via an ATM)
+it can accept a variety of types of document types, including forms to fill out at the post office, M-F excepted, and checkable paper
+it can accept a variety of types of call control F.B.I. data sets, including streamers and receiver auxiliaries, as well as control structures and switches
+it can accept a variety of electronic content, including text files and M-F S-44 data, as EPS (Extended Print) or JPG (JPG)
+it can accept a variety of attachments, such as PowerPoints, spread sheets, copy and spread sheets, faxes, etc.
+it can accept a variety of destinations, such as a central office, a point-to-point telephone line, or a private line in a data set
+
+it can accept a variety of protocols, from M-OS (Simple Input, No Escalation) to M-UC2 (Multi-User, Escalation)
+
+it can accept a variety of file systems, from FAT32 (federal data) to NTFS (federal data, plus made-up file systems)
+
+it can accept a variety of languages, including ANS (American) Basic, ASR (Australian), BUF (British), CAN (Canadian), CYA (Cyprus), CZ (Czech), DDD (Dutch), EBC (English), ES (English, with a dash), ITIL (Instra), NLA (New Zealand), PAN (Polish), RE (Romanian), RUB (Russian), RUR (Russian), SE (Spanish), SW (Swiss Army), TE (Telegram), TR (Turkish), VOW (Virginia, with a dash), and ZIP (Wyoming)
+
+It should be noted that the above listing is for the original listing of connectors, which may or may not have changed in the intervening years. Other, newer, connectors can be found in the "Other Information" box.
+
+CAUTION: THE PRINTER RESULTS FROM THE TAPE READER RESET SYSTEM COULD DEPEND ON THE RESULTS USED TO MAKE THE COPY MECHANISM CEASE. IF THE RESET SPACING CODE BULLETIN IS USED, THE PRINTER RESET SYSTEM CODE BULLETIN MUST APPEAR ON READER READER READER RESET. IF THE RESET CODE BULLETIN IS NOT USED, A CODE BULLETIN APPLIES.
+
+Note: Perform the following procedures on separate tapes. If it becomes necessary to turn the tape over, reverse the procedures and try the tapes again with a different code.
+
+1.05 With the tape reader circuit "off" (SP), the code bar extensions move up and to the left early in the cycle. This motion is transferred through contacts S3-3 and S3-4 to the right, where it is transmitted to the right as lift.
+1.06 With the tape reader circuit "on" (OL), the code bar extensions move to the rear and to the right early in the cycle. This motion is transferred through contacts S3-5 and S3-6 to the up, where it is amplified by the speaker amplifier. The sound is transmitted through a low-pass filter to the right and left channels where it is double-prepared as low-pass filtered to enhance the low frequency content.
+1.07 The high frequency content of the transmitted signal is transmitted as dc or Hz modulation to the sound card in the call control unit. In the call control unit, the modulator determines the frequency content of the incoming signal and applies abanding to produce the desired
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+Teletype is known for its craftsmanship, creativity, and commitment to customer satisfaction. Modern-day manufacturers of machines which print on Teletype equipment strive to reproduce these qualities in their own unique and ingenious ways. Their efforts are led to us by talented individuals around the world, many of whom are supported by the Teletype Equipment Company as full-time employees.
+
+ASR MAKES TELETYPE AVAILABLE IN EIGHT NEW MULTIPLE SIZES
+ASR MADE MADE TAPE TRANSMITTER AVAILABLE IN EIGHT NEW MULTIPLE SIZES.
+The first ASR-equipped tape transmitters went into service in 1968. In 1976, the ASR-1 finally arrived, providing superior performance than its brother the ASR-2. Then in 1979, the ASR-4 came along boasting even better specs at an even better price. The machines soon became standard, and 1980 saw the introduction of the even better the ASR-8. In 1982, the first Teletype Basic, available in three sizes, was introduced. This Basic, too, was equipped with an upgrade kit that added an eighth type element to the data packet. This element was the activation of a "do not answer" switch.1
+
+THE DECADE THAT HAS PASSED since then, has seen the development of means and the refinement of ideas to within an order of magnitude the improvement between the eight-level Basic and the eight-level Upgrade. While the ASR-1 was originally designed to be used in test environments, its conversion to a usable unit in the hands of the general public has been immeasurably quicker. In fact, the day-to-day troubleshooting of the ASR-1 can best be described as "Beyond" than the day-to-day troubleshooting of the much more advanced Teletype. The upgrade from the ASR-1 to the ASR upgrade entails the replacement of the answer-back element with a Digital Multiplexer Codebar mechanism, thereby eliminating the need for a distributor mechanism at the answer back stage. Also, since the answer-back element is no longer required, the number of permutations to transmit is reduced. Finally, since the unit is a multiplexer, it receives both the data and the permutation signals from the send codebar mechanism.
+
+THE DECADE THAT'S PASSED ALSO brings with it a new generation of communications equipment. Inspired by the wonders of the 20th century by the advent of the personal computer, the era of electronic mail more generally is now upon us.2 But as Romanticism gave way to the Age of Reason, new ideas took their place. New conceptions of life and of progress sparked a new fascination with the physical world. New forms of communication enabled people to communicate by teletype or wirelessly. New media enabled books to be written on pages and even the printing press to be turned on typewheel.3 And, of course, as the 20th century drew to a close, so did the opportunities for invention and the need for new communication tools. But for our impatient age has grown a stubborn insistence that "things have to be!" So it is that today we have teletype, not because it is faster, more powerful, or more elegant than any other teletypewriter,4 but because it is the only one that works today!
+
+It All BEGAN...
+FOR THE FIRST TIME IN ITS LIFETIME, THE TELETYPE FAMILY SOLD AS A BUSINESS SEPARATE IS A THREAT TO NATIONAL NATURE.
+
+It all began in 1882 when a young printer named Emil Moe purchased a printing press and printing equipment business from his father, who had been a printer for over a century. 2 Two years after that purchase, Emil and his father opened their first printing press and printing equipment shop. Three years after that, they were joined by their first employee, a printer named James Q. Ingersoll. Soon other startup printers were hiring, and the number in operation was the size of all of St. Louis County.
+In 1884, for example, St. Louis, Missouri, was served by three tapers: two from Chicago and one from Kansas City, Missouri. The tapers from each location used the printing press and printing equipment to print and deliver news to their local communities.
+In 1886, the year this story was started, each printer in the county had a separate office and sales department. Each printer also had its own stock in the printing press and printing equipment maker. Each printer owned its own stock in newspapers, and these papers were not only protected from bankruptcy by the printer's insurance policy, but also had a steady customer in the press.
+Each printer also had its own way of training its employees. Each wanted its employees to be independent and self-directed. It was in these early days when the printer learned to "learn" that his power for specialization was most apparent. The young
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+teletype AT type
+TR-LS
+Vary the answer-back mode automatically between two message types, automatically changing message type with message transmission. The answer-back mode is on by default, and may be turned off in the appropriate menu item.
+
+MESSAGE IDENTIFICATION
+2.74 Message identification is accomplished with the station in the originate or answer condition. An operator can originate a message by the CTRL (centers) key, or can answer it by using the KEY (keys) or K (laydown) keyboard combination.
+2.75 The E (erase) and 1 (append) key are used to erase a message. The E key is the standard in Germonetting; the 1 key is an option. On the Keyboard, the K (kiosk) and 1 (lever) are used for logic circuits related to Message Identification. The Out (esc) and F2 (fire) key is used for logic circuits related to Flap Operation in the Tower.
+2.76 Two analog or digital inputs are provided to the calculator/send question answerback (K&R) circuit. The signals from the input of the K&R calmer down and provide the start-stop signals needed to power the K&R circuit. The digital inputs are used to operate the K&R, although they may be used from the calculator/send question answerback circuit if the appropriate filter is not applied. The K&R amplifier will generally not run into the delay in it's turning the signals on and off.
+2.77 When the K&R is in the originate or answer condition, the digital inputs are used to operate the K&R. The K&R will turn on only when the filter is broken off or the input signals become ground. The operator can operate the K&R by depressing the START (send space) key, or can place the keyboard in the INTRS (instruments out) position. In the latter position the keyboard supplies the signals to the K&R.
+2.78 When the K&R is in the originate or answer condition, the digital inputs are used to operate the K&R, The K&R will turn on when the filter is broken off or the input signals become +20 v dc. The K&R amplifier will supply balanced signals to the selector magnet driver and the selector. If the input is in the K&R'er start condition, the amplifier will turn off slowly and the K&R will not respond to a call until the input is reversed.
+2.79 When the K&R is in the originate or answer condition, the digital inputs are used to provide the data for the K&R. In their normal position the K2 relay contacts provide inputs to the K1 relay contacts and K2 relay contacts. The K1 contacts provide inputs to the K3 and K4 relay contacts. The K1 contacts supply inputs to the K4 pole connect contacts and the K2 contacts to the base of the selector magnet driver.
+2.80 When the K1 is disconnected, the outputs of the selector magnet driver and K2 relay contacts provide inputs to the OUT (off-hook) and REG (regulator disconnect) magnet driver. The OUT contacts supply inputs to the K1 relay contacts and K1 contacts. The REG contacts supply inputs to the K4 pole connect contacts and the K2 contacts to the base of the selector magnet driver.
+2.81 The K3 and K4 contacts supply inputs to the out of service and connect circuits. The K3 and K4 contacts supply inputs to the K3 and K4 contacts. The K3 and K4 contacts must be replaced. Two clips are provided that latch the contacts closed.
+2.82 When the K1 is in the connect condition, the REG magnet driver is energized. The K3 contacts connected to the base of the selector magnet driver will provide the inputs to the REG magnet driver and the connect circuit. The K3 and K4 contacts supply inputs to the K3 and K4 contacts. The OUTS clip will also hold the contact closed. The REG magnet driver will then give input to the connect circuit.
+2.83 The K4 pole connect contacts will provide inputs to the TST (timer control) and TST (time base) coils of the selector magnet driver. If the selector magnet driver is in the connect condition, the TST coil will be off and the MI (message indicator) will light.
+2.84 The K2 contacts connected to the base of the time base coil of the selector magnet driver will supply inputs to the MI magnet driver and the connect circuit. The MI magnet driver will turn off when the K4 contacts are closed. The K4 contacts open only when the K2 contacts are open.
+2.85 When the K2 contacts are connected to ground, a potentiometer (treble) will sense a transition voltage (vbase). If
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+asr34bot:
+Answer-back - For information as to when a particular character was transmitted, as ringer buzzer or message ID.
+Operational Notes - Disassembly and reassembly, as well as adjustment of related accessories.
+Serial APU
+2.02 The ASR 3300 Series Printer is equipped with a serial input/output (I/O) cabinet. In at-grade or "neutral" condition, operation of the Cabinet at the receiving station for two seconds will cause the teletypewriter to go into the "send-receive" (K-12) mode (automatic sequence) and turn on its I/O system. This causes the keyboard, printer, tape reader, tape reader guide, and tape-out device to turn on. The power pack is not required in this mode.
+2.03 A selector magnet driver is mounted at the left on the left side of the cabinet. With the driver mounted, this side can receive more ink than is normally found.
+2.04 There are two sets of ink-out and reader trip mechanisms. The first uses a spring plunger to cause the selector magnet to release the reader trip mechanism. The reader is then placed in the reader trip position but not yet operated. The plunger travels about 1 inch in 1.550 seconds. The spring is then pivoted out of the selected position by the operator's wrist. The trip works in much the same way as a normal spaced pulse opener.
+2.05 The tape reader is powered at the time of ordering. This is accomplished by connecting the coupler to the signal line. Data are passed from the reader in the form of a serial start-stop code to the exchange. The data are fed through the sending amplifier and into the data set into the sending amplifier. The external signals generated by the reader are fed into the send-receive duplexer. The ducode contacts in the receiver are used to break the signal of the fax reader when the coupler is in the neutral position. When the coupler is in the receive condition the contacts are used to transmit the signal back to the sender.
+2.06 Adjustments can be made to the keyboard, tape reader, or both.
+2.07 References to left, right, up, down, front, rear, etc, consider the coupler as positioned during the printing or type-setting procedure.
+
+4. Fax Disassembly 
+4.01 The Disassembly Procedures page provides instructions for removing the 760hp friction feed, four-axis character-forming press from the typing unit. Page 4-01 sets forth the general disassembly and reassembly, and lubrication requirements. Page 4-02 sets forth the specific disassembly and reassembly requirements. The particular points to be adjusted are indicated in red.
+Note: The position, size, and lubrication of the associated screws and plate must be checked and adjusted before attempt #1 or even the possibility of the operation being started incorrectly classed.
+4.02 In the adjustments covered on this page, use the exact same measuring tape to which the adjustment has been made.
+Note 1: All adjustment procedures should be started with the procedure performed.
+Note 2: A.125mm Allen key is used to operate the instructions on this page. Place it on the right side of the tape reader so that the codebars will be seen ahead of the tape punches.
+Note 3: The key should not be mounted in the closed position.
+Note 4: All adjustments should be started with the apparatus off the tape.
+Note 5: Instructions for installing the 105 Lever Cable should be read and followed closely.
+1.05 References to left, right, front, or rear, etc, consider the coupler as positioned during the viewing, or printing, procedure.
+1.06 When a procedure calls for using pry points or slots to make an adjustment, consider these channels as they present an opening for the carriage to pass under.
+1.07 When a coupler is removed from the tape reader, be sure that the removed coupler is replaced with the coupler, cable, and reader combination together.
+2. BASIC UNIT
+2.01 Need a helper with some basic operation of a Teletype printer? The SMS is the ideal unit for people with limited hand or coordination abilities, so it is important that the SMS operates with enough force to perform its essential function. To provide this, the SMS has a powerful 16-bit parallel-transistor parallel-current converter, plus an output power of 400 watts.
+2.02 The input to the parallel-transistor amplifier is from the parallel-current converter. This means that parallel inputs to the converter can be had with any input at the printer level. For example, if the sending motor speed is 20 miles an hour and the reader is at the left margin, the speed can behad from the printer level with a speed of 15 miles an hour. On the other hand
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+the joy of the unexpected
+
+teletype kits provide a unique and exciting way for individuals and/or businesses with small areas to communicate securely and productively. 
+theirs is a kit of equipment that creates jobs and stirs up jobs. it's a kit that grows industries and makes productive American businesses possible.
+its like any other finished product product — new, its time to age. square in the middle is when the fun begins. consider the pieces as you would a new pair of shoes. they get better the further along in the line they are in. 
+
+if your a long-term customer who wants to have their Teletype serviced at your convenience, we have the equipment. if its something you've got creamed or dried, take it in and we'll see if we can make it happen. 
+if its something you don't, well, that's where the fun begins. get in touch as often as you like to make an appointment. 
+
+teletype amateur association.
+Site preparation and brochure creation.
+new equipment page and design.
+modular teletype kit page and design.
+specification change for the elapsing and turning teletype.
+new friction feed teletype.
+new type with and without the card.
+new type with and without card.
+new friction feed type holder.
+modification of the teletype pus and text form-out device.
+modification of the call control codebar mechanism.
+modification of the power supply management circuit.
+modification of the call control circuit interconnection circuit.
+modification of the power supply circuit between the central office and the call control unit.
+modification of the power supply circuit between the central office and the call control unit.
+testing of the new teletype circuit configuration in the basement.
+installation instructions in Specification D, Form F.
+specification changes and revisions for the new friction fed and wire feed teletypes.
+technical changes and revisions affecting the procedure and tools used to service the various teletypes.
+printer servicing intervals have been increased to 5, 10, 15, 20, or 25 years. service contracts now state that the intervals will be 5, 10, 15, or 20 years.
+new lubrication procedure is required after each use of a lubricant that will last the testbeats the lubrication sessions. new lubrication procedure is also required after you remove any lubricant from the touch-tone dials or there is any other type of lubrication. new lubrication procedure is also required after parts are disassembled or rebuilt. lubrication codes are no longer needed when removing the tape reader lubricant dipstick, magnet, selector lever, or keyboard selector lever oils.
+new procedure is required after you remove any component or mountaintop or other nonpowderfeeling mechanism from under the typing unit to avoid the operation of the mechanism unless that mechanism is immediately removed.
+
+3. PROGRAM MECHANISM
+a. GENERAL
+The teletypewriter can be operated in three ways, depending upon the choice of the builder.
+NORMAL PROGRAM (Figure 3-1): The CTRL key is used to transmit the character "Station Trademark Unprintercable" pressed by the operator. The normal operating position of the CTRL key is up, but the operator can override this and use it to send the "Break" code other than the one requirements in 3.30 and 3.31. To override the normal CTRL key position, the operator puts his finger in the key and presses the CTRL key down.
+UPSHUT PROGRAM (Figure 3-2, Esc): The CTRL key is used to transmit the character "Unprinterbroken". The operator can place his finger in the key and/or press the CTRL key down.
+3.30 The CTRL keytoprives itself either by itself or with the help of the control function key (Figure 3-1) and the auxiliary keys in the call control unit. The operator can move either of these keys to the stop position and place them in the proper position to receive the code he is sending. The stop function provides the only means of preventing the keyboard from beingep when the keyboard of the finished unit has been used.
+3.31 The UPSHUT key (Figure 3-3) transforms the CR key (Figure 3-6) into the break key (Figure 3-5). The operator can move either of these keys to the stop position and place them there to send the appropriate code apart of the function key combination in 3.31. The break key (Figure 3-5) converts the stop function (Figure 3-31) into a break condition which is assets useful in the handling of the separate break and go signals of the typewheel. The operator can move either of these keys to the stop position and place them there to receive the separate break and go signals of the typewheel.
+The UPSHUT key (Figure 3-3),
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+asr33bot: (...)
+(5) As we said, this is a straightforwarddialing code for a simplemachine. Given a small set of instructions and a large number of the machines, this is a very simplepedigree operation.
+
+Q. SIGNALING DIAL TWX - WHAT'S NEW
+A. 
+1966
+With the advent of the teletype, the call character can now be transmitted either by the screen or the speaker.
+
+QUICK LINK
+Q. ANSWER-BACK ROUTINE (continued).
+1. In the normal course of operation, the operator uses the control knob to operate the access knob which, in turn, operates the backrama. The operation of the backrama is to back-plot the signals received by the distributor and, thus, to back-plot errors in transmission.
+2. As the distributor receives the signals it transmits to the dipoles, lagging ones are removed from the D.C.s and, thus, become more positive. These lagging d.c's are converted to freq. marks on the P. Send-Receive (SP) dial. If the receiving P.M. contacts are open, the lagging d.c. is left behind and has to be removed manually. This is done by closing the P.M. contacts and applying pressure to turn on the SP dialer.
+3. On the keyboard, the operator's keyboard (K) receives the keyboard's signal control parameters from the Printer's keyboard (P). These parameters, in turn, assign D.C.'s to high and low frequency ranges appropriate to the application. The P.M. contacts set the correct pitch for the typing unit's multiplexing units. The keyboard's D.C. is used to generate the text of messages and to transmit them to or to the distant P.
+4. The P.M. dialer (Figure 5) converts the normal back-plot heights and valleys received from the P. Send-Receive (P.S.) dials into horizontal and vertical spacing events. The P.M. contacts also provide access to the total signal width. These functions are coordinated by the call control unit's multifrequency (PF) element.
+
+P.C. CONTRACTOR
+5. The control circuit path is from -20v DC through the control contact, the motor control relay (MCR) contact, the motor control relay array contact, and through the data set capacitor into the motor control relay.
+6. Near the end of the path, the path abruptly changes to +20 v DC where a linear regulator is connected to the regulator of the motor control relay. The linear regulator allows +20 v DC for a duration to -20 v DC which is determined by the input to the linear regulator by the P.C. and the PF.C.
+c. DIALER MECHANISMS
+5. Within the scope of this section are described mechanisms which provide services which fall under the headgear and facia sub-section.
+a. Hand Mechanism
+5.03 The hand mechanism provides support for the P. C. contacts, through which messages are received and transmitted. It also accepts slopes and bends in the P. C. contacts to provide for the marking and spacing functions. The hand drive element drives the para. bellcrank against the ribbon for marking. The two-battery operated motor mounts in the rear of the contact mechanism.
+b. Armature Mechanism
+5.04 The armature for the hand drive element is connected by a spring to a rail on the left side of the arm. It is used to elevate the armature for enabling the control lever to be removed from the right P. C. contact. It is mounted at the elevated position in a clockwise direction.
+c. Platen Mechanism
+5.05 This mechanism, which is illustrated in Figure 6, serves two purposes. (1) To line the top of the platen and level the spindle after the divisions have been made, (2) To place the platen at an acceptable spacing betweendials.
+d. Marksmanship Mechanism
+5.06 The gun plate (Figure 7) is inserted into the plate hole of the platen insert (Figure 5), and then through the pointy side of the platen insert into the plate hole of the shooter's platen (Figure 6). A leather loop is then fastened to the plate through a loop magnet, and travels with the magazine to the left.
+e. Marksmanship Point Mechanism
+5.07 When the "D" key is depressed, the special function lever is moved to the "O" position. This means that the special function lever is held down in the notch of the codebar extension. The special function lever, when moved up, engages the latch, which is a block that moves up and down to close the special function valve.
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+A: As you can see from the diagram, there are a number of direct current connections between point disassembly and the distributor disc. One of these connections is a single-ended audio-video audio signal path which is fed through the keyboard distributor and audio selector. b. The signal loop is a single-ended path which feeds the selector and input of the primary target. The signal loop is d.c. isolated from the secondary target via cathode rays of the primary target. 
+C. Assembling the Guide-Way Mechanism 
+3.43 The mechanism can be installed by removing the tape lid screw, flossing the exposed surfaces, and reinstalling the lid. 
+
+"Only the good things make life worth living"
+4. Terminals, Input/Output, and Clutches
+TAB Transmitter and Receiver 
+TELETYPE
+PRINTED IN UTAH
+33 TAB MECHANISM
+GENERAL DESCRIPTION AND PRINCIPLES OF OPERATION
+4.01 The teletypewriter transmits and receives messages by means of a binary permutation code, The characters which make up the messages - letters, numbers, symbols, etc. - are represented by prearranged combinations of binary intelligence elements, each of which may be in one of two states: in-transit or out-of-transition. Each character is represented by a "start" code and a "stop" code.
+For example, assume that the "4" intelligence element is in-transit and the "4" code is in-station. The "X" in "4" stands for "Start" and the "O" for "Stop." The intelligence combination of "4" (Transmit, No. 4) represents the start element of "Station," while that of "Station X" (Transmit, No. 4) the stop element. The "Xs" (three-letter combinations) standing for the "Start" and "Off" codes, respectively, represent the transitive and intransitive elements.
+The intelligence elements are applied to the keyboard contact wires from keyboard contacts, respectively. The order in which the processes are performed is that of first, then, last.
+For example, if the "4" code (Transmit, No. 4) is in transit, the action is as follows:
+The first character to be transmitted is the "start" code character.
+The Stop code character is received as a "home" code due to the actions of the "4" code element.
+The "Home" code combination (1-3-4) is transmitted as the "first" character to the keyboard from the keyboard contacts.
+The interaction of the "Home" code combination with the "Stop" code combination in the keyboard contacts determines whether the "first" character is a "home" or an "out of service" code character.
+Out-of-service code combinations, therefore, are represented by "stop" code combinations, while in-service code combinations are represented by "first" code combinations.
+
+Note: The "first" code combination which results in an out-of-service character being transmitted is retained in the code bar contacts until the "second" code combination is transmitted.
+
+A. Tape Punch Mechanism
+4.02 The tape punch, in most typesetting machines, is interfaced with the data set. The data set supplies the data upon request of the type designer, The tape punch provides means for transmitting the data to the type designer.
+4.03 The punch, in conjunction with the data set, provides facilities for initiating messages and for accepting, printing, and printing-escaping printed messages.
+4.04 The punch includes a code bar mechanism which codes the individual character keys, a printing mechanism which prints the characters on the paper, and a function mechanism which performs various functions, including, if it is included, a form-out and printing-suppression function.
+4.05 The punch, as described, supplies means for permiting either in-transit or out-of-service operation. The out-of-service code combination may be transmitted by either the transducer or the ribbon. In its in-transmission position, it prevents the terminal from automatically refreshing the form after the form-out function is performed. For example, if the "Form-Out" code combination is transmitted, the function mechanism will prevent the printer from automatically refreshing the form after the "Form-Out" function is performed.
+4.06 Some printers (such as the AT type) have a form-out trip magnet option which will propel the form-out lever upwards when the "form-out" code combination is received. Other printers have a "form-out" function which is automatic. The automatic "form-out" is disabled by means of a switch. When the "form-out" code combination is received, the switch prevents
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+In the late nineteen-fifties and early sixties, 
+, 
+, Teletype Corporation set up a special line of calculators called the "Krupa" or "Life with You" calculators. The goal of the "Krupa" system was to provide "convenient, cost-effective personal accounting and records service for religiously involved small businesses. The operator is generally either a young man in his thirties or a young woman in her forties. The general requirements for a "Krupa" customer are as follows: 
+Person Place and Day Age 40 or Over No time to sit down for $0.80 per page (15 minutes) $1.00 to $2.00 per page (one hour) $2.50 to $5.00 per hour $5.00 to $10.00 per hour Monthly rate per person $12.00 To become a "Krupa" customer, a business must pay a small annual fee of $2.50 plus a $2.50 administrative fee. In addition, each business must provide: 
+- A sign on the property with the business' name and address 
+- A telephone number for the telephone to be connected before the account number can be used to make orders only 
+- A statement that this is a "for-profit" account and taxpayers must pay sales and excise taxes. To avoid additional administrative costs, INSTRUCTIONS page be modified every five years or when the account becomes more complicated. For queries, write TO ANYBODY, Office of the President and Telephone Directory, 
+Change
+Telephone Directory
+3341 N. Van Buren Street
+Rockford, Illinois 60416-1399
+Dear Mr. or Mrs. Brewer:
+Your Telstar Directory Page Calculator has a large number of requirements, including a requirement that a calculator seat at least one person comfortably, that it be self- lubricating, and that it receive a constant spring pressure. These requirements are well documented in the calculator manual. The calculator is equipped with them all. 
+Sincerely,
+Martin A. Morkrum
+Teletype S/Sreg.
+3341 N. Van Buren Street
+Rockford, Illinois 60416-1399
+DIRECTOR'S CUTOUT
+SEND-RECEIVE (CALL) REGISTER MECHANISM
+SEND-RECEIVE (ADJUSTED) REGISTER MECHANISM
+
+1. GENERAL
+1.01 This section provides instructions for the sending and receiving of characters on the keyboard. The general concepts underlying the various keyboard signaling mechanisms are set out in section 574-122-100TC.
+Note: The distributor mechanism can be activated by splits or activations of the keyshaft (Figure 1).
+1.02 Characters sent by pressing the send (SP) or send-receive (RS) keys at the same time, or simultaneously, are referred to as sequential or simultaneous keyswah operation. These terms refer to the keyshaft and platen respectively, as they operate in traditional overhead or split key arrangement.
+1.03 A sequence of keys is referred to as a character opener or a character breaker, because each key opens or shuts a code combination in the corresponding hand. For example, if the code combination for "CA" (SP) is pressed simultaneously by two key workers, the code combination for "CA" (SP) is broken out in the keys by a concurrent SP (SP) keytop actuated. Similarly, the code combination for "EF" (EF) is pressed simultaneously by two key workers, the code combination for "EF" (EF) is broken out in the keys by a concurrent EF (EF) keytop.
+1.04 There are a variety of codes that can be transmitted by the keyboard in a given sequence. These codes are shown on the schematic diagram in Figure 1. The codes can be individually entered or they can be combined to make up a valid code combination. When the SHIFT key is depressed, all keys that have the SHIFT key code combination in them will be activated. This will provide for the safe transmission of the code combinations.
+Note: The keyboard can take any one of four different actions:
+(a) On-Keyboard Out - The keyboard is stand off and stands are used for the sensing and control systems.
+(b) In-Line - The keyboard is in-line and the sensing and control systems are in parallel.
+(c) In-Line - The keyboard is out of-line and the sensing and control systems are in parallel.
+(d) In-Line - The keyboard is in-line and the sensing and control systems are out of-synch.
+1.05 There are two areas in which accuracy is guaranteed. These are:
+(a) In the key, where the code combination is entered into the code bar mechanism.
+(b) Where the
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+teletype.com
+Teletype S/S' machines can now talk to each other! Originally the only station allowed to communicate with the central office was 255 characters or less. That requirement was relaxed to 62 characters or less with the purchase of a limited number of extra teletype "desktops" in varying lengths. These "desktops" are used by the setup department when new connections are connected which are not being handled at the present time. The computers will accept data sets with a 7-1/2 inch diagonal and can handle 1,096 characters or less. 
+New! A new stand is now available! The ASR 3501-2 is a sturdy, machined aluminum construction with a 1.3-foot high, 2-foot wide, 2-foot long and 95-circuit display area. It can be used to host up to six clients at one time, and can hold a variety of functions, from basic entryways for typing unit parts to highly sophisticated administrative and system administration centers! The optional terminal control and professional services level is also available. 
+
+new! Typing units can be wired for either the 32 or the 64-level data set! This allows users of either data set to operate a computerized version of the unit, including functions, facilities, and adjustments for calculating the 32 or the 64-level code. 
+
+new! The ASR 3401 data set is the data set of choice for corporate and governmental customers. It is the standard data set today, and is easily installed and removed from the teletype unit. It includes the same general components and operating instructions as the teletype unit, except that the 32- or 64-level unit is used.
+
+new! The KDB is an inexpensive, portable, 2-level data set which provides fast, accurate telegraph communication over phone lines. With the KDB relay contacts replaced by LEDs, lights are placed in different areas of the transmission lines to simulate delay and to warn of errors. 
+
+new! The American Standard Code for Information Interchange, 6th ed., (ASCII), is the standardized system of giving program instructions to electronic machines. It is used in most types of communication, and is also the standard by which other codes are to be emulated. Using only the letters and numerals that make up the code, the ASCII code gives the impression of depth and variety, when in fact the system represents just one symbol for every five or six characters, or one character for every five or six lines of code. 
+
+NEW! The Model 28 Codebar Set (Mk. I), features a fully programmable numeric codebar set that operates at 600 dashes per second (12 characters per second). The set includes the following features:
+(1) A motorized character selection mechanism that allows the user to change the character code for character letters and numbers (Figure 3).
+(2) A print carriage that produces printed characters on the paper.
+(3) A print carriage return and line feed mechanisms that print the characters on the paper.
+(4) A function mechanism that performs functions such as carriage return and line feed.
+(5) A function ski rack that permits the functions to be performed under control.
+(6) A power pack, packed under the control armature, for emergency use in the short duration operation.
+(7) A print-suppression mechanism that will not print any characters when the function mechanisms are not in the semi-paralyzed wait mode.
+(8) A print-suppression mechanism, which will not print when the print mechanism is in the semi-paralyzed wait mode and the print-selector is in the contact contact guard mode.
+(9) A safety feature, which when disengaged prevent damage to the keyboard transmission circuits caused by a single unsup (Figure 4).
+(10) A cable that interconnects the stations for maximum reliability in long distance transmission.
+(11) A cable that interconnects the typing unit and the call control unit for even longer service.
+(12) A power supply, which provides 25 watts. The typing unit receives and distributes the power to the various mechanisms, including the motor, pulley, and power supply. The communication channels are 760 yards and 1000 yards.
+a. GENERAL - The Model 28 Data Set is a one-unit, assembled device which may be stabled, oriented for installation, cleaned, or repaired. The primary purpose of the set is to provide communications over telephone lines. At the present the Model 28 is used for emergency communications only. In the future the unit is to be used for major governmental and private organizations. 
+b. ALL APPLIANCES REQUIRED ARE LISTED. A LINE ACTUATOR (Figure 2) is supplied to assist in initiating, monitoring, and terminating calls. A CARRIAGE ACTUATOR (Figure 3) provides actuation, receiving signals, and printing
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+Teletype 555 timer
+Teletype 555 calculator
+Teletype 302 Send-Receive (SR) keyboard and printer
+Teletype 402 Send-Receive (SR) printer
+Teletype Send-Receive (RT) cassette player
+Teletype Check Dist (TDC) tape reader
+Teletype Duplex (TDD) tape reader
+Teletype Drum Grid (GD) cassette player
+Teletype Drum Grid (GD)
+TECHNICAL MANUAL
+33 TAPE READER
+This is a general description of the 33 tape reader. It is not intended to be used in conjunction with the tape reader described in the TP186878 manual.
+The 33 tape reader utilizes a three-dimensional (3D) cover with a platen that positions tape according to a serial number. The platen is angled at an opening at the rear of the cover. The opening is graced by three raised spots corresponding to the No. 3 and 4 lines of the reader code. These spots are illuminated by two light-emitting dashes (lcd) at the end of the reader code.
+The front of the cover has three different modes of open:
+(1) Rotating dish — This opening is positioned for the tape feed claw. A claw, which is fed from the dish, engages an opening in the platen. An extension on the platen extends to the surface below the tape feed claw. An extension on the platen extends to the surface below the selector lever and pushbutton levers. (2) Full-pageant display — The platen moves the knurled base of the tactile pushbuttons 1/2 inch to the right. The pushbuttons are fed by the pawl and lever from a plate in the platen. A projection on the platen has pawl and lever extensions which move the 2-piece mechanism to its stop position. Off-axis, the mechanism is set at an angle to the platen. (3) Ambidextrous operation — A pickle spring holds the tactile pushbuttons in their selected position when moved by hand.
+As shown in Figure 7, the cover has three levels of functions—F1 through to G99. The tape reader is in the printing level, and the selector is in the nonprint level. The three functions are:
+(1) Teletypewriter — The reading frame has no cover. The platen reads the coded spacing characters out of the tape by a typewriter mechanism which is in the reader code level.
+(2) Nonprintor — The platen feeds the tape at a nominal speed which is independent of type and par.
+(3)
+Teletypewriter
+(a) The teletypewriter mechanism is in the printing code level. A plat pinion rotates the teletypewriter mechanism which is in the nonprint level. Two brakes, which are mounted on the teletypewriter mechanism, keep the revolving plat pinion away from the tape ears. One of these is a drum mounted on the typing unit sides. The other is a slider mounted on the left side of the typing unit. When a code combination is received, the code bars permit the mechanism to rotate until it finds a tooth which is in the contact block. This is done so that the plat pinion, which is in its apserenumbering position, is placed in its most clockwise position. The other brake is a stamped feed-railler which pivots from a rotary mount on the right side of the teletypewriter.
+(b) The typing unit has a tape reader perforated in its tape-feeding mechanism. In this position, a pawl, lever, and clutch are held in their most clockwise position by a stamped feed-railler and the clutch is engaged by a stamped feed-bucket.
+(c) During the first part of the cycle, the clutch rotates the feed-bucket and the lever, pawl, and lever, rest in their most counterclockwise position. The lever, pawl, and clutch are engaged by the feed-railler and the feed-bucket. During this portion of the cycle the clutch engages, and the power bail rotates the feed-railler and the lever, pawl, and fulcrum in their most clockwise position. The pawl, lever, and clutch are engaged by the rim-struck feed-railler and the feed-bucket.
+(d) The power bail, through a clutch-trip linkage, pivots the feed-railler and the feed-bucket to advance the printed characters and the cassette to a point where they can be fed.
+(e) The power bail, through a trip-chains, rotates the feed-bucket and the clutch counterclockross each tooth on the feed-railler. The feed-bucket, through a nodule and feed-punch pin, moves the platen-t
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+the fun part is when someone else does the talking!
+if you want to learn more about this kind of thing, read "The Story of Teletype" by Cecil Smith. This is one of those "long read" bits because it's the stuff of "deep thinking" and involves "deep" stuff. If you want to know more about it, just go back and read it. 
+Cecil Smith was a brilliant young engineer by training. One day, in the late fifties, he was walking through a New York City department store and happened upon an enormous advertisement for a new kind of tape punch. Thinking it was some sort of hoax, Smith called up the salesman, and the two went back to his office to see if it really was so. Thinking it was a joke, they returned the ad and asked for one that met their standards. The salesman was taken aback when he found out that the ad stated that it could read his mind. So he changed the form to ask, "What's the strangest tape message you can send via this modem to a specified person or entity only to find out that person or entity is none other than your ex-girlfriend?" Smith called in a repeat ad and again the form stated that it could read someone else's mind. Again, the salesman changed the form to state that it could read only his. Smith called again and again and finally decided that the ad himself was too crazy to pass up. So he called in a third ad and asked that it be changed to state, "If you can send me only one thing via this modem, it'd be this: PLEASE STOP BEING SO CRAZY TO YOU." So the ad for the serial number four goes out, and mysteriously, the next teletype sent was from a woman who writes from California. 
+About this time, there was a crazy-looking guy named Wayne State University in Detroit, Michigan, USA. There he had an out-of-print teletype set that worked great. One day, having worked too hard, it failed a test. Someone at work used it to send a suicide command to his boss. A few days later, someone at Wayne State went to work and was shocked by a miracle. It was actually the owner of the set, using it daily, to sendballots to various shareholders. 
+In the late forties a company called Northwestern Mutual named "The" Teletype. Its first product, a "hello" clock, was a huge flop. A publicity man for the company once said that the slogan for the new company "Laughing-System," since "hello" and "mate" quickly became common parlance, was born." 
+Incidentally, "the" signified by "I" and "then" and the "then" signified by "then" characters in the letter "D" is what many consider the traditional sign language system for business. In our system (DT) the "then" sign makes up the "speech" break. 
+
+The "then-clack" sound would be like, "ta-da!" — giving business away instantly. So I did it! I called it the "signal delay" — letting the "machine" do the talking! 
+I called it the "then-clack" — giving the impression that something was happening ahead that we could't see. 
+Then came the excitement! One day it was "the" Teletype machine! 
+Then came the excitement! Another day it was "the" Teletype machine! Three days it was the"Teletype" — Today it is the "Communication" system! 
+Nowadays they show video pictures and hear audible speech! 
+They call it "computer-aided writing" or "auditory" communication — and it is great! 
+They tell you what they are doing, and you do it! 
+
+Today it is "voice-activated" or "computer-aided" communication — and it gets much better! 
+They tell you what they are doing, and you do it! — With pictures! 
+They call it "analog" communication — and it depends where you live, it is getting easier!
+
+Today it is "digital" or "punch-card" communication — and it gets much better still! 
+
+Teletype machines have become indispensable instruments with which the powerful and the learned exchange ideas — ideas and payments, of course, with which we must have practical life if we are to have resources to devote to the pursuit of knowledge. 
+Using a Teletype machine is like riding a telegraph line, and getting the ideas "senced" is like receiving them in writing. 
+Teletype ideas and messages are "dead" code, which cannot be cracked, copied, or evaded. However, they are "dead" code for demons! — psychic attentives who might be after them. 
+It is in
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+teletype terminals offer a unique experience for their users. 
+
+They are remarkably simple devices, with outputs as simple as the arp and ring pins of a keyboard and a limited set of adjustments. 
+
+They are so simple, in fact, that it is almost impossible to think of them in the same way as modern calculators or tape readers. 
+
+typewriter operators use the keys to transmit information - commands to the printing equipment. 
+
+platen-and-potty operators use the bottoms of the platen to transmit and modify power. 
+
+number-cruncher or carrier-route operators use the keys to retrieve the lost-stationary and carrier positions of a distant station. 
+
+carrier-receive operators use the bottoms of the platen to receive and transmit the selected carrier. 
+
+all operators at once? 
+ 
+
+teletype machines can do practically anything a computer can do immediately. They don't have to take notes, they don't have to memorize commands, and they don't have to turn the tape reader or paper-punch machine on after you've hit the "enter" key. 
+ 
+
+THE TAPE PUNCH STATION 
+Teletype specialists still use a batch-production machine, the Model 28, adapted for use in mass-production, for high speed writing. This machine does the job very well, but it runs out of tape very quickly. There's an old saying in the trade: "When in doubt, back the machine." 
+the tape punch consists mostly of unwieldy legs bolted together, with a metal frame and cast parts. of various manufacturers. of various ages. the average one-year-old machine in the tsnm uses as much tape as in the entire arsenal of the U.S. Army. 
+the tape punch consists almost entirely of cast metal parts, mostly heavy platen gear, that move with remarkable rapidity. they have a limited life, and lots of wear and tear. the frame also consists of cast parts, and of unwieldy legs and clutches for support. 
+the typist has only a very short time to make the error-free mailing of the tape punch. if he has to turn it on and off and replace batteries, he has only a couple of minutes every hour. if the machine breaks down completely, he needs lots of repair men. obviously, this takes a physical toll. finally, the typing unit must be replaced, since the telephone 
+lunchroom machine doesn't get much breakneck speed through an extremely long cable. the teletype training unit at New York doesn't have this problem, it trains its members in a space-to-time ratio so that a single space-to-time cycle can be handled by the entire unit. 
+this gives the unit a "shotgun" handling style of operation over packets of data, over channels involving time dilation and delay, overandspace to send and receive in "real time". it's like having an "automated" distribution center, only much, much faster. 
+the tape punch itself is a huge mechanical appliance, about the size of a deck of playing cards. it takes in a reel of tape per minute, and when punched, pops the tape onto wheels which move a print-paper mechanism. the print-paper out of the way so that the mechanical arrangement can print the tape itself. 
+its job is to push the tape, regardless of how fragile and difficult the job may seem, everywhere it needs to be pushed. this is accomplished by a pair of cast cast-aluminum wheels which ride upon cast castings scroll-hauls. each wheel is controlled by a set of sprocket pins which rides on castings' respective shoulders. in other words, as the printing mechanism rotates, the pins fly up and down, and send out an arc which fractures the tape upon which they are mounted. this arc is directed, for example, like a laser pointer, directly at the reading or encoding token on the tape-out. 
+the powerpack which supplies the power for the function mechanism is c.i.d. communicable with a separate circuit card. if something goes wrong, the copier will continue to burn, even if no function lever is moved. if the cable becomes twisted and the mail-order orderinitiative's postage mechanism stops transmitting, the powerpack will go out, the mail-order mechanism will resume its normal operation, and the mail-order mechanism will feed the card again. 
+the whole operation can be completed in a single operation. 
+it takes about an hour to operate a standard telegraph message and an hour to transmit a standard write message. when transmitting, the telegraph company uses two-stage or "two-act" transmission, the latter generally employing two or three characters to make a point. when receiving a message, the telegraph company uses
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+tl;dr: Text message service is only offered in set top boxes when a set is in use. A set may be in several "in-service" or "spare" positions, and its operators receive text messaging as a courtesy. 
+
+AT&T SP. Plan
+Wireless Data Terminal
+With ANS Adapter
+Card Check
+Using Toll Bail
+Low Paper Alert
+Just received: "Where? At the Post Office?"
+Typing displayed
+The operator at the Post Office is dialing a number
+The operator at the Teletype ATM is dialing a number 
+
+Spacing 
+The operator at the Post Office is at the proper size Typing level
+The operator at the ATM is at the appropriate size Window spacing 
+Depression of the CTRL key shifts the TR/CS technique indicator away from the keyboard, so that the indicator lights appear when the key is depressed. This prevents the key from being confused with the "traffic jam" condition, and also saves the Teletype Maintenance Department time during its Power Surge Detection Test. 
+Depression of the CTRL key pulls the TR/CS lamp towards the rear, so that the lamp may be properly illuminated during the teletyping connection. This procedure also protects the lamp against damage over-lights and damage from refinements resulting from accidental dropping. 
+With the SHIFT key, the opposite operation is performed: the key is held down and the light is pulled with the "RS" technique. The teletypewriter connection is a OHC event and the withdrawn key is applied back to the tip. With the CTRL key the same thing as above, except that the withdrawn key is applied forward to the point where the light is pulled away from the typewheel. This prevents the mechanism from being confused with the "traffic jam" condition, and also saves the Teletype Maintenance Department time during its Power Surge Detection Test. 
+
+Note: The withdrawn key is applied forward so that it engages the usual sighting slot. This slot is protected by the tip and slot barrier.
+
+<|endoftext|>
+Teletype Kit — Operations
+1. GENERAL
+1.01 This section provides instructions for the operation of the -Interchangeing mechanism used with the -Teletype Kit. It is reissued to make a few minor adjustments.
+1.02 In the adjustments covered in this section, location of clearances, position of parts, and point and angle of scale applications are illustrated by line drawings. Requirements and procedures are set forth in the texts that accompany the line drawings.
+1.03 Tools, materials, and assembly requirements for the various layers of teletypewriter assembly are set forth in the appropriate sections. The sections are divided into three categories—factories, mechanics, and circuits. Sub-sections begin with the essential d. system information and continue with the details of the operation.
+1.04 References to left, right, front, or rear, etc, consider the teletypewriter assembly as viewed by the teletypewriter operator.
+1.05 Sub-assemblies included in the kit are as follows—
+Light Gun Clearance: Screw and T-lever
+Clearance: Clearance Adjustment Screw and T-lever
+Print Cover: Clearance and Switch Assembly
+Letter Box: Sub-assembly and printer mechanism
+Marking Pin Group: Sub-assembly and distributor clutch mechanism
+Spacing Mat: and Programmer Arm: Sub-assembly and spring biased stylheque
+1.06 When a kit is purchased that contains shell adjusters, remove them from their mounts and check their compatibility with the kit. Adjust the shell adjusters according to the kit's instructions. Recheck any adjustments that may have been affected by the kit.
+Note: If it becomes necessary to disassemble the kit, reverse the installation procedures given in the instructions.
+1.07 References to left, right, front, rear, etc, consider the teletypewriter assembly as viewed by the operator.
+1.08 Tools, materials, and installation requirements for the various layers of teletypewriter assembly are set forth in the manuals that accompany the kit. The sections are divided into three categories—basic, custom, and specialty.
+1.09 In the procedures that accompany the schematic diagrams, the letter or number of the wiring section refers to the wiring board in the example depicted in red. The numbers refer to the wiring screws in the example depicted in blue.
+1.10 Unless specifically stated otherwise, make screws or bolts uncomfortable to remove by stretching or pressure-pointing them. If this is not possible, assume that the screw or bolt is still in its post. If it becomes necessary to remove the screw or bolt, first loosen its tension spring by pushing it toward the rear. Then, lift the post from its mounting bracket by way of thumbscrews or bolts.
+CAUTION: DO NOT PULL THE SHAPEMAN OFF THE POST
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+
+asr34bot: 
+
+ASR
+
+MARKTWIST
+FUSE PROTECTION
+1.05 When a fuse is protected by a magnet, the outer band of the magnet must always be taken as a whole. This is accomplished by applying a fuse protect bar to the lower end of the protection fuse. This stops short when the fullbar is applied. Then, when the magnet is returned to its unselected half-waverange, it is mounted against the opposite wall. Thebar, which is also protected by a fuse protect bar, rides on the outer band of the magnet and prevents its unrangesterthing from being disrupted bythebar's motion.
+1.06 The output of a fuse does not have to be used for power. - If the function called for a positive output, the magnet was turned on prior to the power function being called, and the function cam-clutch adhered to the output of the fuse protecting thefuse. When the call control cam-clutch came out, the output of the fuse, through the protect bar, was used to supply positive current to the control cam-clutch. The current path is shown in Figure 11.
+1.07 It is also recommended that the R.I. symbol appear on the lower right corner of the fuse pad. This is the only condition under which the pad should be properly aligned. If the reverse faces of the fuse appear mismatched, rotate the mas-ms counterclockwise (as viewed from the top), until the requirement is satisfied.
+1.08 The hr code shown in Figure 12 is a synchronization function performed by the hr component of the universal key. When the hr combination is punched in the keyboard contacts, the resulting pulses are transmitted as serial start-stop signals to the remote stations.
+1.09 There are two ways in which the hr code can be reversed in the keyboard contacts. The original or most recent action can be reversed in the contacts either by rotation of the contacts or a diallerter. The latter operation is described in the following paragraphs.
+1.10 When the remote unit generates the hr code, its binary (send start-stop signal to the remote) goes through the binary (send start-stop signal to the remote) first operated by the call control unit operator and the binary of the remote. The operator on the call control unit has complete control over the operation of the binary. Variations within the keyboard contacts unit design may provide for reversing the hr code either by operator intervention on the part of the operator, or by disassembling the keyboard contacts.
+1.11 In some units the binary (send start-stop signal to the remote) is generated locally, and the operator on the call control unit physically presses the bi-polar key which generates the bi-directional signal to the remote. In this case the local binary goes on, it's generator is disabled so that the signal can't be re-transmitted, and the signal start segment is suppressed.
+1.12 On other units the binary is generated remotely and the operator on the call control unit physically presses the bi-polar key which generates the bi-directional signal to the local station. In this case the local binary goes on, it's generator is disabled so that the local station can have complete reception, and the local station can receive complete reception. (For avoidance of doubt, we shall call the bi-directional signal now to be received as reception.) The operator on the call control unit, seeing receipt of the local station reception, knows that the signal means that the local station has been connected, and so presses the local-remote key to produce the bi-directional signal to be transmitted to the remote station. The operator on the call control unit then sends the local-remote signal to the remote station, which is located at the distant call control unit, which isochor operated the local-remote key to produce the transmitted signal.
+1.13 Special features which may be added to the keyboard of a particular model are described in the attached description.
+
+LUBRICATION
+1.14 The words "lubriqued" and "fresh" must be replaced by the letters "Lub and Receive Area" or by the number "RECEIVE" or "LUBRICATION" as indicated.
+1.15 All transmission facilities are protected by the manufacturer's explosive-protected deck (Figure 13). This outer platen protects the platen and is furnished with a shock-resistant extension. On the printer models the deck is protected by anodized aluminum plate.
+1.16 The deck is held together by self-tapping screws which are threaded through holes in the platen. The screws are fastened to the platen by static-jacketed screws which are threaded through hex head bolts. The platen is held in its selected position by two static-jacketed screws which are set at either end of the platen by two
+====================
+ppt: What's fun with Teletype terminals today?
+asr33bot: 
+Teletype equipment, like all movable type, is susceptible to weathering and natural attrition. Weathering is evident on the trace, especially near the tip, where it renders the paper less readable. Natural attrition, also, which it, too, may intensify, is seen where the bar and paper loop are of the same length. Thus the page becomes harder and harder the longer the loop is. Occasional precipitation during heavy rains will do the rest.
+Good practice in weeding out superfluous features is to Loosen the above three holding screws. Lift out paper spindle. Remove two clamp screws. Rotate paper spindle to remove last clamp screw.
+Check each element of the code individually to insure that it is aligned with its component parts and calibrated for the application.
+
+2-6. PRINTING
+2-6. A. General
+(1) The purpose of printing is to transmit the message by applying a printed or typewheel to the paper.
+(2) Traditional printing involves the writing of a character on a paper copy. It can be accomplished in one of two ways:
+(a) By the action of the paper itself, which carries the printing motion along the paper and thereby produces the printing. Or
+(b) By a pulley system, which operates two shafts which move the paper. The action of the printing line on the paper shaft produces a printing motion which is transferred to the Printer line and then electronically to the target page.
+(3) Some types of repair or maintenance work may be accomplished with the aid of a printed copy. Also, certain types of instructions or forms of support may be printed on the paper.
+B. Selector Mechanism
+2-7 and 2-8 are examples of selector mechanisms used in the selection of text.
+(1) The selector mechanism illustrated in Figure 2-1 performs the text function. Several variations exist in various printing types. The basic selector mechanism operates on the 6-level logic circuit described in paragraph 2-4. Selector mechanisms are described in Section 574-122-100TC.
+(2) The selector mechanism receives a print demand and conditions the motor control relay (MCR) to operate only after the print pressure falls to predetermined levels. The selector mechanism thus prevents the printing of the selected character if the print pressure falls below a predetermined level.
+(3) The print demand, which is conditioned by the distributor, is applied to the motor control relay and is passed through the MCR to the selector mechanism. It causes the distributor to send off a control pulse to the character suppression selector (CPS). The CPS then operates a print drive mechanism to print the specified character. If the print pressure falls beyond a predetermined length the carriage stops are momentarily depressed. This action causes the EPS power plug to operate and the locally depressed carriage stops cause the print drive mechanism to print the specified character from the rear.
+(4) If the print pressure falls below the predetermined level the carriage stops remain down. This action prevents the printing of the selected character. If the print pressure rises above the predetermined level the carriage stops become forward accelerated and the selected character is printed.
+c. Cartridge Mechanism
+2-8 illustrates the cartridge mechanism.
+(1) As the carriage moves frontward with the carriage stops down the carriage is passed by a cartridge clutch through a splitter and into the motor compartment.
+(2) The clutch is held in place by a cam profile and a sleeve on the clutch disc. The two profiles and the sleeve are integral parts of the mechanism. They are described in paragraph 2-6.
+(3) As the clutch rotates the profiles and the sleeve move rearward until they meet up with a flare effecting the alignment of the drive link. A flare ball engages a thumbscrew and engages apertures in the elbowstock.
+(4) As the armature is removed the shaft is placed in neutral. The thumbscrew keeps the shaft from moving frontward and the flare ball holds it in a V-shape. The information received from the line can be used to fine tune the alignment of the shaft.
+d. Assemble Press — Assemble the printer press to the stand.
+e. Poster Drive Televisions.
+(1) For systems with a flush top, place the projector on the tape lid in its most forward position.
+(2) For systems without a tape lid, place the projector on the tape lid in its most forward position.
+(3) Begin to drive the projector. The control lever under the control lever with the notch in it moves up and up until it overhangs the SEE NOTE 2- TAINT OFF TRIP SHAFT (Figure 2-7). This permits the SEE NOTE screw, which is threaded through the notch, to pass through the hole in the control lever.
+(4) With the projector in the see note position, the N element of the LENGTH (Figure 2-7)
+====================
