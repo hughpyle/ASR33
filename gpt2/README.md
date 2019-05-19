@@ -17,25 +17,33 @@ a [Google Colaboratory notebook](https://colab.research.google.com/drive/1VLG8e7
 that make the whole process really easy (and free!).  A training run of 10000 iterations took about 4 hours.
 
 
-Once the model was finetuned, then to run the text generation, first a tiny [Python command-line](https://github.com/hughpyle/ASR33/blob/master/gpt2/gen.py).
-It works well enough, and produces text that's some strange combination of your prompt and the tech manuals and
-whatever else the model wants to talk about (randomly).
+Once the model was finetuned, then of course I wanted to run the text generation using the Teletype terminal.
 
+The first way to do this is just a tiny [Python command-line](https://github.com/hughpyle/ASR33/blob/master/gpt2/gen.py).
+It works well enough, and produces text that's some strange combination of your prompt and the tech manuals and
+whatever else the model wants to talk about (randomly).  Running it on my MacBook takes a few minutes.
+
+Text is produced in a ~1000-word chunk, so we'll need to truncate it to a sensible length.  Also, the prompt will steer the beginning of the generation.
+Some of the results are repetitive and weird, some seem like a direct regurgitation of the manuals, and some are just weird.
 
 > New Year's Eve - In honor of our new year we did a little shopping. We picked up a used dialer from the hardware section for $100, and a used dialer and polar relay from the fabricators' section for $80.
 > New Tool - The Polar Relay washers werehers werehers werehers werehers were also werehers were for the H-bridge and the T-lever when used with the T-apparatus. 
 > Planetary New Year's Eve - The H-bridge and the T-lever are used interchangeably. For 1983 the H-bridge is separated from the touchstone by a groove and the T-lever is mounted so that it becomes a calendar T-lever T-lever T-lever T-lever T-lever is rotated clockwise (as viewed from top) until top of locklever is reached recessed key hole in lid is raised to accept
 
-Now, to actually run this from the Teletype,
+
+Now, to actually run this from the Teletype, interactively in a [twitch.tv session](https://twitch.tv/33asr), the obvious thing is to plug it into a chat-bot.  Then its prompt text can be the most recent few lines of chat,
+and hopefully it'll produce things that contribute to the discussion... right?
+
 * I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`), and installed `gpt-2-simple` and `tensorflow-gpu` on it
 * There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt, runs the text generator and produces some text in response,
-* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), with a chat command `!gpt2` that triggers a call to the web server, and then sent the result into the channel.
+* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), that we'd written a few weeks back.  The bot keeps track of 5 lines of history to use as the prompt.  With a chat command `!gpt2` it sends the prompts to the web server, and puts the result into the channel.
 * and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
 
+It worked.
 
 [![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426938433?tt_content=text_link&tt_medium=vod_embed)
 
-It's quite a trip.
+It's quite a trip.  Next time I'll have to run the bot with a "bot identity" instead of "as me"!
 
 [![teletype with generated text](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
 
