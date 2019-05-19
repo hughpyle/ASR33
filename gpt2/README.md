@@ -42,7 +42,7 @@ and hopefully it'll produce things that contribute to the discussion... right?
 
 It worked.
 
-[![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426938433?tt_content=text_link&tt_medium=vod_embed)
+[![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426617997?tt_content=text_link&tt_medium=vod_embed)
 
 It's quite a trip.  Next time I'll have to run the bot with a "bot identity" instead of "as me"!
 
