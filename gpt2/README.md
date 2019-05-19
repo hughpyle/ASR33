@@ -27,13 +27,16 @@ whatever else the model wants to talk about (randomly).
 > Planetary New Year's Eve - The H-bridge and the T-lever are used interchangeably. For 1983 the H-bridge is separated from the touchstone by a groove and the T-lever is mounted so that it becomes a calendar T-lever T-lever T-lever T-lever T-lever is rotated clockwise (as viewed from top) until top of locklever is reached recessed key hole in lid is raised to accept
 
 Now, to actually run this from the Teletype,
-* I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`),
-* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt and produces some text in response,
-* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), with a chat command `!gpt2` that triggered a call to the web server, and then sent the result into the channel.
+* I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`), and installed `gpt-2-simple` and `tensorflow-gpu` on it
+* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt, runs the text generator and produces some text in response,
+* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), with a chat command `!gpt2` that triggers a call to the web server, and then sent the result into the channel.
 * and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
 
-[![teletype with generated text](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
+
+[![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426938433?tt_content=text_link&tt_medium=vod_embed)
 
 It's quite a trip.
+
+[![teletype with generated text](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
 
 [![teletype with generated text](https://pbs.twimg.com/media/D64QvkcWwAE2lDW.jpg)](https://twitter.com/33asr/status/1129858972419330049) 
