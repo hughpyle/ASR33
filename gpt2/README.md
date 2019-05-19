@@ -3,6 +3,7 @@
 In early May, [OpenAI](https://openai.com/) released their "medium-sized" [text-generating language model](https://openai.com/blog/better-language-models/) named GPT-2, trained on millions of Web pages.
 The "small" model with 117M parameters can generate some quite realistic text, and the 345M "medium" model produces text that sometimes seems very natural and coherent.
 It's been used to generate [simulated Reddit "conversations"](https://www.reddit.com/r/slatestarcodex/comments/bo26lv/simulated_culture_war_roundup_thread_using_gpt2/) with uncanny (even scary) realism.
+You can play with the generator online at [talktotransformer.com](https://talktotransformer.com).
 
 I wanted to explore this a little, so fine-tuned its training on OCR'd scans of the [Teletype technical documentation](https://github.com/hughpyle/ASR33/tree/master/doc) from the late 1960s - early 1970s.
 
