@@ -36,7 +36,11 @@ Now, to actually run this from the Teletype, interactively in a [twitch.tv sessi
 and hopefully it'll produce things that contribute to the discussion... right?
 
 * I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`), and installed `gpt-2-simple` and `tensorflow-gpu` on it
-* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt, runs the text generator and produces some text in response,
+* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt, runs the text generator and produces some text in response...
+
+![teletype with generated text / a poem](../pix/generated_1.jpg)
+
+Having a web service to generate text:
 * Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), that we'd written a few weeks back.  The bot keeps track of 5 lines of history to use as the prompt.  With a chat command `!gpt2` it sends the prompts to the web server, and puts the result into the channel.
 * and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
 
@@ -46,9 +50,6 @@ It worked.
 [![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426617997?t=53s)
 
 Quite a trip.  Next time I'll have to run the bot with a "bot identity" instead of "as me"...
-
-
-![teletype with generated text / a poem](../pix/generated_1.jpg)
 
 [![teletype with generated text / a cryptic program](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
 
