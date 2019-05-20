@@ -35,13 +35,15 @@ Some of the results are repetitive and weird, some seem like a direct regurgitat
 Now, to actually run this from the Teletype, interactively in a [twitch.tv session](https://twitch.tv/33asr), the obvious thing is to plug it into a chat-bot.  Then its prompt text can be the most recent few lines of chat,
 and hopefully it'll produce things that contribute to the discussion... right?
 
-* I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`), and installed `gpt-2-simple` and `tensorflow-gpu` on it
-* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) that takes a prompt, runs the text generator and produces some text in response...
+* I spun up an Amazon "Deep Learning" AMI on one of their cheapest GPU servers (`g3s.xlarge`), which costs under $1/hour to run.  Most of the required libraries were on the image already; I installed `gpt-2-simple` and `tensorflow-gpu` on it, and scp'd my trained model checkpoint up to the machine.
+* There, ran a tiny [Python web server](https://github.com/hughpyle/ASR33/blob/master/gpt2/web.py) -- definitely _not_ intended to be production-ready! -- that takes a prompt, runs the text generator and produces some text in response.  So that's callable from a browser, or using curl:
 
-![teletype with generated text / a poem](../pix/generated_1.jpg)
+![teletype with generated text / could be almost a poem](../pix/generated_1.jpg)
 
-Having a web service to generate text:
-* Hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot), that we'd written a few weeks back.  The bot keeps track of 5 lines of history to use as the prompt.  With a chat command `!gpt2` it sends the prompts to the web server, and puts the result into the channel.
+> (1) To paraphrase a lyric from "Roll Over Beethoven" (My Fair Lady), "Every poem is a cautionary tale".
+
+Throwing caution to the wind:
+* I hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot) that we'd begun [a few weeks back](https://youtu.be/s7MqGX8qfWs?t=460).  The bot keeps track of 5 lines of history to use as the prompt.  With a chat command `!gpt2` it sends the prompts to the web service, and puts the result into the channel.
 * and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
 
 It worked.
