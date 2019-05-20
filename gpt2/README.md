@@ -47,6 +47,15 @@ It worked.
 
 Quite a trip.  Next time I'll have to run the bot with a "bot identity" instead of "as me"...
 
-[![teletype with generated text](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
 
-[![teletype with generated text](https://pbs.twimg.com/media/D64QvkcWwAE2lDW.jpg)](https://twitter.com/33asr/status/1129858972419330049) 
+![teletype with generated text / a poem](../pix/generated_1.jpg)
+
+[![teletype with generated text / a cryptic program](https://pbs.twimg.com/media/D64HeJIWkAIuiaq.jpg)](https://twitter.com/33asr/status/1129848776657723393)
+
+[![teletype with generated text / turn it on and off](https://pbs.twimg.com/media/D64QvkcWwAE2lDW.jpg)](https://twitter.com/33asr/status/1129858972419330049) 
+
+![teletype with generated text / apxial feature](../pix/generated_4.jpg)
+
+![teletype with generated text / mood-shifting force apollos](../pix/generated_5.jpg)
+
+What do you think it wants?
