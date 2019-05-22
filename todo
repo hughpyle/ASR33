@@ -1,21 +1,8 @@
-hack a python ipp server instead of cups
-    https://github.com/h2g2bob/ipp-server
-
-    lp -d coral.local thing.txt  => sends (1, b'document-format', 73): [b'application/pdf', b'application/octet-stream']
-
-    reject if wrong mime type
-     'document-format-supported':
-      [ 'application/vnd.hp-PCL',
-        'image/jpeg',
-        'application/PCLm',
-        'image/urf',
-        'application/octet-stream' ],
-
-   print with:
-    lp -d localhost -o raw=true testpage.txt
-    or
-    lpr -l -P localhost testpage.txt
-   (sends document-format: application/octet-stream, not text/plain)
+gpt2:
+  chop sentences (>25 chars, up to ".")
+  
+twitchbot:
+  input (from file? from stdin?) to make it an interactive client
 
 zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
@@ -33,15 +20,12 @@ itty
     FSK and ITA2 decoder with gnuradio
     http://internet-tty.net:8000/ITTY
 
-fix 'ed' weirdness on the coral
 ex-vi "open mode"
 night-mode teletype
 test suite
 
 twitchbot:
-  . !bell to stderr (without any mesg checking)
   !task -> report contents of ~/.project
-  input (from file? from stdin?) to make it an interactive client
 
 dig into termios and stty, and anything we can move out of firmware
 
@@ -196,4 +180,29 @@ x automesg check S_IWOTH as well as GRP
   http://0pointer.de/blog/projects/serial-console.html
 . getty and ssh on the coral
 . print some emoji: dog2 cat2 scorpion taco wind_blowing_face
+
+hack a python ipp server instead of cups
+    https://github.com/h2g2bob/ipp-server
+
+    lp -d coral.local thing.txt  => sends (1, b'document-format', 73): [b'application/pdf', b'application/octet-stream']
+
+    reject if wrong mime type
+     'document-format-supported':
+      [ 'application/vnd.hp-PCL',
+        'image/jpeg',
+        'application/PCLm',
+        'image/urf',
+        'application/octet-stream' ],
+
+   print with:
+    lp -d localhost -o raw=true testpage.txt
+    or
+    lpr -l -P localhost testpage.txt
+   (sends document-format: application/octet-stream, not text/plain)
+
+. twitchbot:
+    !bell to stderr (without any mesg checking)
+
+. fix 'ed' weirdness on the coral
+    (hacky workaround, anyway)
 

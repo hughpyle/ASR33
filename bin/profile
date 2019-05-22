@@ -2,7 +2,6 @@
 #
 
 export PS1='% '
-stty brkint
 
 # default terminal settings
 if [ "$(tty)" == "/dev/ttyACM0" ]; then
@@ -14,28 +13,38 @@ else
 fi
 
 # TERM is set by the getty but I want to have it set for other terminals for experimentation
-export COLUMNS=72
+# export COLUMNS=72
 # export TERM=tty33-amx
 
 
 # For "cooked" mode, just reset
-alias text='stty sane && tput reset'
+alias ttext='stty sane && tput reset'
 
 # For "pass-thru binary" mode, set raw stty (no NL->CRNL, etc) and also send the custom escape to set the firmware into raw mode
-alias binary='stty raw && echo "\033[?7l\033_ab\234"'
+alias tbinary='stty raw && echo "\033[?7l\033_ab\234"'
 
 # Modified python telnet client
 alias telnet='telnetlib3-client --speed 110 --encoding US-ASCII'
 
 # Other aliases
-alias ed='ed -p"* "'
-alias zork='dfrotz -r 72 -p -d ~/.games/zork1.dat'
+# alias ed='ed -p"* "'
+alias zork='dfrotz -r 72 -p ~/.games/zork1.dat'
 alias tw='twitter --length 1'
 alias ll='ls -ll'
 alias fig='pyfiglet -w 72'
+alias figlet='pyfiglet -f banner3 -w 72'
 alias banner='printerbanner -w 72'
 alias clear='tput clear'
 
+# printer stuff
+export IPP_PRINTER_NAME=Teletype
+export IPP_PRINTER_INFO="Teletype hardcopy printer"
+export IPP_PRINTER_MAKE_AND_MODEL="Teletype Model ASR33"
+export IPP_DATA_DIR=~/asr33/cups/data
+
 # do 'mesg' automatically when idle
-automesg 30 &
+# mesg n && automesg 30 &
+# twitchbot &
+#
+
 
