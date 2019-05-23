@@ -13,6 +13,7 @@ import requests
 from urllib.parse import quote_plus
 from twitchio.ext import commands
 
+from aioconsole import ainput
 
 async def wait_for_mesg():
     # sleep until the tty is group-writeable
@@ -42,6 +43,11 @@ class Bot(commands.Bot):
     # Handle the "ready" event
     async def event_ready(self):
         print(f'[twitch {self.channel}] Ready.')
+#        await self.join_channels([self.channel])
+#        while 1:
+#            chat = await ainput(">")
+#            ch = self.get_channel(self.channel)
+#            await ch.send(chat)
 
     # Handle the "message" event
     async def event_message(self, message):
@@ -66,11 +72,12 @@ class Bot(commands.Bot):
     # command: !gpt2
     @commands.command(name='gpt2')
     async def gpt2_command(self, ctx):
-        gpt_uri = "http://3.93.163.156:5599/asr33bot/"
+        gpt_uri = "http://" + os.environ.get("awsip") + ":5599/asr33bot/"
         ms = "\n".join(self.msgs[-5:])
         gpt_uri = gpt_uri + quote_plus(ms)
         gpttext = requests.get(gpt_uri).text
-        await ctx.send(gpttext)
+        pp = gpttext.find(".", 20)
+        await ctx.send(gpttext[:pp+1])
 
 
     # Command: !bell - ring the bell on stderr
