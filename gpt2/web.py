@@ -16,15 +16,17 @@ class Gpt(object):
             single_text = gpt2.generate(
                 self.sess,
                 length=250,
-                temperature=0.75,
                 top_k=0,
+                top_p=0.9,
                 return_as_list=True,
                 temperature=0.75,
                 include_prefix=False,
                 truncate="<|endoftext|>",
                 prefix=start
                 )[0]
-        return single_text
+        pos = single_text.find(start[-20:])
+        single_text = single_text[pos+20:]
+        return single_text[:500]
 
 
 class Web(BaseHTTPRequestHandler):
