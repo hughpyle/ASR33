@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Based on (link below) which is copyright (c) 2017-2019 TwitchIO
+# https://github.com/TwitchIO/TwitchIO/blob/rewrite/examples/subclass_bot.py
+
+import os
+import stat
+import sys
+import click
+import asyncio
+import requests
+from urllib.parse import quote_plus
+from twitchio.ext import commands
+
+from aioconsole import ainput
+
+async def wait_for_mesg():
+    # sleep until the tty is group-writeable
+    while not (os.fstat(1).st_mode & stat.S_IWGRP):
+        await asyncio.sleep(1)
+
+
+class Bot(commands.Bot):
+
+    def __init__(self,
+                 irctok=None,
+                 apitok=None,
+                 nick=None,
+                 ch=None,
+                 quiet=False):
+        super().__init__(
+            irc_token=irctok,
+            api_token=apitok,
+            nick=nick,
+            prefix='!',
+            initial_channels=[ch]
+        )
+        self.channel = ch
+        self.quiet = quiet
+        self.msgs = []
+
+    # Handle the "ready" event
+    async def event_ready(self):
+        print(f'[twitch {self.channel}] Ready.')
+#        await self.join_channels([self.channel])
+#        while 1:
+#            chat = await ainput(">")
+#            ch = self.get_channel(self.channel)
+#            await ch.send(chat)
+
+    # Handle the "message" event
+    async def event_message(self, message):
+        if not (self.quiet or message.content.startswith("!")):
+            self.msgs.append(message.author.name + ": " + message.content)
+            await asyncio.ensure_future(wait_for_mesg())
+            print(f'[twitch {self.channel}] {message.author.name}: {message.content}')
+        await self.handle_commands(message)
+
+    # Handle errors, and report 'no such command' to the author
+    async def event_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            await ctx.send('{}'.format(error))
+        else:
+            await super().event_command_error(ctx, error)
+
+    # command: !gpt2
+    @commands.command(name='gpt2')
+    async def gpt2_command(self, ctx):
+        gpt_uri = "http://" + os.environ.get("awsip") + ":5599/asr33bot/"
+        ms = "\n".join(self.msgs[-5:])
+        gpt_uri = gpt_uri + quote_plus(ms)
+        gpttext = requests.get(gpt_uri).text
+        pp = gpttext.find(".", 20)
+        await ctx.send(gpttext[:pp+1])
+
+
+
+@click.command()
+@click.option("--token", envvar='TWITCH_TOKEN', required=True)
+@click.option("--nick", envvar='TWITCH_NICK', required=True)
+@click.option("--ch", envvar='TWITCH_CHANNEL')
+@click.option("--quiet", "-q", is_flag=True, default=False, help="quiet mode")
+def main(token, nick, ch, quiet):
+    if not token.startswith("oauth:"):
+        print("Token should be 'oauth:xxxx'")
+        sys.exit(1)
+    if ch is None:
+        ch = "#" + nick
+    bot = Bot(irctok=token, apitok=token, nick=nick, ch=ch, quiet=quiet)
+    bot.run()
+
+
+if __name__ == "__main__":
+    main()
