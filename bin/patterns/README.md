@@ -32,6 +32,7 @@ Options:
                small, smallcaps, vt100
   --part TEXT  Write only one named part of a pattern-file
   --all        Write all the available parts in a pattern-file (slow!)
+  --svg        Write SVG, not binary
   --test       Write text preview, not binary
   --list       List the available patterns
   --help       Show this message and exit.
@@ -52,10 +53,20 @@ also try (for example)
 pattern text --font vt100 "Tape is fun!" --test
 ```
 
-### Tape on paper
+### Tape on paper 
 
 To sketch out your own designs, send [this postScript file](template.ps) to your printer.
 
 [![sketching template](../../pix/tape_template_x300.jpg)](../../pix/tape_template.jpg)
 
-Next-level: follow [ef1j95](https://twitter.com/ef1j95) on twitter.
+You can print "ready-made" patterns using the SVG output,
+``` 
+./pattern invaders --svg > file.svg && open file.svg
+```
+The resulting SVG looks like this,
+
+[![invaders svg](../../pix/invaders.svg)](../../pix/invaders.svg)
+
+---
+
+For next-level reperforating: follow [ef1j95](https://twitter.com/ef1j95) on twitter.

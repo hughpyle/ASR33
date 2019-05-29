@@ -1,6 +1,8 @@
 gpt2:
   chop sentences (>25 chars, up to ".")
-  
+
+twitchbot: separate version for AWS/GPT2
+
 twitchbot:
   input (from file? from stdin?) to make it an interactive client
 

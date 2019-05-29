@@ -1,11 +1,13 @@
 
 Various useful command-line tools for the teletype user.
 
-* `moo`: log in to LambdaMoo (needs `$MOOUSER` and `$MOOPASS`)
-* `bbs`: log in to FoxxTexx BBS (needs `$BBSUSER` and `$BBSPASS`)
-* `prime`: log in to the PRIMOS emulator (needs `$PRIUSER` and `$PRIPASS`)
+* `_moo`: log in to LambdaMoo (needs `$MOOUSER` and `$MOOPASS`)
+* `_bbs`: log in to FoxxTexx BBS (needs `$BBSUSER` and `$BBSPASS`)
+* `_prime`: log in to the PRIMOS emulator (needs `$PRIUSER` and `$PRIPASS`)
+* `_cdc`: log in to the CDC6500 at Living Computer Museum
 * `tf <text>`: print big characters on punch-tape.
-* `emoji <name>`: print an emoji.
+* `emoji <name>`: print an ASCII-art emoji.
+* `pattern <name>`: print a [paper-tape pattern](./patterns/README.md)
 * `q <question>`: general knowledge.
 
 
