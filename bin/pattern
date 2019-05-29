@@ -582,15 +582,44 @@ def list_patterns(ctx, param, value):
     ctx.exit()
 
 
+def write_svg(data, border=True):
+    """Write an SVG picture of the punched-tape strip"""
+    sl = len(data) * 10 + 50
+    sys.stdout.write("""<?xml version="1.0"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g transform="scale(1.0 1.0) translate(50,50)" style="fill:#000000;stroke:#000000;stroke-width:1.0">
+    <path d="M 5,100 {},100 {},50 {},0 5,0 -45,50 Z" style="fill:none"/>
+    <circle r="2" cx="-20" cy="40"/>
+    <circle r="2" cx="-10" cy="40"/>
+    <circle r="2" cx="0" cy="40"/>
+""".format(sl, sl-50, sl))
+    x = 0
+    for byte in data:
+        x = x + 10
+        sys.stdout.write("""    <circle r="2" cx="{}" cy="40"/>\n""".format(x))
+        y = 0
+        for bit in range(0, 9):
+            y = y + 10
+            if bit != 3:
+                if byte & 1:
+                    sys.stdout.write("""    <circle r="3" cx="{}" cy="{}"/>\n""".format(x, y))
+                byte = byte >> 1
+
+    sys.stdout.write("""  </g>
+</svg>""")
+
+
+
 @click.command()
 @click.argument("pattern", type=click.Path())
 @click.argument('words', nargs=-1, type=click.UNPROCESSED)
 @click.option("--font", default=DEFAULT_FONT, type=click.Path(), help="Font: {}".format(", ".join(ALL_FONTS)))
 @click.option("--part", default="pattern", required=False, help="Write only one named part of a pattern-file")
 @click.option("--all", is_flag=True, help="Write all the available parts in a pattern-file (slow!)")
+@click.option("--svg", is_flag=True, help="Write SVG, not binary")
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 @click.option("--list", is_flag=True, help="List the available patterns", is_eager=True, callback=list_patterns, expose_value=False)
-def main(pattern, part, all, test, words, font):
+def main(pattern, part, all, svg, test, words, font):
     """
     Print patterns to punchtape.
     """
@@ -608,16 +637,19 @@ def main(pattern, part, all, test, words, font):
         data = patt.render_part(part)
     l = len(data)
 
-    if not test:
+    if not (test or svg):
         # Put the tty firmware into 'raw binary' mode
         sys.stdout.buffer.write(INIT)
 
-    if test:
+    if svg:
+        write_svg(data)
+    elif test:
         for byte in data:
             sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
     else:
         sys.stdout.buffer.write(bytearray(data))
-    if not test:
+
+    if not (test or svg):
         sys.stdout.buffer.write(RESET)
 
     print("Length: {} bits, {} inches".format(l, l/10), file=sys.stderr)
