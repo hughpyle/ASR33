@@ -1,0 +1,10 @@
+<
+    "pattern": [
+        < 5: None >,
+        ("shift9", ("text", "MAINDEC-11-D1HA-PB ", "mod6x13"), 0),
+        ("text", "Core Heating Test DEC COPYRIGHT MARCH 1970", "smallcaps"),
+        < 20: None >,
+        ("url", "http://iamvirtual.ca/collection/systems/mediadoc/BOX-101/MAINDEC-11-D1HA-PB.ptap"),
+        < 20: None >
+    ]
+>

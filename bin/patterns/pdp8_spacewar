@@ -1,0 +1,8 @@
+<
+    "pattern": [
+        < 5: None >,
+        ("shift9", ("text", "PDP-8 SPACEWAR", "mod6x13"), 0),
+        ("url", "http://www.pdp8online.com/ftp/images/paper_tape/spacewar.bin"),
+        < 20: None >
+    ]
+>

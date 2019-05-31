@@ -1,0 +1,8 @@
+<
+    "pattern": [
+        < 5: None >,
+        ("shift9", ("text", "8080 BASIC VER 1.0 ", "mod6x13"), 0),
+        ("text", "Micro-Soft 1975", "smallcaps"),
+        ("url", "http://altairclone.com/downloads/basic/Paper%20Tape%20and%20Cassette/BASIC%20Ver%201-0.tap")
+    ]
+>

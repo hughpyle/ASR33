@@ -63,6 +63,7 @@ import random
 import math
 import tempfile
 import click
+import requests
 from PIL import Image, ImageFont, ImageDraw, BdfFontFile
 from PIL.Image import FLOYDSTEINBERG  # dither
 
@@ -437,6 +438,22 @@ class Pattern(object):
             result.append(byte)
         return result
 
+    @Operator("file")
+    def file(self, value):
+        """Read bytes from a file"""
+        value = self.substitute_path(value)
+        with open(value, "rb") as file:
+            return file.read()
+
+    @Operator("url")
+    def image(self, value):
+        """Read bytes from a URL"""
+        header = {
+            "Referer": "http://cpuville.com/Code/tinybasic2dms.bin",
+            "Accept": "*"
+        }
+        return requests.get(value, headers=header).content
+
     @Operator("width")
     def width(self, value):
         """Return the width of the value in bits."""
@@ -609,7 +626,6 @@ def write_svg(data, border=True):
 </svg>""")
 
 
-
 @click.command()
 @click.argument("pattern", type=click.Path())
 @click.argument('words', nargs=-1, type=click.UNPROCESSED)
@@ -637,10 +653,6 @@ def main(pattern, part, all, svg, test, words, font):
         data = patt.render_part(part)
     l = len(data)
 
-    if not (test or svg):
-        # Put the tty firmware into 'raw binary' mode
-        sys.stdout.buffer.write(INIT)
-
     if svg:
         write_svg(data)
     elif test:
@@ -648,9 +660,6 @@ def main(pattern, part, all, svg, test, words, font):
             sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
     else:
         sys.stdout.buffer.write(bytearray(data))
-
-    if not (test or svg):
-        sys.stdout.buffer.write(RESET)
 
     print("Length: {} bits, {} inches".format(l, l/10), file=sys.stderr)
 

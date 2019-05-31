@@ -1,0 +1,10 @@
+<
+    "pattern": [
+        < 5: None >,
+        ("shift9", ("text", "DEC-08-LBAA-PM ", "mod6x13"), 0),
+        ("text", "Binary Loader 5/10/67", "smallcaps"),
+        < 20: None >,
+        ("url", "http://dustyoldcomputers.com/pdp-common/reference/papertapes/dec/dec-08-lbaa-pm.bin"),
+        < 20: None >
+    ]
+>
