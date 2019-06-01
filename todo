@@ -1,6 +1,10 @@
 twitchbot:
   input (from file? from stdin?) to make it an interactive client
 
+awsbot: gpt2 talk on "?" and random timer
+
+lasercut tile
+
 zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
 Brickyard workshop: ASCII-Art
