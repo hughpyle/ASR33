@@ -599,30 +599,48 @@ def list_patterns(ctx, param, value):
     ctx.exit()
 
 
-def write_svg(data, border=True):
+def write_svg(data, border=True, width=None):
     """Write an SVG picture of the punched-tape strip"""
-    sl = len(data) * 10 + 50
+    sl = len(data)
+    if not width:
+        width = (sl + 10) / 10
     sys.stdout.write("""<?xml version="1.0"?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="1.2in" width="{}in" style="background:white">
-  <g transform="scale(0.96 0.96) translate(50,10)" style="fill:#000000;stroke:#000000;stroke-width:1.0">
-    <path d="M 5,100 {},100 {},50 {},0 5,0 -45,50 Z" style="fill:none"/>
-    <circle r="2" cx="-20" cy="40"/>
-    <circle r="2" cx="-10" cy="40"/>
-    <circle r="2" cx="0" cy="40"/>
-""".format((sl+60)/100, sl, sl-50, sl))
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" height="1.0in" width="{}in" style="background:white">
+  <g id="tape" transform="translate(46,0)" style="stroke-width:1.0">""".format(width))
+    if border:
+        sys.stdout.write("""
+    <g id="border" style="fill:none;stroke:#1A1A1A">
+      <line x1="0" y1="0" x2="-0.5in" y2="0.5in" />
+      <line x1="-0.5in" y1="0.5in" x2="0" y2="1.0in" />
+      <line x1="0" y1="1.0in" x2="{}in" y2="1.0in" />
+      <line x1="{}in" y1="1.0in" x2="{}in" y2="0.5in"/>
+      <line x1="{}in" y1="0.5in" x2="{}in" y2="0" />
+      <line x1="{}in" y1="0" x2="0" y2="0"/>
+    </g>""".format(
+        (sl + 5) / 10,
+        (sl + 5) / 10, sl / 10,
+        sl / 10, (sl + 5) / 10,
+        (sl + 5) / 10,
+        ))
+    sys.stdout.write("""
+    <g id="pattern " style="fill:#000000;stroke:#000000;">
+      <circle r="0.0125in" cx="-0.2in" cy="0.4in"/>
+      <circle r="0.0125in" cx="-0.1in" cy="0.4in"/>
+      <circle r="0.0125in" cx="0" cy="0.4in"/>
+""")
     x = 0
     for byte in data:
-        x = x + 10
-        sys.stdout.write("""    <circle r="2" cx="{}" cy="40"/>\n""".format(x))
-        y = 0
-        for bit in range(0, 9):
-            y = y + 10
-            if bit != 3:
-                if byte & 1:
-                    sys.stdout.write("""    <circle r="3" cx="{}" cy="{}"/>\n""".format(x, y))
-                byte = byte >> 1
+        x = x + 1
+        sys.stdout.write("""      <circle r="0.0125in" cx="{}in" cy="0.4in"/>\n""".format(x/10))
+        for bit in range(0, 8):
+            y = bit + 1
+            if bit > 2:
+                y = y + 1
+            if (byte >> bit) & 1:
+                sys.stdout.write("""      <circle r="0.025in" cx="{}in" cy="{}in"/>\n""".format(x/10, y/10))
 
-    sys.stdout.write("""  </g>
+    sys.stdout.write("""    </g>
+  </g>
 </svg>""")
 
 
@@ -633,9 +651,11 @@ def write_svg(data, border=True):
 @click.option("--part", default="pattern", required=False, help="Write only one named part of a pattern-file")
 @click.option("--all", is_flag=True, help="Write all the available parts in a pattern-file (slow!)")
 @click.option("--svg", is_flag=True, help="Write SVG, not binary")
+@click.option("--border", is_flag=True, default=True, help="Print a border for SVG")
+@click.option("--width", type=float, help="Page width (inches) for SVG")
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 @click.option("--list", is_flag=True, help="List the available patterns", is_eager=True, callback=list_patterns, expose_value=False)
-def main(pattern, part, all, svg, test, words, font):
+def main(pattern, part, all, svg, border, width, test, words, font):
     """
     Print patterns to punchtape.
     """
@@ -654,7 +674,7 @@ def main(pattern, part, all, svg, test, words, font):
     l = len(data)
 
     if svg:
-        write_svg(data)
+        write_svg(data, border=border, width=width)
     elif test:
         for byte in data:
             sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))

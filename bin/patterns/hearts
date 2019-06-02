@@ -1,6 +1,11 @@
 <
     "comment": "hearts, after https://twitter.com/ef1j95/status/1084149533842518016",
-    "pattern": [<5:None>, <3: [None, "heart", None, "slim_solid"]>, None, "heart", <15:None>],
+    "pattern": [<6:None>,
+        "heart", None, "slim_solid", None, "heart", <10:None>,
+        "slim_solid", None, "heart", None, "slim_solid", <10:None>,
+        "heart", None, "slim_solid", None, "heart",
+        <8:None>],
+    "pattern1": [<5:None>, <3: [None, "heart", None, "slim_solid"]>, None, "heart", <5:None>],
     "pattern2": [<5:None>, <3: [None, "heart", None, "solid"]>, None, "heart", <15:None>],
     "small_pattern": [<5:None>, <4: [None, "small", None, None, "small_solid", None]>, None, "small", <15:None>],
     "long": [

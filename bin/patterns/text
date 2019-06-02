@@ -4,5 +4,33 @@
     ],
     "inverted": [
         ("invert", ("shift9", ("text", "$*"), 0))
-    ]
+    ],
+    "small": [
+        ("shift", ("text", "$*", "small"), 1)
+    ],
+    "smallcaps": [
+        ("shift", ("text", "$*", "smallcaps"), 0)
+    ],
+    "mod3270": [
+        ("shift9", ("text", "$*", "mod3270"), 0)
+    ],
+    "mod6x13": [
+        ("shift9", ("text", "$*", "mod6x13"), 0)
+    ],
+    "7x13": [
+        ("shift9", ("text", "$*", "7x13"), 0)
+    ],
+    "cga": [
+        ("shift", ("text", "$*", "cga"), 0)
+    ],
+    "cgathin": [
+        ("shift", ("text", "$*", "cgathin"), 0)
+    ],
+    "vt100": [
+        ("shift", ("text", "$*", "vt100"), 0)
+    ],
+    "nex6x10": [
+        ("shift", ("text", "$*", "nex6x10"), 0)
+    ],
+
 >

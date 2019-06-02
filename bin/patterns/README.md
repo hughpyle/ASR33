@@ -65,7 +65,7 @@ You can print "ready-made" patterns using the SVG output,
 ```
 The resulting SVG looks like this,
 
-[![invaders svg](../../pix/invaders.svg)](../../pix/invaders.svg)
+[![invaders svg](../../pix/tape_invaders.svg)](../../pix/tape_invaders.svg)
 
 ---
 
