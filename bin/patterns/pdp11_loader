@@ -3,7 +3,7 @@
         < 5: None >,
         ("shift9", ("text", "DEC-11-L2PC-PO ", "mod6x13"), 0),
         ("text", "Absolute Loader", "smallcaps"),
-        < 10: None >,
+        < 20: None >,
         ("url", "http://vaxhaven.com/images/8/83/ABSOLUTE-BINARY-LOADER.ptap"),
         < 20: None >
     ]
