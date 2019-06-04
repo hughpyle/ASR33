@@ -630,7 +630,7 @@ def write_svg(data, border=True, width=None, height=None):
         yy2 = yoff + 0.6
         yy3 = yoff + 1.1
         yyt = yoff + 0.5
-        sys.stdout.write(f"""\n<!-- row {row} -->""")
+        sys.stdout.write(f"""\n    <!-- row {row} -->""")
         # row border
         if border:
             if rows == 1:
@@ -647,52 +647,51 @@ def write_svg(data, border=True, width=None, height=None):
       <line x1="{}in" y1="0.6in" x2="{}in" y2="0.1in" />
     </g>""".format((sl + 12) / 10,
                    (sl + 12) / 10,
-                   (sl + 12) / 10, (sl + 6) / 10,
-                   (sl + 6) / 10, (sl + 12) / 10
+                   (sl + 12) / 10, (sl + 7) / 10,
+                   (sl + 7) / 10, (sl + 12) / 10
                    ))
             elif row == 0:
                 # just the sigma-shape
                 sl = width * 10 - 7
                 xoff = 6
                 sys.stdout.write("""
-                <g style="fill:none;stroke:#1A1A1A"><!-- start, {} bits -->
-                  <line x1="{}in" y1="0.1in" x2="0.7in" y2="0.1in"/>
-                  <line x1="0.7in" y1="0.1in" x2="0.2in" y2="0.6in" />
-                  <line x1="0.2in" y1="0.6in" x2="0.7in" y2="1.1in" />
-                  <line x1="0.7in" y1="1.1in" x2="{}in" y2="1.1in" />
-                </g>""".format(sl,
-                               (sl + 7) / 10,
-                               (sl + 7) / 10,
-                               ))
+    <g style="fill:none;stroke:#1A1A1A"><!-- start, {} bits -->
+      <line x1="{}in" y1="0.1in" x2="0.7in" y2="0.1in"/>
+      <line x1="0.7in" y1="0.1in" x2="0.2in" y2="0.6in" />
+      <line x1="0.2in" y1="0.6in" x2="0.7in" y2="1.1in" />
+      <line x1="0.7in" y1="1.1in" x2="{}in" y2="1.1in" />
+    </g>""".format(sl,
+                   (sl + 7) / 10,
+                   (sl + 7) / 10,
+                   ))
             elif row == rows-1:
                 # just the end
                 sl = len(data) - bitpos  # width * 10
-                xx1 = (sl + 7) / 10
+                xx1 = (sl + 6) / 10
                 xx2 = (sl + 1) / 10
                 sys.stdout.write(f"""
-                <g style="fill:none;stroke:#1A1A1A"><!-- end, {sl} bits -->
-                  <line x1="0.0in" y1="{yy3}in" x2="{xx1}in" y2="{yy3}in" />
-                  <line x1="{xx1}in" y1="{yy3}in" x2="{xx2}in" y2="{yy2}in"/>
-                  <line x1="{xx2}in" y1="{yy2}in" x2="{xx1}in" y2="{yy1}in" />
-                  <line x1="{xx1}in" y1="{yy1}in" x2="0.0in" y2="{yy1}in"/>
-                </g>""")
+    <g style="fill:none;stroke:#1A1A1A"><!-- end, {sl} bits -->
+      <line x1="0.0in" y1="{yy3}in" x2="{xx1}in" y2="{yy3}in" />
+      <line x1="{xx1}in" y1="{yy3}in" x2="{xx2}in" y2="{yy2}in"/>
+      <line x1="{xx2}in" y1="{yy2}in" x2="{xx1}in" y2="{yy1}in" />
+      <line x1="{xx1}in" y1="{yy1}in" x2="0.0in" y2="{yy1}in"/>
+    </g>""")
             else:
                 # just the rows
                 sl = width * 10 - 1
                 xx1 = (sl + 1) / 10
                 sys.stdout.write(f"""
-                    <g style="fill:none;stroke:#1A1A1A"><!-- row, {sl} bits -->
-                      <line x1="0.0in" y1="{yy3}in" x2="{xx1}in" y2="{yy3}in" />
-                      <line x1="{xx1}in" y1="{yy1}in" x2="0.0in" y2="{yy1}in"/>
-                    </g>""")
+    <g style="fill:none;stroke:#1A1A1A"><!-- row, {sl} bits -->
+      <line x1="0.0in" y1="{yy3}in" x2="{xx1}in" y2="{yy3}in" />
+      <line x1="{xx1}in" y1="{yy1}in" x2="0.0in" y2="{yy1}in"/>
+    </g>""")
 
         sys.stdout.write("""
-        <g id="pattern " style="fill:#000000;stroke:#000000;">
+    <g id="pattern " style="fill:#000000;stroke:#000000;">
 """)
         if row == 0:
             # first few track-dots
-            sys.stdout.write("""
-      <circle r="0.0125in" cx="0.4in" cy="0.5in"/><!-- lead-in -->
+            sys.stdout.write("""      <circle r="0.0125in" cx="0.4in" cy="0.5in"/><!-- lead-in -->
       <circle r="0.0125in" cx="0.5in" cy="0.5in"/><!-- lead-in -->
       <circle r="0.0125in" cx="0.6in" cy="0.5in"/><!-- lead-in -->
 """)
@@ -715,12 +714,13 @@ def write_svg(data, border=True, width=None, height=None):
             sys.stdout.write("""      <circle r="0.0125in" cx="{}in" cy="{}in"/><!-- lead-out -->""".format(
                 (x + xoff + 1)/10, yyt))
 
-        sys.stdout.write("""    </g>""")
+        sys.stdout.write("""\n    </g>""")
         bitpos = bitpos + int(sl)
 
     # end of the page
-    sys.stdout.write("""      </g>
-    </svg>""")
+    sys.stdout.write("""
+  </g>
+</svg>""")
 
 
 @click.command()
