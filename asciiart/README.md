@@ -94,7 +94,9 @@ To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org
 
 I'll be posting occasional updates on [twitter](https://twitter.com/33asr).  
 
-![emoji shark](emoji/framed_emoji_shark.jpg) ![emoji apple](emoji/framed_emoji_apple.jpg) ![emoji fish](emoji/framed_emoji_fish.jpg)
+[![emoji shark](emoji/framed_emoji_shark_x250.jpg)](emoji/framed_emoji_shark.jpg)
+[![emoji apple](emoji/framed_emoji_apple_x250.jpg)](emoji/framed_emoji_apple.jpg)
+[![emoji fish](emoji/framed_emoji_fish_x250.jpg)](emoji/framed_emoji_fish.jpg)
  
 You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33).
 
