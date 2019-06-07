@@ -92,5 +92,9 @@ So, my little HOG retrocomputing project is accidentally almost state-of-the-art
 
 To print lettering, use `figlet` ([http://www.figlet.org/](http://www.figlet.org/)).  It has a vast collection of fonts, although many of them rely on the underscore, which isn't present on the Teletype printwheel.
 
-I'll be posting occasional updates on [twitter](https://twitter.com/33asr).  You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33) (soon!).
+I'll be posting occasional updates on [twitter](https://twitter.com/33asr).  
+
+![emoji shark](emoji/framed_emoji_shark.jpg) ![emoji apple](emoji/framed_emoji_apple.jpg) ![emoji fish](emoji/framed_emoji_fish.jpg)
+ 
+You can buy prints on [my Etsy store](https://www.etsy.com/shop/asr33).
 
