@@ -21,7 +21,7 @@ fi
 alias ttext='stty sane && tput reset'
 
 # For "pass-thru binary" mode, set raw stty (no NL->CRNL, etc) and also send the custom escape to set the firmware into raw mode
-alias tbinary='stty raw && echo "\033[?7l\033_ab\234"'
+alias tbinary='stty raw && printf "\033[?7l\033_ab\234"'
 
 # Modified python telnet client
 alias telnet='telnetlib3-client --speed 110 --encoding US-ASCII'
