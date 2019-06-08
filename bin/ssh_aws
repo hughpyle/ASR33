@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh -i $HOME/.ssh/ec2.pem ec2-user@${awsip}
