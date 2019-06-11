@@ -1,0 +1,9 @@
+<
+    "pattern": [
+        < 5: None >,
+        ("text", "DEC KA750 BOOT", "smallcaps"),
+        < 20: None >,
+        ("url", "https://github.com/simh/simh/raw/master/VAX/ka750_new.bin"),
+        < 20: None >
+    ]
+>
