@@ -450,7 +450,7 @@ class Pattern(object):
     def image(self, value):
         """Read bytes from a URL"""
         header = {
-            "Referer": "http://cpuville.com/Code/tinybasic2dms.bin",
+            "Referer": value,
             "Accept": "*"
         }
         return requests.get(value, headers=header).content
