@@ -92,7 +92,7 @@ def byte8(value):
 
 
 def byte9(value):
-    """Convert a 9-bit value to a byte.  The 4th bit is the "tape track" and gets dropped."""
+    """Convert a 9-bit value to a byte.  The 4th bit is the "tape feed track" and gets dropped."""
     value = ((value & 0b111110000) >> 1) + (value & 0b111)
     return int.to_bytes(value & 0xFF, 1, byteorder="little")
 
@@ -454,6 +454,16 @@ class Pattern(object):
             "Accept": "*"
         }
         return requests.get(value, headers=header).content
+
+    @Operator("bytes")
+    def bytes(self, value):
+        """Bytes from a number or a string"""
+        if isinstance(value, int):
+            # big-endian bytes (base-256 digits) of a potentially very long integer
+            return value.to_bytes((value.bit_length()+7)//8, 'big')
+        else:
+            # assume string, return utf-8 encoded bytes
+            return value.encode("utf-8")
 
     @Operator("width")
     def width(self, value):
