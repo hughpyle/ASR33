@@ -11,7 +11,9 @@ twitchbot:
 
 awsbot: gpt2 talk on "?" and random timer
 
-lasercut tile
+lasercut braille tile (inverted; braille overlay)
+
+. lasercut tile
 
 zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
