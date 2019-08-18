@@ -2,7 +2,7 @@
   mandel.c
   ascii print of mandelbrot fractals
   iterates Z _ Z^2 + C where C is in the region to explore
-  target: 2.11BSD Unix or similar
+  target: 2.11BSD Unix
 */
 
 #include <stdio.h>
@@ -14,12 +14,6 @@ char chars[] = ".-_+><!=:*35CV49FO6D#AZUGS02$%P&WXEQH8B@KRNM";
 #define X1 69
 #define Y1 40
 
-/* center coordinate of the plot, and dimensions */
-#define R -1.0
-#define I 0.0
-#define D 2.0
-
-
 int main (argc,argv)
 int argc;
 char *argv[];
@@ -27,6 +21,25 @@ char *argv[];
     char ch;
     int X, Y, N, M;
     double A, B, R1, R2, R3, I1, I2, I3, S1, S2, Z1, Z2;
+
+    /* center coordinate of the plot, and dimensions */
+    double R = -1.0;
+    double I = 0.0;
+    double D = 2.0;
+
+    /* optional arguments: R I D */
+    if(argc>1) {
+        R = atof(argv[1]);
+    }
+    if(argc>2) {
+        I = atof(argv[2]);
+    }
+    if(argc>3) {
+        D = atof(argv[3]);
+        if(D == 0.0) {
+            D = 2.0;
+        }
+    }
 
     /* maximum number of iterations */
     M = 10 * (sizeof(chars)-1);
