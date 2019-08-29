@@ -24,7 +24,7 @@ To have this start automatically at boot,
 ```
 sudo systemctl enable getty@ttyACM0.service
 ```
-Now a `reboot` should immediately print the login message.
+Now a `reboot` should immediately print the login message at the console connected to the ttyACM0 device.
 
 You can see all the getty properties using
 ```
@@ -40,7 +40,8 @@ sudo mkdir /etc/systemd/system/getty@ttyACM0.service.d
 ```
 
 Then create a file `/etc/systemd/system/getty@ttyACM0.service.d/override.conf` with
-contents:
+contents below, replacing `userename` with the desired linux user that should
+automatically be logged in:
 ```
 [Service]
 Type=simple
