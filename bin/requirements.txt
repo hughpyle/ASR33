@@ -1,3 +1,4 @@
+aioconsole
 aiohttp
 async-timeout
 asyncio
@@ -5,17 +6,22 @@ attrs
 certifi
 chardet
 Click
+decorator
 emoji
 emoji-data-python
 emoji-unicode
 idna
 imageio
 multidict
+networkx
 numpy
 Pillow
 pycodestyle
+pyfiglet
+PyWavelets
 requests
 scikit-image
+scipy
 telnetlib3
 twitchio
 urllib3

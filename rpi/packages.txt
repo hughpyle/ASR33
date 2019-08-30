@@ -1,4 +1,5 @@
 build-essential
+bwbasic
 cmake
 curl
 debhelper
