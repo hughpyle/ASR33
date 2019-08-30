@@ -9,10 +9,13 @@ emoji
 emoji-data-python
 emoji-unicode
 idna
+imageio
 multidict
+numpy
 Pillow
 pycodestyle
 requests
+scikit-image
 telnetlib3
 twitchio
 urllib3
