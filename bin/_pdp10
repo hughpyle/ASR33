@@ -1,0 +1,11 @@
+#!/usr/bin/expect -f
+# Interactive login to the DECsystem-10 at Living Computer Museum
+log_user 1
+set timeout 3600
+spawn ssh dec-10@tty.livingcomputermuseum.org
+expect "PDPplanet"
+#send \033
+#send "LOGIN"
+#log_user 1
+interact
+
