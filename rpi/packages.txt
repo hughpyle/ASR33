@@ -1,3 +1,4 @@
+bsdgames
 build-essential
 bwbasic
 cmake

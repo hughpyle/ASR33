@@ -2,6 +2,7 @@
 log_user 0
 set timeout 3600
 spawn telnetlib3-client --speed 110 --encoding US-ASCII bbs.fozztexx.com
+log_user 1
 expect "User:"
 send "$env(BBSUSER)\n"
 expect "Password:"
@@ -16,5 +17,6 @@ send "dumb\n"
 expect "Character set"
 expect ":"
 send "\n"
+log_user 1
 interact
 

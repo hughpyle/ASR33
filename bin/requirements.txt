@@ -14,7 +14,7 @@ idna
 imageio
 multidict
 networkx
-numpy
+numpy --no-binary :all:
 Pillow
 pycodestyle
 pyfiglet
