@@ -1,6 +1,6 @@
 # Connecting to  Raspberry Pi
 
-There are at several ways to connect to Raspberry Pi:
+There are several ways to physically connect a Teleytpe to a Raspberry Pi:
 * Directly to the GPIO serial lines, or
 * Via the Teensy USB interface, or
 * Via a RS-232 adapter, and a RS232-USB cable.
@@ -68,7 +68,7 @@ that firmware, the best settings are
 
 ### Using udev rules for more flexibility
 
-With `udev` rules, you can control the name of the tty port.  This is
+With `udev` rules, you can control the name of the tty device.  This is
 especially useful if you have several USB devices, and you want some of
 them to have a 'getty' but not others.
 
@@ -80,7 +80,7 @@ using a [FTDI cable](https://www.ftdichip.com/Products/Cables/USBRS232.htm).
 
 With a file `/etc/udev/rules.d/50-terminals.rules`, here are some rules that
 distinguish between the terminals based on which cable is plugged in, 
-regardless which USB port they're connected to:
+regardless which USB port it's connected to:
 ```
 # The PL2303-based serial-to-USB cable is for the Teletype
 SUBSYSTEM=="tty", DRIVERS=="pl2303", SYMLINK+="ttyASR33"
