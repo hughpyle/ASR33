@@ -1,0 +1,12 @@
+deramp adapter
+looking into the jack, connections are:
+[g] [in] [out] [g]
+
+6-wire cable colors are:
+yellow  green  red  black
+
+db9 connections:
+ground=5 (either wire)
+in=3
+out=2
+
