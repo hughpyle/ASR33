@@ -206,6 +206,13 @@ def render(fd, outfile, indent=0):
         outfile = 1
 
     with io.open(outfile, "wb") as f:
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
+        f.write(b"\r\n")
         f.write("\r\n".join(result).encode("utf-8"))
         f.write(b"\r\n")
         f.write(b"\r\n")
