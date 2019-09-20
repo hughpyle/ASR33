@@ -148,7 +148,7 @@ def process(image):
     return fd
 
 
-def render(fd, outfile, indent=0):
+def render(fd, outfile, chars1, chars2, indent=0):
     # The fd is a histograms-of-gradients
     n_cells_row = fd.shape[0]
     n_cells_col = fd.shape[1]
@@ -164,6 +164,12 @@ def render(fd, outfile, indent=0):
     # }
     with open(PREPARED_FILE, "rb") as data:
         chars = json.load(data)
+
+    # Retain only the character combinations for chars1/chars2
+    if chars1:
+        chars = {k: v for k, v in chars.items() if k[0] in chars1}
+    if chars2:
+        chars = {k: v for k, v in chars.items() if k[1] in chars2}
 
     # Make as numpy
     for c in chars.keys():
@@ -228,9 +234,11 @@ def render(fd, outfile, indent=0):
 @click.option('--invert', is_flag=True, default=False, help='Invert colors')
 @click.option('--gamma', default=1.0, help='Gamma correction')
 @click.option('--indent', default=0, help='Indent with spaces')
+@click.option('--chars1', help='Characters to use in the first layer')
+@click.option('--chars2', help='Characters to use in the second layer')
 @click.option('--output', help='Output filename (use "-" for stdout)')
 @click.argument('filename')
-def main(filename, width, invert, gamma, indent, output):
+def main(filename, width, invert, gamma, indent, chars1, chars2, output):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
@@ -242,7 +250,7 @@ def main(filename, width, invert, gamma, indent, output):
     # Map to ASCII
     if not output:
         output = filename + ".txt"
-    render(hog_fd, output, indent)
+    render(hog_fd, output, chars1, chars2, indent)
 
 
 if __name__ == "__main__":
