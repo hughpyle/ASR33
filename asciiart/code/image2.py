@@ -205,7 +205,7 @@ def render(fd, outfile, chars1, chars2, indent=0):
             print(line1 + " " + line2)
 
         # Don't forget to strip trailing spaces from each line, they just waste time!
-        result.append((" " * indent) + line1.rstrip() + "\r" + (" " * indent) + line2.rstrip())
+        result.append(((" " * indent) + line1).rstrip() + "\r" + ((" " * indent) + line2).rstrip())
 
     # Write a text file with all the iterations
     if outfile == "-":
