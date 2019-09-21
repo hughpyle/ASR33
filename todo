@@ -1,11 +1,7 @@
+mandelbrot set in c on the pdp-11 at lcm&l
 TOPS-10 BASIC
   functions http://www.bitsavers.org/pdf/dec/pdp10/TOPS10_softwareNotebooks/vol06/DEC-10-LBLMA-A-D_BASIC_Conversational_Language_Manual_Mar74.pdf
     page 5.1.6
-TECO
-  http://www.bitsavers.org/pdf/dec/pdp10/TOPS10/1972_PDP-10_Users_Handbook/05_tecoReference.pdf
-  http://www.avanthar.com/healyzh/teco/TecoPocketGuide.html#NOVICE
-  http://almy.us/teco.html
-
 twitchbot:
   input (from file? from stdin?) to make it an interactive client
 
@@ -221,4 +217,9 @@ gpt2:
   chop sentences (>25 chars, up to ".")
 
 twitchbot: separate version for AWS/GPT2
+
+TECO
+  http://www.bitsavers.org/pdf/dec/pdp10/TOPS10/1972_PDP-10_Users_Handbook/05_tecoReference.pdf
+  http://www.avanthar.com/healyzh/teco/TecoPocketGuide.html#NOVICE
+  http://almy.us/teco.html
 
