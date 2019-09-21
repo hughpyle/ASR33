@@ -16,6 +16,13 @@ if [[ "$1" == "-big" ]]; then
     shift
 fi
 
+emojiname="$1"
+shift
+chars1=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+shift
+chars2=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+shift
+
 tmps=$(mktemp -t XXXXXX.svg)
 tmpp=$(mktemp -t XXXXXX.png)
 function cleanup() {
@@ -24,7 +31,7 @@ function cleanup() {
 }
 trap cleanup EXIT
 
-url=$(emojiurl "$1")
+url=$(emojiurl "$emojiname")
 if [[ $? == 0 ]]; then
     # fetch the SVG and convert to a PNG
     wget -q -O "$tmps" "$url"
@@ -32,5 +39,5 @@ if [[ $? == 0 ]]; then
     # cp "$tmpp" emoji.png
 
     # convert to ascii
-    $(dirname $0)/../asciiart/code/image2.py --width $width "$tmpp" --gamma 2.0 --indent $indent --output -
+    $(dirname $0)/../asciiart/code/image2.py --width $width "$tmpp" --gamma 2.0 --chars1 "$chars1" --chars2 "$chars2" --indent $indent --output -
 fi

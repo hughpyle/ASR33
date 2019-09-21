@@ -47,6 +47,9 @@ export IPP_PRINTER_INFO="Teletype hardcopy printer"
 export IPP_PRINTER_MAKE_AND_MODEL="Teletype Model ASR33"
 export IPP_DATA_DIR=~/asr33/cups/data
 
+# Characters in the ITA2 Baudot/Murray code, for emoji to an older teletype
+export BAUDOT_CHARS="QWERTYUIOPASDFGHJKLZXCVBNM1234567890-$!&#'()\"/:;?,. "
+
 # do 'mesg' automatically when idle
 # mesg n && automesg 30 &
 # twitchbot &
