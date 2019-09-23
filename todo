@@ -1,3 +1,15 @@
+moon pix:  https://svs.gsfc.nasa.gov/4442
+    image2.py [file] --width 40 --chars1 "'.<*" --chars2 "-O>"
+    or --chars1 "'.=" --chars2 "-<>MO0N"
+    files from https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004442/frames/730x730_1x1_30p/ (hourly)
+    or 216x216 https://svs.gsfc.nasa.gov/vis/a000000/a004400/a004442/frames/216x216_1x1_30p
+    or https://api.usno.navy.mil/imagery/moon.png?date=9/23/2019&time=20:50 (much wider time coverage, 1024x1024)
+    current time, or a specified time (month, day, hour UTC) (ideally handle prior years too)
+    moon 09 22 00
+    label saying the time
+    label describing the phase (waxing gibbous, etc)
+    cron job for sending moon pix to autostart itty (autostart.itty@gmail.com or direct via the 'mailer')
+tile 'pattern sequences --part fade2 --svg --width 17.5'
 mandelbrot set in c on the pdp-11 at lcm&l
 mandelbrot set using the hammersley characters ('.-o) and overstrike
 TOPS-10 BASIC
@@ -214,12 +226,12 @@ hack a python ipp server instead of cups
 . fix 'ed' weirdness on the coral
     (hacky workaround, anyway)
 
-gpt2:
+x gpt2:
   chop sentences (>25 chars, up to ".")
 
-twitchbot: separate version for AWS/GPT2
+x twitchbot: separate version for AWS/GPT2
 
-TECO
+x TECO
   http://www.bitsavers.org/pdf/dec/pdp10/TOPS10/1972_PDP-10_Users_Handbook/05_tecoReference.pdf
   http://www.avanthar.com/healyzh/teco/TecoPocketGuide.html#NOVICE
   http://almy.us/teco.html
