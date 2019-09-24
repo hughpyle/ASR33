@@ -16,14 +16,17 @@ if [[ "$1" == "-big" ]]; then
     shift
 fi
 
+showtime=1
 moondate=$1
 if [[ "$moondate" ]]; then
+    showtime=0
     shift
 else
     moondate=$(date -u "+%m/%d/%Y")
 fi
 moontime=$1
 if [[ "$moontime" ]]; then
+    showtime=1
     shift
 else
     moontime=$(date -u "+%H:%M")
@@ -35,8 +38,13 @@ chars2="-/MO0N\\"
 url="https://api.usno.navy.mil/imagery/moon.png?ID=asr33&date=$moondate&time=$moontime"
 data="https://api.usno.navy.mil/rstt/oneday?ID=asr33&date=$moondate&loc=Lynn,MA"
 phase=$(curl -s "$data" | jq -r "if .curphase == null then .closestphase.phase  else .curphase end")
-title="$moondate $moontime, $phase"
 gamma="1.08"
+
+if [[ $showtime == 1 ]]; then
+    title="$moondate $moontime, $phase"
+else
+    title="$moondate, $phase"
+fi
 
 tmp1=$(mktemp -t XXXXXX.png)
 tmp2=$(mktemp -t XXXXXX.png)
@@ -49,13 +57,13 @@ trap cleanup EXIT
 if [[ $? == 0 ]]; then
     # lasso the moon as a png
     wget -q -O "$tmp1" "$url"
-    if [[ $? != 0 ]]; then
-        echo "error"
-    else
+    if [[ $? == 0 && -s "$tmp1" ]]; then
         # the 1024x1024 has lots of space around it, trim
         convert "$tmp1" -crop 768x768+128+128 "$tmp2"
 
         # convert to ascii
         $(dirname $0)/../asciiart/code/image2.py --width $width "$tmp2" --gamma "$gamma" --chars1 "$chars1" --chars2 "$chars2" --title "$title" --indent $indent --output -
+    else
+        echo "error" >&2
     fi
 fi
