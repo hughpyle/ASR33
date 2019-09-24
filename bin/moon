@@ -32,13 +32,13 @@ else
     moontime=$(date -u "+%H:%M")
 fi
 
-chars1="'."
-chars2="-/MO0N\\"
+chars1="'.#"
+chars2="-/MO0@N\\"
 
 url="https://api.usno.navy.mil/imagery/moon.png?ID=asr33&date=$moondate&time=$moontime"
 data="https://api.usno.navy.mil/rstt/oneday?ID=asr33&date=$moondate&loc=Lynn,MA"
 phase=$(curl -s "$data" | jq -r "if .curphase == null then .closestphase.phase  else .curphase end")
-gamma="1.08"
+gamma="1.5"
 
 if [[ $showtime == 1 ]]; then
     title="$moondate $moontime, $phase"

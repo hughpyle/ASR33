@@ -167,8 +167,10 @@ def render(fd, outfile, chars1, chars2, indent=0, title=None):
 
     # Retain only the character combinations for chars1/chars2
     if chars1:
+        chars1 = " " + chars1
         chars = {k: v for k, v in chars.items() if k[0] in chars1}
     if chars2:
+        chars2 = " " + chars2
         chars = {k: v for k, v in chars.items() if k[1] in chars2}
 
     # Make as numpy
