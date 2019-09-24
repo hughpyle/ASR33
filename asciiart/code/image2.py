@@ -148,7 +148,7 @@ def process(image):
     return fd
 
 
-def render(fd, outfile, chars1, chars2, indent=0):
+def render(fd, outfile, chars1, chars2, indent=0, title=None):
     # The fd is a histograms-of-gradients
     n_cells_row = fd.shape[0]
     n_cells_col = fd.shape[1]
@@ -211,6 +211,9 @@ def render(fd, outfile, chars1, chars2, indent=0):
     if outfile == "-":
         outfile = 1
 
+    if title is None:
+        title = b"\r\n"
+
     with io.open(outfile, "wb") as f:
         f.write(b"\r\n")
         f.write(b"\r\n")
@@ -221,7 +224,7 @@ def render(fd, outfile, chars1, chars2, indent=0):
         f.write(b"\r\n")
         f.write("\r\n".join(result).encode("utf-8"))
         f.write(b"\r\n")
-        f.write(b"\r\n")
+        f.write(title)
         f.write(b"\r\n")
         f.write(b"\r\n")
         f.write(b"\r\n")
@@ -236,9 +239,10 @@ def render(fd, outfile, chars1, chars2, indent=0):
 @click.option('--indent', default=0, help='Indent with spaces')
 @click.option('--chars1', help='Characters to use in the first layer')
 @click.option('--chars2', help='Characters to use in the second layer')
+@click.option('--title', help='Title text')
 @click.option('--output', help='Output filename (use "-" for stdout)')
 @click.argument('filename')
-def main(filename, width, invert, gamma, indent, chars1, chars2, output):
+def main(filename, width, invert, gamma, indent, chars1, chars2, title, output):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
@@ -247,10 +251,16 @@ def main(filename, width, invert, gamma, indent, chars1, chars2, output):
     # Analyze the image
     hog_fd = process(img)
 
+    if title:
+        # title is a string
+        # center it, and make bytes
+        title = " " * int(indent + (width - len(title))/2) + title
+        title = title.encode("utf-8")
+
     # Map to ASCII
     if not output:
         output = filename + ".txt"
-    render(hog_fd, output, chars1, chars2, indent)
+    render(hog_fd, output, chars1, chars2, indent, title)
 
 
 if __name__ == "__main__":
