@@ -34,7 +34,7 @@ chars2="-/MO0N\\"
 
 url="https://api.usno.navy.mil/imagery/moon.png?ID=asr33&date=$moondate&time=$moontime"
 data="https://api.usno.navy.mil/rstt/oneday?ID=asr33&date=$moondate&loc=Lynn,MA"
-phase=$(curl -s "$data" | jq -r "if .currphase == null then .closestphase.phase  else .currphase end")
+phase=$(curl -s "$data" | jq -r "if .curphase == null then .closestphase.phase  else .curphase end")
 title="$moondate $moontime, $phase"
 gamma="1.08"
 
