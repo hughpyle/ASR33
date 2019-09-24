@@ -5,15 +5,18 @@
 
 
 things to do
+('emoji', 'moon', 'q' need internet)
 
-
-  emoji snail                 __ only if the internet is working
+  emoji snail
   emoji poodle
   emoji dog2
   emoji fish
   emoji -big shark            __ big emoji takes several minutes
 
-  q what is unix                               __ needs internet
+  moon
+  moon -big 9/25/1970
+
+  q what is unix
   q how many people live in china
 
   figlet hello
