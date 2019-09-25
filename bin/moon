@@ -1,18 +1,21 @@
 #!/bin/bash
 
 # moon pix
+# - ASCII moon with overstrike
+# - pictures and data from https://aa.usno.navy.mil/data/docs/api.php#diskmap
+# - also considered using NASA SVS, https://svs.gsfc.nasa.gov/4442, but
+#   the Navy API has wider calendar coverage, and brighter earth-shine.
 
-# 0.1" character pitch horizontally
-# 0.16" vertically
+# 10 characters per inch, 6 characters per line
 # default to small
-width=40 # 32
-height=25 # 20
-indent=14 # 18
+width=40
+height=24
+indent=14
 if [[ "$1" == "-big" ]]; then
     # large
-    width=64
-    height=40
-    indent=4
+    width=65
+    height=39
+    indent=3
     shift
 fi
 
