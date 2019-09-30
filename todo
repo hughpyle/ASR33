@@ -1,6 +1,15 @@
+sea ice index pix
+    ftp://sidads.colorado.edu/DATASETS/NOAA/G02135/north/daily/images/2019/09_Sep/
+    ftp://sidads.colorado.edu/DATASETS/NOAA/G02135/south/daily/geotiff/2019/09_Sep/S_20190924_concentration_v3.0.tif
+    image2.py --width 68 S_20190924_concentration_v3.0.tif  --chars1 "'.:" --chars2 "-ICE" --gamma 1.5
+    (cite: Fetterer, F., K. Knowles, W. N. Meier, M. Savoie, and A. K. Windnagel. 2017, updated daily. Sea Ice Index, Version 3. [Indicate subset used]. Boulder, Colorado USA. NSIDC: National Snow and Ice Data Center. doi: https://doi.org/10.7265/N5K072F8. [Date Accessed].)
+
 print a series of moon pix ('moon -big 9/23/2019')
+
 cron job for sending moon pix to autostart itty (autostart.itty@gmail.com or direct via the 'mailer')
+
 tile 'pattern sequences --part fade2 --svg --width 17.5'
+
 mandelbrot set in c on the pdp-11 at lcm&l
 mandelbrot set using the hammersley characters ('.-o) and overstrike
 TOPS-10 BASIC

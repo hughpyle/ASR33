@@ -756,15 +756,20 @@ def main(pattern, part, all, svg, border, width, height, test, words, font):
     # Load the pattern-definition file
     patt = Pattern(pattern, words=words, default_font=font)
 
-    if all:
-        barray = bytearray()
-        for part in patt.parts():
-            barray.extend(patt.render_part(part))
-        data = bytes(barray)
-    else:
-        # Render the named part from the file.
-        # Instead of a name, you can also supply a string containing a Python literal.
-        data = patt.render_part(part)
+    try:
+        if all:
+            barray = bytearray()
+            for part in patt.parts():
+                barray.extend(patt.render_part(part))
+            data = bytes(barray)
+        else:
+            # Render the named part from the file.
+            # Instead of a name, you can also supply a string containing a Python literal.
+            data = patt.render_part(part)
+    except IOError as exc:
+        sys.stderr.write("Error: {}".format(exc))
+        sys.exit(1)
+
     l = len(data)
 
     if svg:

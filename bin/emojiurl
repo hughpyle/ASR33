@@ -138,12 +138,17 @@ def main():
 
         found = False
         uri = None
-        for one_uri in uris:
-            r = s.head(one_uri)
-            if r.status_code == 200:
-                found = True
-                uri = one_uri
-                break
+        exceptions = False
+        try:
+            for one_uri in uris:
+                r = s.head(one_uri)
+                if r.status_code == 200:
+                    found = True
+                    uri = one_uri
+                    break
+        except IOError as exc:
+            sys.stderr.write("Error: {}".format(exc))
+            sys.exit(1)
 
         if found:
             # OK, found it
