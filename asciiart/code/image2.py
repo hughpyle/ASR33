@@ -6,7 +6,7 @@
 This implements a "sub-character" matching scheme using a "histogram of oriented gradients" (HOG)
 for each ASR53 printable character (uppercase ASCII, no lowercase).  The histogram data is prepared separately.
 
-The ASR33 has 0.1" character pitch horizontally and 0.16" vertically
+The ASR33 prints 10 characters per inch, 6 characters per line
 For a "small" square print we want the target width=32 and height=20 characters.
 
 Each character has been analyzed as 3x4 blocks.
@@ -43,7 +43,7 @@ import click
 from skimage import feature, transform, color, exposure, util
 
 
-# The character itself is 4x3
+# The character itself (printed area) is 4x3 aspect ratio
 BROWS = 4
 BCOLS = 3
 CELLPX = 16
@@ -90,7 +90,7 @@ def process(image):
     (rows, cols) = image.shape
     cellsize = CELLPX
 
-    # Make sure the image is a multiple of 3x5 x cellsize in both dimensions
+    # Make sure the image is a multiple of 4x3 x cellsize in both dimensions
     rn = cellsize * BROWS
     cn = cellsize * BCOLS
     newshape = (((rows + rn - 1) // rn) * rn, ((cols + cn - 1) // cn) * cn)

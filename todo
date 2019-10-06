@@ -1,28 +1,30 @@
+
+modify https://github.com/piratefsh/art1.js for overstrike
+
+weather (e.g. reformat https://github.com/chubin/wttr.in JSON)
+
+moon pix rotate to local orientation
+
+moon/emoji relocate to render.com?
+
 sea ice index pix
     ftp://sidads.colorado.edu/DATASETS/NOAA/G02135/north/daily/images/2019/09_Sep/
     ftp://sidads.colorado.edu/DATASETS/NOAA/G02135/south/daily/geotiff/2019/09_Sep/S_20190924_concentration_v3.0.tif
     image2.py --width 68 S_20190924_concentration_v3.0.tif  --chars1 "'.:" --chars2 "-ICE" --gamma 1.5
     (cite: Fetterer, F., K. Knowles, W. N. Meier, M. Savoie, and A. K. Windnagel. 2017, updated daily. Sea Ice Index, Version 3. [Indicate subset used]. Boulder, Colorado USA. NSIDC: National Snow and Ice Data Center. doi: https://doi.org/10.7265/N5K072F8. [Date Accessed].)
 
-print a series of moon pix ('moon -big 9/23/2019')
-
 cron job for sending moon pix to autostart itty (autostart.itty@gmail.com or direct via the 'mailer')
 
 tile 'pattern sequences --part fade2 --svg --width 17.5'
 
-mandelbrot set in c on the pdp-11 at lcm&l
 mandelbrot set using the hammersley characters ('.-o) and overstrike
-TOPS-10 BASIC
-  functions http://www.bitsavers.org/pdf/dec/pdp10/TOPS10_softwareNotebooks/vol06/DEC-10-LBLMA-A-D_BASIC_Conversational_Language_Manual_Mar74.pdf
-    page 5.1.6
+
 twitchbot:
   input (from file? from stdin?) to make it an interactive client
 
 awsbot: gpt2 talk on "?" and random timer
 
 lasercut braille tile (inverted; braille overlay)
-
-. lasercut tile
 
 zes and word-wrap (put wrap logic in 'utf?' or put utf8 logic in firmware?)
 
@@ -36,10 +38,6 @@ Brickyard workshop: Plotter Art
     https://dspace.mit.edu/handle/1721.1/6226#files-area
     directly connected to a pen-plotter
 
-itty
-    FSK and ITA2 decoder with gnuradio
-    http://internet-tty.net:8000/ITTY
-
 ex-vi "open mode"
 night-mode teletype
 test suite
@@ -51,7 +49,6 @@ dig into termios and stty, and anything we can move out of firmware
 
 firmware to slash->uppercase
 tour of the CDC6500, and Fortran
-punchtape input (fix the firmware flakiness first)
 tour of the LambdaMoo
 tour of the PRIMOS emulators
 tour of the VAX
@@ -231,6 +228,14 @@ x gpt2:
 
 x twitchbot: separate version for AWS/GPT2
 
+. TOPS-10 BASIC
+  functions http://www.bitsavers.org/pdf/dec/pdp10/TOPS10_softwareNotebooks/vol06/DEC-10-LBLMA-A-D_BASIC_Conversational_Language_Manual_Mar74.pdf
+    page 5.1.6
+
+. itty
+    FSK and ITA2 decoder with gnuradio
+    http://internet-tty.net:8000/ITTY
+
 x TECO
   http://www.bitsavers.org/pdf/dec/pdp10/TOPS10/1972_PDP-10_Users_Handbook/05_tecoReference.pdf
   http://www.avanthar.com/healyzh/teco/TecoPocketGuide.html#NOVICE
@@ -246,3 +251,8 @@ x TECO
     moon 09 22 00
     label saying the time
     label describing the phase (waxing gibbous, etc)
+
+. print a series of moon pix ('moon -big 9/23/2019')
+. lasercut tile
+. punchtape input (fix the firmware flakiness first)
+. mandelbrot set in c on the pdp-11 at lcm&l
