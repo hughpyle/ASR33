@@ -1,11 +1,12 @@
 
 modify https://github.com/piratefsh/art1.js for overstrike
+    and reproduce 'jelly centers'
 
 weather (e.g. reformat https://github.com/chubin/wttr.in JSON)
 
-moon pix rotate to local orientation
+moon pix rotate to local orientation ("parallactic angle")
 
-moon/emoji relocate to render.com?
+moon/emoji rewrite in flask/celery and relocate to render.com?
 
 sea ice index pix
     ftp://sidads.colorado.edu/DATASETS/NOAA/G02135/north/daily/images/2019/09_Sep/
