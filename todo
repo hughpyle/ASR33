@@ -1,10 +1,27 @@
 
 modify https://github.com/piratefsh/art1.js for overstrike
     and reproduce 'jelly centers'
+        https://www.wright20.com/items/index/3000/104_1_art_design_september_2015_frederick_hammersley_jelly_centers_no_31__wright_auction.jpg
+    'busy lion to jelly center'
+        http://media.newmexicoculture.org/media_files/files/BUSY-LION-ON-JELLY-CENTERS-39.jpg
+
+Wolfram automata
+    rule NNN <table> <start> <lines>
+    - rules: https://en.wikipedia.org/wiki/Elementary_cellular_automaton
+    - start: random, solid, or a seed??
+    - table: render to ASCII by specifying 2- 4- 8- or 16-character table
+      (how choose overstrike??)
 
 weather (e.g. reformat https://github.com/chubin/wttr.in JSON)
 
 moon pix rotate to local orientation ("parallactic angle")
+    https://astronomy.stackexchange.com/questions/26200/implementation-of-formulae-for-meeus-for-the-moon/26215#26215
+        tan(q) = sin(H) / (tan(phi).cos(delta) - sin(delta).cos(H))
+        where: H = the hour angle (??)
+               delta = declination of the moon (???)
+               phi = geographic latitude
+    https://astronomy.stackexchange.com/questions/29672/the-movement-of-the-moon/29691#29691
+    https://github.com/mourner/suncalc/blob/master/suncalc.js#L196
 
 moon/emoji rewrite in flask/celery and relocate to render.com?
 
