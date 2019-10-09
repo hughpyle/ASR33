@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# ART1 recreated in JavaScript
+# https://github.com/hughpyle/art1.js
+
+pattern=$1
+
+project=~/art1.js/examples
+
+if [[ "$pattern" == "-list" ]]; then
+  ls ${project}/*.js | awk '-F/' '{print $NF}' | sed s/.js//g
+  exit
+fi
+
+node ${project}/${pattern}.js 2>/dev/null
+
+if [[ $? == 1 ]]; then
+  echo "Error, try 'art1 -list'"
+fi
+
+
