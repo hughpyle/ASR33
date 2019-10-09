@@ -6,9 +6,9 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+/* #include <stdlib.h> */
 
-char chars[] = ".-_+><!=:*35CV49FO6D#AZUGS02$%P&WXEQH8B@KRNM";
+char chars[] = ".-_+><!=:*35CV49FO6D#AZUGS02$%P&WXEQH8BKRNM";
 
 /* dimensions of the printed plot (characters) */
 #define X1 69
