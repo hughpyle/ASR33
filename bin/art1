@@ -4,15 +4,16 @@
 # https://github.com/hughpyle/art1.js
 
 pattern=$1
+newlines="\n\n\n\n\n\n\n"
 
-project=~/art1.js/examples
+project=$(dirname $0)/../../art1.js/examples
 
 if [[ "$pattern" == "-list" ]]; then
   ls ${project}/*.js | awk '-F/' '{print $NF}' | sed s/.js//g
   exit
 fi
 
-node ${project}/${pattern}.js 2>/dev/null
+printf $newlines && node ${project}/${pattern}.js 2>/dev/null && printf $newlines
 
 if [[ $? == 1 ]]; then
   echo "Error, try 'art1 -list'"
