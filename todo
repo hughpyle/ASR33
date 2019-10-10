@@ -1,9 +1,4 @@
-
-modify https://github.com/piratefsh/art1.js for overstrike
-    and reproduce 'jelly centers'
-        https://www.wright20.com/items/index/3000/104_1_art_design_september_2015_frederick_hammersley_jelly_centers_no_31__wright_auction.jpg
-    'busy lion to jelly center'
-        http://media.newmexicoculture.org/media_files/files/BUSY-LION-ON-JELLY-CENTERS-39.jpg
+Sounds for ttyemu
 
 Wolfram automata
     rule NNN <table> <start> <lines>
@@ -274,3 +269,9 @@ x TECO
 . lasercut tile
 . punchtape input (fix the firmware flakiness first)
 . mandelbrot set in c on the pdp-11 at lcm&l
+. modify https://github.com/piratefsh/art1.js for overstrike
+    and reproduce 'jelly centers'
+        https://www.wright20.com/items/index/3000/104_1_art_design_september_2015_frederick_hammersley_jelly_centers_no_31__wright_auction.jpg
+    'busy lion to jelly center'
+        http://media.newmexicoculture.org/media_files/files/BUSY-LION-ON-JELLY-CENTERS-39.jpg
+
