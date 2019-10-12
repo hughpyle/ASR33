@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# display a face
+
+# 0.1" character pitch horizontally
+# 0.16" vertically
+# default to small
+width=54 # 32
+pix=648 # width * 12
+indent=10 # 18
+if [[ "$1" == "-big" ]]; then
+    # large
+    width=72
+    indent=0
+    shift
+fi
+
+#chars1="'.\\/"
+#chars2="-=PJW@"
+
+chars1="'.PJW"
+chars2="-*\\/"
+
+tmps=$(mktemp -t XXXXXX.jpg)
+tmpp=$(mktemp -t XXXXXX.png)
+function cleanup() {
+    rm $tmps
+    rm $tmpp
+}
+trap cleanup EXIT
+
+
+url="http://spinroot.com/pico/pjw.jpg"
+if [[ $? == 0 ]]; then
+    # fetch the jpg
+    wget -q -O "$tmps" "$url"
+    convert "$tmps" -white-threshold 75% -resize ${pix}x "$tmpp"
+
+    # convert to ascii
+    $(dirname $0)/../asciiart/code/image2.py --invert --gamma 0.8 --width $width "$tmpp" --chars1 "$chars1" --chars2 "$chars2" --indent $indent --output -
+fi
