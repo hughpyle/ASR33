@@ -1,11 +1,14 @@
+write up getty & stty for 110 baud "true serial" not the spoiled-simple usb
+
 Sounds for ttyemu
 
-Wolfram automata
-    rule NNN <table> <start> <lines>
-    - rules: https://en.wikipedia.org/wiki/Elementary_cellular_automaton
-    - start: random, solid, or a seed??
-    - table: render to ASCII by specifying 2- 4- 8- or 16-character table
-      (how choose overstrike??)
+evolve the Wolfram automata
+
+write up the serial cables & getty
+    StarTech (Prolific PL2303): should work down to 110
+        ispeed 110 ospeed 110 icrnl iuclc -iutf8 istrip ignpar -parenb cs7 cr3 nl1
+    FTDI: down to 300 baud only
+    TTL level shifter: N/A
 
 weather (e.g. reformat https://github.com/chubin/wttr.in JSON)
 
@@ -275,4 +278,9 @@ x TECO
     'busy lion to jelly center'
         http://media.newmexicoculture.org/media_files/files/BUSY-LION-ON-JELLY-CENTERS-39.jpg
 . pjw
-
+. Wolfram cellular automata
+    rule NNN <table> <start> <lines>
+    - rules: https://en.wikipedia.org/wiki/Elementary_cellular_automaton
+    - start: random, solid, or a seed??
+    - table: render to ASCII by specifying 2- 4- 8- or 16-character table
+      (how choose overstrike??)

@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+"""
+cell <N> <chars> <chars>...
+
+Wolfram 1-dimensional cellular automata.
+Print automaton rule <N> using <chars>, where
+   two characters (e.g. "ab") map to 1 and 0,
+If multiple <chars> are specified, overstrike with each.
+If <chars> is a single character, pad it with a space.
+"""
+
+# TODO maybe: <pattern> <chars> <pattern> <chars> ... (overlay two or more automata)
+# TODO maybe:
+import io
+import random
+import click
+
+
+class Automaton(object):
+    """
+    Wolfram cellular automation with rule <pattern>.
+    If the neighbors are (1, 1, 1) then produce the 7th-bit of 'pattern', etc.
+       data 111 => (pattern >> 7) & 1
+            110 => (pattern >> 6) & 1
+            101 => (pattern >> 5) & 1
+            100 => (pattern >> 4) & 1
+            011 => (pattern >> 3) & 1
+            010 => (pattern >> 2) & 1
+            001 => (pattern >> 1) & 1
+            000 => (pattern >> 0) & 1
+    Wrap around the row edges.
+    """
+
+    def __init__(self, pattern, width, rand=True):
+        self.pattern = pattern
+        # self.data is an array of integers representing binary 0 or 1
+        if rand:
+            # initialize with random data
+            r = random.getrandbits(width)
+            self.data = [(r >> bit) & 1 for bit in range(width)]
+        else:
+            # initialize all zeros, with a 1 in the middle
+            self.data = [0] * width
+            self.data[width // 2] = 1
+
+    def point(self, i):
+        """
+        compute the iteration of a single point, index 'i'
+        as:
+            pattern >> (binary: data[i-1] data[i] data[i+1]) & 1
+        where
+            pattern: integer i range 0-255, i.e. an 8-bit value
+            data[...] wraps beyond the array boundaries
+        """
+        shift = 0
+        h = i - 1
+        if h < 0:
+            h = len(self.data) - 1
+        j = i + 1
+        if j >= len(self.data):
+            j = 0
+        shift += self.data[h] << 2
+        shift += self.data[i] << 1
+        shift += self.data[j]
+        return (self.pattern >> shift) & 1
+
+    def iter(self):
+        """
+        Iterate the array once
+        """
+        newdata = [self.point(i) for i in range(len(self.data))]
+        self.data = newdata
+
+    def render(self, chars):
+        """
+        Render the current line of data as characters from <chars>
+        where chars: array of string,
+        each string has 2 characters,
+        """
+        lines = []
+        for i in range(len(chars)):
+            ch = chars[i]
+            while len(ch) < 2:
+                ch = ch + " "
+            line = ""
+            d = i
+            while d < len(self.data):
+                line = line + ch[self.data[d]]
+                d += len(chars)
+            lines.append(line)
+        return lines
+
+
+@click.command()
+@click.argument("pattern", type=int)
+@click.argument("chars", nargs=-1)
+@click.option("--width", "-w", type=int, help="Width (default: 70 characters)", default=70)
+@click.option("--length", "-l", type=int, help="Length (default: 30 rows)", default=30)
+@click.option("--skip", "-s", type=int, help="Number of rows to skip (default: 0)", default=0)
+@click.option("--fixed", "-f", is_flag=True, help="Initialize with fixed data")
+@click.option('--output', "-o", help='Output filename (use "-" for stdout)', default="-")
+def main(pattern, chars, width, length, skip, fixed, output):
+    """
+    Render a cellular automaton
+    """
+    if output == "-":
+        output = 1
+    if not chars:
+        chars = ["*"]
+    width = width * len(chars)
+    auto = Automaton(pattern, width, not fixed)
+    with io.open(output, "wb") as f:
+        for row in range(skip):
+            auto.iter()
+        for row in range(length):
+            lines = auto.render(chars)
+            auto.iter()
+            f.write("\r".join(lines).encode("utf-8"))
+            f.write(b"\n")  # new line
+
+
+main()
