@@ -1,25 +1,37 @@
 #!/usr/bin/env python
 """
-cell <N> <chars> <chars>...
+cell <N> <chars> <N> <chars>...
 
 Wolfram 1-dimensional cellular automata.
-Print automaton rule <N> using <chars>, where
-   two characters (e.g. "ab") map to 1 and 0,
-If multiple <chars> are specified, overstrike with each.
-If <chars> is a single character, pad it with a space.
+Print automaton rule <N> using <chars>,
+   N is the "rule number", and
+   chars is two characters (e.g. "ab") that map to 1 and 0,
+
+If <chars> is empty, use "-"
+If <chars> is a single character, use a space for its pair.
+
+Rule numbers are 0 to 255.  They fall into a few groups,
+    fractal-like: 18 22 26 60 82 90 102 105 126...
+    noisy:  30 45 73 75 86 89 101...
+    other: 57 65 77 78 92 99 110 124...
+
+Examples:
+    cell 3 ".'" 110 "O" -f -s 230
+    cell 81 "\\" 52 "C"
+    cell 87 ".'" 124
+    cell 225 "\\ " 102 "," -f -s 48
+
 """
 
-# TODO maybe: <pattern> <chars> <pattern> <chars> ... (overlay two or more automata)
-# TODO maybe:
 import io
-import random
+from random import random
 import click
 
 
 class Automaton(object):
     """
     Wolfram cellular automation with rule <pattern>.
-    If the neighbors are (1, 1, 1) then produce the 7th-bit of 'pattern', etc.
+    If neighbors are (1, 1, 1) produce the 7th-bit of 'pattern', etc.
        data 111 => (pattern >> 7) & 1
             110 => (pattern >> 6) & 1
             101 => (pattern >> 5) & 1
@@ -36,8 +48,7 @@ class Automaton(object):
         # self.data is an array of integers representing binary 0 or 1
         if rand:
             # initialize with random data
-            r = random.getrandbits(width)
-            self.data = [(r >> bit) & 1 for bit in range(width)]
+            self.data = [int(random() * 1.25) for _ in range(width)]
         else:
             # initialize all zeros, with a 1 in the middle
             self.data = [0] * width
@@ -74,49 +85,64 @@ class Automaton(object):
     def render(self, chars):
         """
         Render the current line of data as characters from <chars>
-        where chars: array of string,
-        each string has 2 characters,
+        where chars: string with 2^n characters,
         """
-        lines = []
-        for i in range(len(chars)):
-            ch = chars[i]
-            while len(ch) < 2:
-                ch = ch + " "
-            line = ""
-            d = i
-            while d < len(self.data):
-                line = line + ch[self.data[d]]
-                d += len(chars)
-            lines.append(line)
-        return lines
+        ch = chars
+        if len(ch) < 1:
+            ch = "- "
+        if len(ch) < 2:
+            ch = " " + ch
+        line = "".join([ch[d] for d in self.data]).rstrip()
+        return line
 
 
 @click.command()
-@click.argument("pattern", type=int)
-@click.argument("chars", nargs=-1)
-@click.option("--width", "-w", type=int, help="Width (default: 70 characters)", default=70)
-@click.option("--length", "-l", type=int, help="Length (default: 30 rows)", default=30)
-@click.option("--skip", "-s", type=int, help="Number of rows to skip (default: 0)", default=0)
-@click.option("--fixed", "-f", is_flag=True, help="Initialize with fixed data")
-@click.option('--output', "-o", help='Output filename (use "-" for stdout)', default="-")
-def main(pattern, chars, width, length, skip, fixed, output):
+@click.argument("param", nargs=-1)
+@click.option("--width", "-w", type=int, default=70,
+              help="Width (default: 70 characters)")
+@click.option("--length", "-l", type=int, default=30,
+              help="Length (default: 30 rows)")
+@click.option("--skip", "-s", type=int, default=0,
+              help="Number of rows to skip (default: 0)")
+@click.option("--fixed", "-f", is_flag=True,
+              help="Initialize with fixed data")
+@click.option('--output', "-o", default="-",
+              help='Output filename (use "-" for stdout)')
+def main(param, width, length, skip, fixed, output):
     """
     Render a cellular automaton
+
+    <N> <characters> <N> <characters> ...
     """
     if output == "-":
-        output = 1
-    if not chars:
-        chars = ["*"]
-    width = width * len(chars)
-    auto = Automaton(pattern, width, not fixed)
+        output = 1  # stdout
+
+    # Need an even number of parameters
+    while len(param) % 2 != 0:
+        param = list(param)
+        param.append("-")
+
+    autos = []
+    chars = []
     with io.open(output, "wb") as f:
-        for row in range(skip):
-            auto.iter()
-        for row in range(length):
-            lines = auto.render(chars)
-            auto.iter()
+        # Make an automaton for each pattern
+        for i in range(0, len(param), 2):
+            pattern = int(param[i])
+            auto = Automaton(pattern, width, not fixed)
+            autos.append(auto)
+            chars.append(param[i+1])
+            for _ in range(skip):
+                auto.iter()
+
+        # Render into rows with overstrike
+        for _ in range(length):
+            lines = [autos[i].render(chars[i])
+                     for i in range(len(autos))]
+            for auto in autos:
+                auto.iter()
             f.write("\r".join(lines).encode("utf-8"))
             f.write(b"\n")  # new line
 
 
-main()
+if __name__ == "__main__":
+    main()
