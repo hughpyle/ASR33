@@ -1,23 +1,17 @@
 #!/bin/bash
-
-# display a face
+# the famous bell labs "PJW face" in overstrike ASCII
 
 # 0.1" character pitch horizontally
 # 0.16" vertically
-# default to small
-width=54 # 32
-pix=648 # width * 12
-indent=10 # 18
-if [[ "$1" == "-big" ]]; then
-    # large
-    width=72
-    indent=0
-    shift
-fi
 
+# width 54 / pix 648 / indent 10 is ok but big is the best
+width=72
+pix=864    # width * 12
+indent=0
+
+# it would be cool to randomize each rendering sometime
 #chars1="'.\\/"
 #chars2="-=PJW@"
-
 chars1="'.PJW"
 chars2="-*\\/"
 
