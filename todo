@@ -2,7 +2,7 @@ write up getty & stty for 110 baud "true serial" not the spoiled-simple usb
 
 Sounds for ttyemu
 
-evolve the Wolfram automata
+print some Wolfram automata
 
 write up the serial cables & getty
     StarTech (Prolific PL2303): should work down to 110
