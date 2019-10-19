@@ -23,6 +23,7 @@ Examples:
 
 """
 
+import sys
 import io
 from random import random
 import click
@@ -97,7 +98,7 @@ class Automaton(object):
 
 
 @click.command()
-@click.argument("param", nargs=-1)
+@click.argument("param", nargs=-1, required=True)
 @click.option("--width", "-w", type=int, default=70,
               help="Width (default: 70 characters)")
 @click.option("--length", "-l", type=int, default=30,
@@ -122,10 +123,10 @@ def main(param, width, length, skip, fixed, output):
         param = list(param)
         param.append("-")
 
+    # Make an automaton for each pattern
     autos = []
     chars = []
-    with io.open(output, "wb") as f:
-        # Make an automaton for each pattern
+    try:
         for i in range(0, len(param), 2):
             pattern = int(param[i])
             auto = Automaton(pattern, width, not fixed)
@@ -133,7 +134,10 @@ def main(param, width, length, skip, fixed, output):
             chars.append(param[i+1])
             for _ in range(skip):
                 auto.iter()
+    except Exception as exc:
+        sys.exit(exc)
 
+    with io.open(output, "wb") as f:
         # Render into rows with overstrike
         for _ in range(length):
             lines = [autos[i].render(chars[i])
