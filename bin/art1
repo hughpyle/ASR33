@@ -6,7 +6,7 @@
 pattern=$1
 newlines="\n\n\n\n\n\n\n"
 
-project=$(dirname $0)/../../art1.js/examples
+project=~/art1.js/examples
 
 if [[ "$pattern" == "-list" ]]; then
   ls ${project}/*.js | awk '-F/' '{print $NF}' | sed s/.js//g
