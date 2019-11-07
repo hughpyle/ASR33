@@ -138,6 +138,7 @@ def main(param, width, length, skip, fixed, output):
         sys.exit(exc)
 
     with io.open(output, "wb") as f:
+        f.write(b"\n" * 10)  # new lines to start
         # Render into rows with overstrike
         for _ in range(length):
             lines = [autos[i].render(chars[i])
@@ -146,6 +147,7 @@ def main(param, width, length, skip, fixed, output):
                 auto.iter()
             f.write("\r".join(lines).encode("utf-8"))
             f.write(b"\n")  # new line
+        f.write(b"\n" * 10)  # new lines to finish
 
 
 if __name__ == "__main__":
