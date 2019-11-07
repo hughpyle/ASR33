@@ -101,8 +101,8 @@ class Automaton(object):
 @click.argument("param", nargs=-1, required=True)
 @click.option("--width", "-w", type=int, default=70,
               help="Width (default: 70 characters)")
-@click.option("--length", "-l", type=int, default=30,
-              help="Length (default: 30 rows)")
+@click.option("--length", "-l", type=int, default=48,
+              help="Length (default: 48 rows)")
 @click.option("--skip", "-s", type=int, default=0,
               help="Number of rows to skip (default: 0)")
 @click.option("--fixed", "-f", is_flag=True,
