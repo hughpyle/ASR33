@@ -1,14 +1,26 @@
+print some perlin noise
+
+moon: find an alternative to usno.navy.mil
+
+use getty_ps getty, not agetty
+    https://www.tldp.org/HOWTO/Remote-Serial-Console-HOWTO/getty-getty.html
+    http://www.mit.edu/afs.new/athena/system/rhlinux/redhat-6.2-docs/HOWTOS/other-formats/html/Text-Terminal-HOWTO-html/Text-Terminal-HOWTO-14.html
+         /etc/gettydefs:
+                  <label># <initial_flags> # <final_flags> #<login_prompt>#<next_label>
+
+         # Serial console 9600, 8, N, 1, CTS/RTS flow control
+         CON110# B110 CS8 -PARENB -ISTRIP CRTSCTS HUPCL # B110 SANE CS8 -PARENB -ISTRIP CRTSCTS HUPCL #@S @L login: #CON110
+
 write up getty & stty for 110 baud "true serial" not the spoiled-simple usb
-
-Sounds for ttyemu
-
-print some Wolfram automata
-
 write up the serial cables & getty
     StarTech (Prolific PL2303): should work down to 110
         ispeed 110 ospeed 110 icrnl iuclc -iutf8 istrip ignpar -parenb cs7 cr3 nl1
     FTDI: down to 300 baud only
     TTL level shifter: N/A
+
+Sounds for ttyemu
+
+print some Wolfram automata
 
 weather (e.g. reformat https://github.com/chubin/wttr.in JSON)
 
@@ -284,3 +296,11 @@ x TECO
     - start: random, solid, or a seed??
     - table: render to ASCII by specifying 2- 4- 8- or 16-character table
       (how choose overstrike??)
+. try serial to GPIO pins via level shifter
+    Caution: 3v3, not 5v tolerant, but just power the SparkFun board at 3.3v (NOT 5v)
+        https://www.raspberrypi.org/documentation/usage/gpio/
+    rpi3/4 GPIO pins 14 and 15 use the “mini-uart” aka /dev/ttyS0
+         https://spellfoundry.com/2016/05/29/configuring-gpio-serial-port-raspbian-jessie-including-pi-3-4/
+         https://pinout.xyz/pinout/uart#
+    https://elinux.org/RPi_Serial_Connection
+    ABC ==> AQ\$^

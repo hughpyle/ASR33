@@ -1,0 +1,14 @@
+#!/bin/bash
+# Perlin noise experiments
+
+width=40
+
+tmpp=$(mktemp -u).png
+function cleanup() {
+    rm -f $tmpp
+}
+trap cleanup EXIT
+
+python $(dirname $0)/perlin.py --width "$width" --output "$tmpp" "$1"
+
+$(dirname $0)/../asciiart/code/image2.py --indent 15 --width "$width" "$tmpp" --output -
