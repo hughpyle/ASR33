@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+import math
+import random
+import noise
+import imageio
+import numpy as np
+import click
+
+
+"""
+Start with a perlin noise field
+find the minimum
+across the whole field randomly place a few points
+    n=5 to 12 gaussian
+    with distribution pdf based on the perlin field value
+
+eyes pointing to the coordinate of the minimum
+
+"""
+
+
+def perlin(img, h, w):
+    freq = w / 2000
+    base = random.random() * 100000
+    for x in range(h):
+        for y in range(w):
+            img[x, y] = noise.snoise2(x * freq,
+                                      y * freq,
+                                      base=base) + 0.5
+
+
+@click.command()
+@click.option("--width", default=40)
+@click.option("--height")
+@click.argument("label", required=False)
+def main(width, height, label):
+    if height is None:
+        height = int(width * 3 / 4)
+
+    if label is None:
+        label = "(-*-)"
+
+    indent = int(35 - width/2)
+
+    # Grid with Perlin-noise for the probability field
+    img = np.zeros([height, width], dtype=np.float)
+    perlin(img, height, width)
+    # imageio.imsave("eyes.png", img)
+
+    # The min-point is focus
+    f = np.unravel_index(np.argmin(img), img.shape)
+
+    # Drop some points
+    # Ignore the drop based on the probability field
+    pic0 = [[" " for _ in range(width)] for _ in range(height)]
+    pic1 = [[" " for _ in range(width)] for _ in range(height)]
+    # pic1[f[0]][f[1]] = "O"
+
+    # Eye overlays go clockwise from left
+    # )?.5('
+    for _ in range(int(width * height / 40)):
+        rx = random.randint(0, width-1)
+        ry = random.randint(0, height-1)
+        ir = img[ry, rx]
+        if random.random() < ir * ir:
+            try:
+                ac = ")?....5(''''3"
+                off = math.pi * (len(ac)+2*random.random()) / len(ac)
+                angle = (math.atan2(ry-f[0], rx-f[1]) + off) * len(ac) / (2*math.pi)
+                accent = ac[int(angle)]
+                pic0[ry][rx+1] = "O"
+                pic0[ry][rx] = "O"
+                pic1[ry][rx+1] = accent
+                pic1[ry][rx] = accent
+            except IndexError:
+                pass
+
+    print("\n" * 5)
+    for h in range(height):
+        lines = [
+            (" " * indent + "".join(pic0[h])).rstrip(),
+            (" " * indent + "".join(pic1[h])).rstrip()
+        ]
+        if h == f[0]:
+            lines.append(" " * int(indent + f[1] - len(label)/2 + 1) + label)
+        print("\r".join(lines))
+    print("\n" * 5)
+
+
+if __name__ == "__main__":
+    main()
