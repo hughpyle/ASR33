@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+
+"""
+Teletype test sequences
+see: http://bitsavers.trailing-edge.com/pdf/dec/pdp8/diag/MAINDEC-08-D2QD-D.pdf
+
+
+      // Print 6 lines of the ASR33 WORST CASE PATTERN, which consists of
+      // (octal) 047, 137, 127, 057, 127, 137
+      // (hex)   x27, x5F, x57, x2F, x57, x5F
+      // (apostrophe) (left-arrow) W (slash) W (left-arrow)
+      for (int i = 1; i <= 6; i++) {
+        sendToTTY('\047');
+        sendToTTY('\137');
+        sendToTTY('\127');
+        sendToTTY('\057');
+        sendToTTY('\127');
+        sendToTTY('\137');
+        printTTY("\r\n");
+"""
+
+import sys
+import click
+
+
+def printer_test_0():
+    """
+Carriage return test.  Checks ability of carriage return to print position 1
+from all other print positions.  No printing should occur in any print position
+other than position 1.
+    """
+    for n in range(72):
+        print(" " * n + "\rx", end="")
+
+
+def printer_test_1():
+    """
+Right margin test.  This test shows when the right margin is not correctly
+adjusted.  The test prints 14 groups of ----I followed by characters -I-.
+A correctly adjusted right margin will overstrike the final dash and I.
+The I's are printed to facilitate counting print positions.
+    """
+    print("----I----I----I----I----I----I----I----I----I----I----I----I----I----I-I-", end="")
+
+
+def printer_test_2():
+    """
+Space Test.  The test prints / in alternate positions of the line.  After a
+double carriage return it scapes to the blank positions and prints a left
+slant slash.  A double carriage return is issued after printing each left
+slant slash.
+    """
+    print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /\r\r", end="")
+    for n in range(0, 72, 2):
+        print(" " * n + "\\\r\r", end="")
+
+
+def printer_test_3():
+    """
+Line Feed Test.  The test prints a left slant slash followed by a line feed,
+followed by a 250ms delay until 72 slashes have been printed.  The result
+should appear to be a left slanted line from position 1 to 72.  Vertical
+spacing variations should be apparent if adjustment is required.
+    """
+    pass
+
+
+@click.command()
+@click.argument("testnum", type=int)
+def main(testnum):
+    try:
+        fn = globals()["printer_test_{}".format(testnum)]
+        fn()
+        print()
+    except KeyError:
+        sys.exit("Test {} not found.".format(testnum))
+
+
+if __name__ == "__main__":
+    main()
