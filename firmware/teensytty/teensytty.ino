@@ -6,10 +6,19 @@
    USB serial connects to the host system.
    This driver performs character translation and other functions.
 
-   NB depends on a hacked AltSoftSerial:
-   https://github.com/hughpyle/AltSoftSerial/tree/hacking
+   Note: this depends on a hacked AltSoftSerial:
+        https://github.com/hughpyle/AltSoftSerial/tree/hacking
+   You must first download or clone that repository, then copy into a directory
+   'libraries' within your Arduino documents folder (e.g. ~/Documents/Arduino/)
+   then restart Arduino to pick this up.  Otherwise you'll get a compile
+   error "can't find <AltSoftSerial.h>".
 
-   2018-09-03 update for with arduino 1.8.6
+   Also note: requires Teensyduino installed, and Teensy (2 or later) selected.
+        https://www.pjrc.com/teensy/td_download.html
+   Teensyduino installs a modified HardwareSerial.h required for this sketch.
+
+   2019-11-24 update for arduino 1.8.10 and include library instructions
+   2018-09-03 update for arduino 1.8.6
 */
 
 // ===========================================================================
@@ -315,7 +324,7 @@ void readOptions() {
 // ---- Bytes from TTY to USB
 
 void printTTY(const char *s) {
-  for (uint i = 0; i < strlen(s); s++) {
+  for (uint8_t i = 0; i < strlen(s); s++) {
     sendToTTY(s[i]);
   }
 }
