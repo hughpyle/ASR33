@@ -13,6 +13,12 @@
         ("random_bits", ("sequence", 0, 255, 3)),
         <10: None>
     ],
+    "fade2": [
+        ("random_bits", ("sequence", 0, 255, 2)),
+        ("random_bits", ("sequence", 255, 0, -2)),
+        ("random_bits", ("sequence", 0, 255, 2)),
+        ("random_bits", ("sequence", 255, 0, -2))
+    ],
     "fire": <100: [
         ("random_fire", 8),
     ]>,

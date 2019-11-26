@@ -170,7 +170,12 @@ class Pattern(object):
         return self.data.keys()
 
     def substitute_args(self, value):
-        return value.replace("$*", " ".join(self.words))
+        val = value.replace("$*", " ".join(self.words))
+        if len(self.words) >= 1:
+            val = val.replace("$1", self.words[0])
+        if len(self.words) >= 2:
+            val = val.replace("$2", self.words[1])
+        return val
 
     def substitute_path(self, value):
         return os.path.expanduser(self.substitute_args(value))
