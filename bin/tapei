@@ -94,6 +94,7 @@ def main(font, test):
                 sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
         else:
             sys.stdout.buffer.write(bytearray(data))
+            sys.stdout.flush()
 
 
 if __name__ == "__main__":
