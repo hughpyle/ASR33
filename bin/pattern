@@ -788,5 +788,5 @@ def main(pattern, part, all, svg, border, width, height, test, words, font):
     print("Length: {} bits, {} inches".format(l, l/10), file=sys.stderr)
 
 
-main()
-
+if __name__ == "__main__":
+    main()

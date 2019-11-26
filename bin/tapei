@@ -1,0 +1,100 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (c) 2014-2019 Hugh Pyle
+
+"""
+Interactively type, and punch letters on paper-tape.
+"""
+
+import os
+import sys
+import tty
+import termios
+import click
+from importlib.util import spec_from_loader, module_from_spec
+from importlib.machinery import SourceFileLoader
+
+
+# Font files are in a subdirectory 'fonts'
+# (https://github.com/hughpyle/ASR33/tree/master/bin/fonts)
+DEFAULT_FONT = "smallcaps"
+
+
+def import_from_file(filename, ):
+    """Load a module from a file without .py extension"""
+    spec = spec_from_loader(filename,
+                            SourceFileLoader(filename,
+                                             os.path.join(os.path.dirname(os.path.abspath(__file__)), filename)))
+    module = module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+# like `from pattern import Pattern`
+pattern_module = import_from_file("pattern")
+Pattern = pattern_module.Pattern
+list_patterns = pattern_module.list_patterns
+
+
+# Python input is buffered, so to read a single character we need to
+# set the tty into raw mode, then reset it when we have read something
+def getch():
+    """Read a single character from stdin"""
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+
+def getchs(initial=None):
+    """Generator to read characters from stdin"""
+    for ch in initial or []:
+        yield ch
+    while 1:
+        ch = getch()
+        if not ch:
+            break
+        if ord(ch) in [3, 4]:  # Ctrl+C, Ctrl+D
+            break
+        yield ch
+
+
+@click.command()
+@click.option("--font", default="smallcaps")
+@click.option("--test", is_flag=True, help="Write text preview, not binary")
+def main(font, test):
+    """
+    Print patterns to punchtape.
+    """
+    # Use the pattern named 'text' to render the text typed,
+    # because it knows how to shift appropriately for each font,
+    pattern = "text"
+    # Use the part named for the chosen font
+    # (not directly the fonts in the 'fonts' directory!)
+    part = font
+
+    for c in getchs(initial=" "):
+        # Load the pattern-definition file
+        patt = Pattern(pattern, words=[c], default_font=DEFAULT_FONT)
+
+        try:
+            # Render the named part from the file.
+            # Instead of a name, you can also supply a string containing a Python literal.
+            data = patt.render_part(part)
+        except IOError as exc:
+            sys.stderr.write("Error: {}".format(exc))
+            sys.exit(1)
+
+        if test:
+            for byte in data:
+                sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
+        else:
+            sys.stdout.buffer.write(bytearray(data))
+
+
+if __name__ == "__main__":
+    main()
