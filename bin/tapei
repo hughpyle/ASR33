@@ -58,7 +58,7 @@ def getchs(initial=None):
         ch = getch()
         if not ch:
             break
-        if ord(ch) in [3, 4]:  # Ctrl+C, Ctrl+D
+        if ord(ch) in [termios.CINTR, termios.CEOF]:  # Ctrl+C, Ctrl+D
             break
         yield ch
 
