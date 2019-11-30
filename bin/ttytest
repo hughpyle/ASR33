@@ -253,7 +253,7 @@ def main(testnum, list):
                 print(doc.lstrip("\r\n"))
             except AttributeError:
                 pass
-    elif testnum:
+    elif testnum is not None:
         try:
             fn = PRG0().__getattribute__("rtn{}".format(testnum))
             fn()
