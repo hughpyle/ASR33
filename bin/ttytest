@@ -1,79 +1,268 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Teletype test sequences
 see: http://bitsavers.trailing-edge.com/pdf/dec/pdp8/diag/MAINDEC-08-D2QD-D.pdf
-
-
-      // Print 6 lines of the ASR33 WORST CASE PATTERN, which consists of
-      // (octal) 047, 137, 127, 057, 127, 137
-      // (hex)   x27, x5F, x57, x2F, x57, x5F
-      // (apostrophe) (left-arrow) W (slash) W (left-arrow)
-      for (int i = 1; i <= 6; i++) {
-        sendToTTY('\047');
-        sendToTTY('\137');
-        sendToTTY('\127');
-        sendToTTY('\057');
-        sendToTTY('\127');
-        sendToTTY('\137');
-        printTTY("\r\n");
 """
 
 import sys
+import random
 import click
 
 
-def printer_test_0():
+class PRG0:
     """
-Carriage return test.  Checks ability of carriage return to print position 1
-from all other print positions.  No printing should occur in any print position
-other than position 1.
+    Printer Test routines.
+    Contains 31 routines numbered from 0 to 36 (octal)
     """
-    for n in range(72):
-        print(" " * n + "\rx", end="")
+    asr33wc = "\x27\x5F\x57\x2F\x57\x5F"  # (apostrophe) (left-arrow) W (slash) W (left-arrow)
+    asr35wc = "\x27\x5B\x3F\x43\x3F\x5B"  # (apostrophe) [ ? C ? [
 
+    def rtn0(self):
+        """
+    Carriage return test.  Checks ability of carriage return to print position 1
+    from all other print positions.  No printing should occur in any print position
+    other than position 1.
+        """
+        for n in range(72):
+            print(" " * n + "\rx", end="")
 
-def printer_test_1():
-    """
-Right margin test.  This test shows when the right margin is not correctly
-adjusted.  The test prints 14 groups of ----I followed by characters -I-.
-A correctly adjusted right margin will overstrike the final dash and I.
-The I's are printed to facilitate counting print positions.
-    """
-    print("----I----I----I----I----I----I----I----I----I----I----I----I----I----I-I-", end="")
+    def rtn1(self):
+        """
+    Right margin test.  This test shows when the right margin is not correctly
+    adjusted.  The test prints 14 groups of ----I followed by characters -I-.
+    A correctly adjusted right margin will overstrike the final dash and I.
+    The I's are printed to facilitate counting print positions.
+        """
+        print("----I----I----I----I----I----I----I----I----I----I----I----I----I----I-I-", end="")
 
+    def rtn2(self):
+        """
+    Space Test.  The test prints / in alternate positions of the line.  After a
+    double carriage return it scapes to the blank positions and prints a left
+    slant slash.  A double carriage return is issued after printing each left
+    slant slash.
+        """
+        print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /\r\r", end="")
+        for n in range(0, 72, 2):
+            print(" " * n + "\\\r\r", end="")
 
-def printer_test_2():
-    """
-Space Test.  The test prints / in alternate positions of the line.  After a
-double carriage return it scapes to the blank positions and prints a left
-slant slash.  A double carriage return is issued after printing each left
-slant slash.
-    """
-    print(" / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /\r\r", end="")
-    for n in range(0, 72, 2):
-        print(" " * n + "\\\r\r", end="")
+    def rtn3(self):
+        """
+    Line Feed Test.  The test prints a left slant slash followed by a line feed,
+    followed by a 250ms delay until 72 slashes have been printed.  The result
+    should appear to be a left slanted line from position 1 to 72.  Vertical
+    spacing variations should be apparent if adjustment is required.
+    [note: delay here is two nulls]
+        """
+        for _ in range(72):
+            print("\\\n\0\0", end="")
 
+    def rtn4(self):
+        """
+    Types lines of characters ABC.
+        """
+        print("ABC" * 23, end="")
 
-def printer_test_3():
-    """
-Line Feed Test.  The test prints a left slant slash followed by a line feed,
-followed by a 250ms delay until 72 slashes have been printed.  The result
-should appear to be a left slanted line from position 1 to 72.  Vertical
-spacing variations should be apparent if adjustment is required.
-    """
-    pass
+    def rtn5(self):
+        """
+    Types lines of characters DEF.
+        """
+        print("DEF" * 23, end="")
+
+    def rtn6(self):
+        """
+    Types lines of characters GHI.
+        """
+        print("GHI" * 23, end="")
+
+    def rtn7(self):
+        """
+    Types lines of characters JKL.
+        """
+        print("JKL" * 23, end="")
+
+    def rtn10(self):
+        """
+    Types lines of characters MNO.
+        """
+        print("MNO" * 23, end="")
+
+    def rtn11(self):
+        """
+    Types lines of characters PQR.
+        """
+        print("PQR" * 23, end="")
+
+    def rtn12(self):
+        """
+    Types lines of characters STU.
+        """
+        print("STU" * 23, end="")
+
+    def rtn13(self):
+        """
+    Types lines of characters VWX.
+        """
+        print("VWX" * 23, end="")
+
+    def rtn14(self):
+        """
+    Types lines of characters YZ0.
+        """
+        print("YZ0" * 23, end="")
+
+    def rtn15(self):
+        """
+    Types lines of characters 123.
+        """
+        print("123" * 23, end="")
+
+    def rtn16(self):
+        """
+    Types lines of characters 456.
+        """
+        print("456" * 23, end="")
+
+    def rtn17(self):
+        """
+    Types lines of characters 789.
+        """
+        print("789" * 23, end="")
+
+    def rtn20(self):
+        """
+    Types lines of characters !"#
+        """
+        print('!"#' * 23, end="")
+
+    def rtn21(self):
+        """
+    Types lines of characters $%&.
+        """
+        print("$%&" * 23, end="")
+
+    def rtn22(self):
+        """
+    Types lines of characters '()
+        """
+        print("'()" * 23, end="")
+
+    def rtn23(self):
+        """
+    Types lines of characters *+,
+        """
+        print("*+," * 23, end="")
+
+    def rtn24(self):
+        """
+    Types lines of characters -./
+        """
+        print("-./" * 23, end="")
+
+    def rtn25(self):
+        """
+    Types lines of characters :;<
+        """
+        print(":;<" * 23, end="")
+
+    def rtn26(self):
+        """
+    Types lines of characters =>?
+        """
+        print("=>?" * 23, end="")
+
+    def rtn27(self):
+        """
+    Types lines of characters @[\\
+        """
+        print("@[\\" * 23, end="")
+
+    def rtn30(self):
+        """
+    Types lines of characters ]^_ (sic)
+        """
+        print("]^_" * 23, end="")
+
+    def rtn31(self):
+        """
+    Types lines of all characters.
+        """
+        print("ABC" * 23, end="")
+
+    def rtn32(self):
+        """
+    Types line of all characters.  Fixed delay between characters in a line.
+    Delay is determined at random.
+        """
+        print("ABC" * 23, end="")
+
+    def rtn33(self):
+        """
+    Types six lines of ASR33 WORST CASE PATTERN.
+        """
+        for _ in range(5):
+            print(self.asr33wc * 12)
+        print(self.asr33wc * 12, end="")
+
+    def rtn34(self):
+        """
+    Types six lines of ASR33 WORST CASE PATTERN.
+    Fixed delay between characters in a line.  Delay is determined at random.
+    The ASR33 WORST CASE PATTERN consists of characters
+    (apostrophe) (left-arrow) W (slash) W (left-arrow)
+        """
+        delay = "\0" * random.randint(1, 3)
+        line = delay.join(self.asr33wc * 12)
+        for _ in range(5):
+            print(line)
+        print(line, end="")
+
+    def rtn35(self):
+        """
+    Types six lines of ASR35 WORST CASE PATTERN.
+        """
+        for _ in range(5):
+            print(self.asr35wc * 12)
+        print(self.asr35wc * 12, end="")
+
+    def rtn36(self):
+        """
+    Types six lines of ASR35 WORST CASE PATTERN.
+    Fixed delay between characters in a line.  Delay is determined at random.
+    The ASR33 WORST CASE PATTERN consists of characters
+    (apostrophe) [ ? C ? [
+        """
+        delay = "\0" * random.randint(1, 3)
+        line = delay.join(self.asr35wc * 12)
+        for _ in range(5):
+            print(line)
+        print(line, end="")
 
 
 @click.command()
-@click.argument("testnum", type=int)
-def main(testnum):
-    try:
-        fn = globals()["printer_test_{}".format(testnum)]
-        fn()
-        print()
-    except KeyError:
-        sys.exit("Test {} not found.".format(testnum))
+@click.argument("testnum", type=int, required=False)
+@click.option("--list", default=False, is_flag=True, help="List all the tests")
+def main(testnum, list):
+    if list:
+        for i in range(0, 40):
+            try:
+                fn = "rtn{}".format(i)
+                doc = PRG0().__getattribute__(fn).__doc__
+                print("{}:".format(i))
+                print(doc.lstrip("\r\n"))
+            except AttributeError:
+                pass
+    elif testnum:
+        try:
+            fn = PRG0().__getattribute__("rtn{}".format(testnum))
+            fn()
+            print()
+        except AttributeError:
+            sys.exit("Test {} not found.".format(testnum))
+    else:
+        ctx = click.get_current_context()
+        sys.exit(ctx.get_help())
 
 
 if __name__ == "__main__":
