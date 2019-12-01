@@ -48,10 +48,31 @@ If you have a tape punch on `/dev/tty` you can run without "--test" to punch it:
 ./pattern invaders > /dev/tty
 ```
 
-also try (for example)
+### Text on tape
+
+The pattern named `text` can print words onto tape, using any of the bitmap fonts in the
+[fonts directory](https://github.com/hughpyle/ASR33/blob/master/bin/fonts/).
+
+For example,
 ```
-pattern text --font vt100 "Tape is fun!" --test
+pattern text --font vt100 'Tape is fun!' --test
 ```
+
+The pattern file includes parts with some variations on shifting (moving the text baseline,
+and whether to drop the 'sprocket hole' bit); for example
+```
+pattern text --part small 'Tape is fun!' --test
+pattern text --part inverted 'Negative space' --test
+```
+
+For interactive printing, it's really convenient to just type at the keyboard and
+have the letters punched immediately.  The `tapei` script does this.  Just run
+```
+tapei
+```
+and type anything;  interrupt with Ctrl+C or Ctrl+D to finish.  Optionally you can
+specify a font name with `tapei --font`.
+
 
 ### Tape on paper 
 
