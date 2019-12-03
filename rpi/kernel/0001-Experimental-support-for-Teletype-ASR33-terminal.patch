@@ -1,0 +1,332 @@
+From b13162dd83acfa2113f9e2dee626a8ddba7802a5 Mon Sep 17 00:00:00 2001
+From: Hugh Pyle <hughpyle@gmail.com>
+Date: Tue, 3 Dec 2019 22:51:52 +0000
+Subject: [PATCH] Experimental support for Teletype ASR33 terminal
+
+This adds kernel support for a few things that the
+Teletype ASR33 (and other similar obsolete hardware)
+need for usability:
+- CRDLY (carriage-return delay) settings allowing
+  time for the carriage to return before the next
+  character is printed.  With `stty ofill cr3`, the
+  output after a CR has 3 nulls added.  Similarly for
+  cr2, cr1.  Also `stty ofdel` fills with the DEL
+  character instead of NUL.
+- NLDLY (new-line delay) setting `nl1` similarly.
+- XCASE so that you can distinguish between upper-
+  and lower-case characters (the Teletype only has
+  uppercase printing).  Prints uppercase characters
+  prefixed with "\".  On input, "\" indicates that
+  the next character should be converted to uppercase.
+  Normally this is used with: `stty icanon lcase`.
+---
+ drivers/tty/n_tty.c | 151 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 135 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+index 3ad460219fd6..fca85cb134e2 100644
+--- a/drivers/tty/n_tty.c
++++ b/drivers/tty/n_tty.c
+@@ -26,6 +26,9 @@
+  *		waiting writing processes-Sapan Bhatia <sapan@corewars.org>.
+  *		Also fixed a bug in BLOCKING mode where n_tty_write returns
+  *		EAGAIN
++ *
++ * 2019/12/03   Experimental implementation of CRDLY, NLDLY and XCASE
++ *		for mechanical terminals - Hugh Pyle <hughpyle@gmail.com>
+  */
+ 
+ #include <linux/types.h>
+@@ -78,6 +81,9 @@
+ #define ECHO_DISCARD_WATERMARK	N_TTY_BUF_SIZE - (ECHO_BLOCK + 32)
+ 
+ 
++/* Input escape character for XCASE */
++#define XCASE_CHAR '\\'
++
+ #undef N_TTY_TRACE
+ #ifdef N_TTY_TRACE
+ # define n_tty_trace(f, args...)	trace_printk(f, ##args)
+@@ -103,7 +109,7 @@ struct n_tty_data {
+ 	bool no_room;
+ 
+ 	/* must hold exclusive termios_rwsem to reset these */
+-	unsigned char lnext:1, erasing:1, raw:1, real_raw:1, icanon:1;
++	unsigned char xcase:1, lnext:1, erasing:1, raw:1, real_raw:1, icanon:1;
+ 	unsigned char push:1;
+ 
+ 	/* shared by producer and consumer */
+@@ -404,6 +410,62 @@ static inline int is_continuation(unsigned char c, struct tty_struct *tty)
+ 	return I_IUTF8(tty) && is_utf8_continuation(c);
+ }
+ 
++/**
++ *	do_output_nl		output a newline plus whatever delays
++ *
++ *	Returns the number of bytes of buffer space used or -1 if
++ *	no space left.⏎
++ */
++
++static inline int do_output_nl(struct tty_struct *tty, int space)
++{
++	if (!space)
++		return -1;
++	if (unlikely(O_NLDLY(tty) && O_OFILL(tty))) {
++		if (space < 2)
++			return -1;
++		if (O_OFDEL(tty))
++			tty->ops->write(tty, "\n\177", 2);
++		else
++			tty->ops->write(tty, "\n\0", 2);
++		return 2;
++	}
++	return tty_put_char(tty, '\n');
++}
++
++/**
++ *	do_output_cr		output a carriage return plus whatever delays
++ *
++ *	Returns the number of bytes of buffer space used or -1 if
++ *	no space left.
++ */
++
++static inline int do_output_cr(struct tty_struct *tty, int space)
++{
++	struct n_tty_data *ldata = tty->disc_data;
++	int	delays;
++	if (!space)
++		return -1;
++	if (unlikely(O_CRDLY(tty) && O_OFILL(tty))) {
++		// insert filler bytes after CR, based on the delay (CR1, CR2, CR3)
++		delays = 1;
++		if (O_CRDLY(tty) == CR2)
++			delays = 2;
++		if (O_CRDLY(tty) == CR3)
++			delays = 3;
++		if (space < delays+1)
++			return -1;
++		ldata->canon_column = ldata->column = 0;
++		if (O_OFDEL(tty))
++			tty->ops->write(tty, "\r\177\177\177", delays+1);
++		else
++			tty->ops->write(tty, "\r\0\0\0", delays+1);
++		return delays;
++	}
++	ldata->canon_column = ldata->column = 0;
++	return tty_put_char(tty, '\r');
++}
++
+ /**
+  *	do_output_char			-	output one character
+  *	@c: character (or partial unicode symbol)
+@@ -415,8 +477,8 @@ static inline int is_continuation(unsigned char c, struct tty_struct *tty)
+  *	doing OPOST processing and putting the results in the
+  *	tty driver's write buffer.
+  *
+- *	Note that Linux currently ignores TABDLY, CRDLY, VTDLY, FFDLY
+- *	and NLDLY.  They simply aren't relevant in the world today.
++ *	Note that Linux currently ignores TABDLY, VTDLY and FFDLY.
++ *	They simply aren't relevant in the world today.
+  *	If you ever need them, add them here.
+  *
+  *	Returns the number of bytes of buffer space used or -1 if
+@@ -439,25 +501,29 @@ static int do_output_char(unsigned char c, struct tty_struct *tty, int space)
+ 		if (O_ONLRET(tty))
+ 			ldata->column = 0;
+ 		if (O_ONLCR(tty)) {
++			int sp1, sp2;
+ 			if (space < 2)
+ 				return -1;
+-			ldata->canon_column = ldata->column = 0;
+-			tty->ops->write(tty, "\r\n", 2);
+-			return 2;
++			sp1 = do_output_cr(tty, space);
++			if (sp1 == -1)
++				return sp1;
++			space -= sp1;
++			sp2 = do_output_nl(tty, space);
++			if (sp2 == -1)
++				return sp1;
++			return sp1 + sp2;
+ 		}
+ 		ldata->canon_column = ldata->column;
+-		break;
++		return do_output_nl(tty, space);
+ 	case '\r':
+ 		if (O_ONOCR(tty) && ldata->column == 0)
+ 			return 0;
+ 		if (O_OCRNL(tty)) {
+-			c = '\n';
+ 			if (O_ONLRET(tty))
+ 				ldata->canon_column = ldata->column = 0;
+-			break;
++			return do_output_nl(tty, space);
+ 		}
+-		ldata->canon_column = ldata->column = 0;
+-		break;
++		return do_output_cr(tty, space);
+ 	case '\t':
+ 		spaces = 8 - (ldata->column & 7);
+ 		if (O_TABDLY(tty) == XTABS) {
+@@ -475,6 +541,19 @@ static int do_output_char(unsigned char c, struct tty_struct *tty, int space)
+ 		break;
+ 	default:
+ 		if (!iscntrl(c)) {
++			if (L_XCASE(tty) && L_ICANON(tty))
++			{
++				if (isupper(c) && !is_continuation(c, tty))
++				{
++					if (space < 2)
++						return -1;
++					tty_put_char(tty, '\\');
++					ldata->column++;
++					tty_put_char(tty, c);
++					ldata->column++;
++					return 2;
++				}
++			}
+ 			if (O_OLCUC(tty))
+ 				c = toupper(c);
+ 			if (!is_continuation(c, tty))
+@@ -564,6 +643,8 @@ static ssize_t process_output_block(struct tty_struct *tty,
+ 				ldata->column = 0;
+ 			if (O_ONLCR(tty))
+ 				goto break_out;
++			if (O_NLDLY(tty) && O_OFILL(tty))
++				goto break_out;
+ 			ldata->canon_column = ldata->column;
+ 			break;
+ 		case '\r':
+@@ -571,6 +652,8 @@ static ssize_t process_output_block(struct tty_struct *tty,
+ 				goto break_out;
+ 			if (O_OCRNL(tty))
+ 				goto break_out;
++			if (O_CRDLY(tty) && O_OFILL(tty))
++				goto break_out;
+ 			ldata->canon_column = ldata->column = 0;
+ 			break;
+ 		case '\t':
+@@ -583,6 +666,8 @@ static ssize_t process_output_block(struct tty_struct *tty,
+ 			if (!iscntrl(c)) {
+ 				if (O_OLCUC(tty))
+ 					goto break_out;
++				if (L_XCASE(tty) && L_ICANON(tty))
++					goto break_out;
+ 				if (!is_continuation(c, tty))
+ 					ldata->column++;
+ 			}
+@@ -1262,7 +1347,7 @@ n_tty_receive_signal_char(struct tty_struct *tty, int signal, unsigned char c)
+  *		caller holds non-exclusive termios_rwsem
+  *		publishes canon_head if canonical mode is active
+  *
+- *	Returns 1 if LNEXT was received, else returns 0
++ *	Returns 1 if LNEXT or XCASE was received, else returns 0
+  */
+ 
+ static int
+@@ -1327,6 +1412,10 @@ n_tty_receive_char_special(struct tty_struct *tty, unsigned char c)
+ 			}
+ 			return 1;
+ 		}
++		if (c == XCASE_CHAR && L_XCASE(tty)) {
++			ldata->xcase = 1;
++			return 1;
++		}
+ 		if (c == REPRINT_CHAR(tty) && L_ECHO(tty) && L_IEXTEN(tty)) {
+ 			size_t tail = ldata->canon_head;
+ 
+@@ -1505,6 +1594,21 @@ n_tty_receive_char_lnext(struct tty_struct *tty, unsigned char c, char flag)
+ 		n_tty_receive_char_flagged(tty, c, flag);
+ }
+ 
++static void
++n_tty_receive_char_xcase(struct tty_struct *tty, unsigned char c, char flag)
++{
++	struct n_tty_data *ldata = tty->disc_data;
++
++	ldata->xcase = 0;
++	if (likely(flag == TTY_NORMAL)) {
++		if (I_ISTRIP(tty))
++			c &= 0x7f;
++		c = toupper(c);
++		n_tty_receive_char(tty, c);
++	} else
++		n_tty_receive_char_flagged(tty, c, flag);
++}
++
+ static void
+ n_tty_receive_buf_real_raw(struct tty_struct *tty, const unsigned char *cp,
+ 			   char *fp, int count)
+@@ -1582,7 +1686,10 @@ n_tty_receive_buf_standard(struct tty_struct *tty, const unsigned char *cp,
+ 			else if (n_tty_receive_char_special(tty, c) && count) {
+ 				if (fp)
+ 					flag = *fp++;
+-				n_tty_receive_char_lnext(tty, *cp++, flag);
++				if (ldata->lnext)
++					n_tty_receive_char_lnext(tty, *cp++, flag);
++				if (ldata->xcase)
++					n_tty_receive_char_xcase(tty, *cp++, flag);
+ 				count--;
+ 			}
+ 		} else
+@@ -1608,7 +1715,10 @@ n_tty_receive_buf_fast(struct tty_struct *tty, const unsigned char *cp,
+ 			else if (n_tty_receive_char_special(tty, c) && count) {
+ 				if (fp)
+ 					flag = *fp++;
+-				n_tty_receive_char_lnext(tty, *cp++, flag);
++				if (ldata->lnext)
++					n_tty_receive_char_lnext(tty, *cp++, flag);
++				if (ldata->xcase)
++					n_tty_receive_char_xcase(tty, *cp++, flag);
+ 				count--;
+ 			}
+ 		} else
+@@ -1631,12 +1741,18 @@ static void __receive_buf(struct tty_struct *tty, const unsigned char *cp,
+ 	else {
+ 		if (ldata->lnext) {
+ 			char flag = TTY_NORMAL;
+-
+ 			if (fp)
+ 				flag = *fp++;
+ 			n_tty_receive_char_lnext(tty, *cp++, flag);
+ 			count--;
+ 		}
++		if (ldata->xcase) {
++			char flag = TTY_NORMAL;
++			if (fp)
++				flag = *fp++;
++			n_tty_receive_char_xcase(tty, *cp++, flag);
++			count--;
++		}
+ 
+ 		if (!preops && !I_PARMRK(tty))
+ 			n_tty_receive_buf_fast(tty, cp, fp, count);
+@@ -1808,6 +1924,7 @@ static void n_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+ 		ldata->commit_head = ldata->read_head;
+ 		ldata->erasing = 0;
+ 		ldata->lnext = 0;
++		ldata->xcase = 0;
+ 	}
+ 
+ 	ldata->icanon = (L_ICANON(tty) != 0);
+@@ -1815,7 +1932,7 @@ static void n_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+ 	if (I_ISTRIP(tty) || I_IUCLC(tty) || I_IGNCR(tty) ||
+ 	    I_ICRNL(tty) || I_INLCR(tty) || L_ICANON(tty) ||
+ 	    I_IXON(tty) || L_ISIG(tty) || L_ECHO(tty) ||
+-	    I_PARMRK(tty)) {
++	    I_PARMRK(tty) || L_XCASE(tty)) {
+ 		bitmap_zero(ldata->char_map, 256);
+ 
+ 		if (I_IGNCR(tty) || I_ICRNL(tty))
+@@ -1837,6 +1954,8 @@ static void n_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+ 					set_bit(REPRINT_CHAR(tty),
+ 						ldata->char_map);
+ 			}
++			if (L_XCASE(tty))
++				set_bit(XCASE_CHAR, ldata->char_map);
+ 		}
+ 		if (I_IXON(tty)) {
+ 			set_bit(START_CHAR(tty), ldata->char_map);
+-- 
+2.20.1
+
