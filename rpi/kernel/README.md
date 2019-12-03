@@ -25,7 +25,12 @@ There's a repo with these changes at
 [https://github.com/hughpyle/linux]
 
 Building this kernel on a Raspberry Pi is really
-straightfoward; just follow the instructions at
+straightforward; just follow the instructions at
 [https://www.raspberrypi.org/documentation/linux/kernel/building.md]
 
+## License
+
+The contents of this directory are part of Linux and are
+provided under the GNU General Public License version 2.
+Outside this directory, other license terms apply.
 
