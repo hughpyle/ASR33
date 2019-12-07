@@ -27,7 +27,7 @@
  *		Also fixed a bug in BLOCKING mode where n_tty_write returns
  *		EAGAIN
  *
- * 2019/12/03   Experimental implementation of CRDLY, NLDLY and XCASE
+ * 2019/12/07   Experimental implementation of CRDLY, NLDLY and XCASE
  *		for mechanical terminals - Hugh Pyle <hughpyle@gmail.com>
  */
 
@@ -417,20 +417,21 @@ static inline int is_continuation(unsigned char c, struct tty_struct *tty)
  *	no space left.⏎
  */
 
-static inline int do_output_nl(struct tty_struct *tty, int space)
+static inline int do_output_withnldelay(unsigned char c, struct tty_struct *tty, int space)
 {
 	if (!space)
 		return -1;
+	tty_put_char(tty, c);
 	if (unlikely(O_NLDLY(tty) && O_OFILL(tty))) {
-		if (space < 2)
+		if (space < 3)
 			return -1;
 		if (O_OFDEL(tty))
-			tty->ops->write(tty, "\n\177", 2);
+			tty->ops->write(tty, "\177\177", 2);
 		else
-			tty->ops->write(tty, "\n\0", 2);
-		return 2;
+			tty->ops->write(tty, "\0\0", 2);
+		return 3;
 	}
-	return tty_put_char(tty, '\n');
+	return 1;
 }
 
 /**
@@ -440,30 +441,43 @@ static inline int do_output_nl(struct tty_struct *tty, int space)
  *	no space left.
  */
 
-static inline int do_output_cr(struct tty_struct *tty, int space)
+static inline int do_output_withcrdelay(unsigned char c, struct tty_struct *tty, int space)
 {
 	struct n_tty_data *ldata = tty->disc_data;
-	int	delays;
+	int	nchars;
 	if (!space)
 		return -1;
+	tty_put_char(tty, c);
 	if (unlikely(O_CRDLY(tty) && O_OFILL(tty))) {
-		// insert filler bytes after CR, based on the delay (CR1, CR2, CR3)
-		delays = 1;
-		if (O_CRDLY(tty) == CR2)
-			delays = 2;
-		if (O_CRDLY(tty) == CR3)
-			delays = 3;
-		if (space < delays+1)
+		nchars = 1;
+		if (O_CRDLY(tty) == CR1)  /* tty33, tn300 */
+			nchars = 2;
+		if (O_CRDLY(tty) == CR2)  /* tty37, ti700 */
+			nchars = 4;
+		if (space < nchars+1)
 			return -1;
 		ldata->canon_column = ldata->column = 0;
 		if (O_OFDEL(tty))
-			tty->ops->write(tty, "\r\177\177\177", delays+1);
+			tty->ops->write(tty, "\177\177\177\177", nchars);
 		else
-			tty->ops->write(tty, "\r\0\0\0", delays+1);
-		return delays;
+			tty->ops->write(tty, "\0\0\0\0", nchars);
+		return nchars + 1;
 	}
 	ldata->canon_column = ldata->column = 0;
-	return tty_put_char(tty, '\r');
+	return 1;
+}
+
+static inline int do_output_nl(struct tty_struct *tty, int space)
+{
+	if (unlikely(O_ONLRET(tty)))
+		return do_output_withcrdelay('\n', tty, space);
+	else
+		return do_output_withnldelay('\n', tty, space);
+}
+
+static inline int do_output_cr(struct tty_struct *tty, int space)
+{
+	return do_output_withcrdelay('\r', tty, space);
 }
 
 /**
@@ -543,13 +557,36 @@ static int do_output_char(unsigned char c, struct tty_struct *tty, int space)
 		if (!iscntrl(c)) {
 			if (L_XCASE(tty) && L_ICANON(tty))
 			{
+				unsigned char c1 = '\0';
 				if (isupper(c) && !is_continuation(c, tty))
+					c1 = c;
+				else
+				{
+					switch (c) {
+					case '~':
+						c1 = '^';
+						break;
+					case '|':
+						c1 = '!';
+						break;
+					case '{':
+						c1 = '(';
+						break;
+					case '}':
+						c1 = ')';
+						break;
+					case '`':
+						c1 = '\'';
+						break;
+					}
+				}
+				if (c1)
 				{
 					if (space < 2)
 						return -1;
 					tty_put_char(tty, '\\');
 					ldata->column++;
-					tty_put_char(tty, c);
+					tty_put_char(tty, c1);
 					ldata->column++;
 					return 2;
 				}
@@ -1603,7 +1640,26 @@ n_tty_receive_char_xcase(struct tty_struct *tty, unsigned char c, char flag)
 	if (likely(flag == TTY_NORMAL)) {
 		if (I_ISTRIP(tty))
 			c &= 0x7f;
-		c = toupper(c);
+		switch (c) {
+		case '^':
+			c = '~';
+			break;
+		case '!':
+			c = '|';
+			break;
+		case '(':
+			c = '{';
+			break;
+		case ')':
+			c = '}';
+			break;
+		case '\'':
+			c = '`';
+			break;
+		default:
+			c = toupper(c);
+			break;
+		}
 		n_tty_receive_char(tty, c);
 	} else
 		n_tty_receive_char_flagged(tty, c, flag);
