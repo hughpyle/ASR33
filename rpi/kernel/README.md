@@ -33,15 +33,29 @@ available in ASCII-63 terminals:
 Also, if ONLRET, newline performs the carriage-return function
 and should also use the carriage-return delays.
 
-This change is based on linux 4.19 kernel,
-Raspbian 10 (Buster).  Limited testing on a pi4.
-Patch and full file are in this directory.
-There's a repo with these changes at
-[https://github.com/hughpyle/linux]
+This change is based on linux 4.19 kernel, by forking the Raspbian 10 tree (Buster).
+It's had fairly limited testing on pi3 and pi4.  Patch and full file are in this directory.
+There's a repo with these changes at [https://github.com/hughpyle/linux],
+and you can see the diff [here](https://github.com/raspberrypi/linux/compare/rpi-4.19.y...hughpyle:teletype).
 
-Building this kernel on a Raspberry Pi is really
-straightforward; just follow the instructions at
-[https://www.raspberrypi.org/documentation/linux/kernel/building.md]
+## Building
+
+Building this kernel on a Raspberry Pi is really straightforward:
+
+1. Install the tools and dependencies needed to build:
+    ```bash
+    sudo apt install git bc bison flex libssl-dev make
+    ```
+        
+1. Check out a copy of [the forked repo](https://github.com/hughpyle/linux): 
+    ```bash
+    git clone --depth=1 https://github.com/hughpyle/linux
+    ```
+
+1. Configure the kernel, build and install, following the 
+[instructions here](https://www.raspberrypi.org/documentation/linux/kernel/building.md).
+Be sure to backup your `/boot` directory first, in case anything goes wrong.
+
 
 ## License
 
