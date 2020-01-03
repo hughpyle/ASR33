@@ -1,6 +1,6 @@
 <
     "pattern": [
-        < 5: None >,
+        < 20: None >,
         ("shift9", ("text", "8080 BASIC VER 1.0 2SIO ", "mod6x13"), 0),
         ("text", "Micro-Soft 1975", "smallcaps"),
         < 20: None >,
