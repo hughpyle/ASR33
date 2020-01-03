@@ -5,7 +5,9 @@ Teletype test sequences
 see: http://bitsavers.trailing-edge.com/pdf/dec/pdp8/diag/MAINDEC-08-D2QD-D.pdf
 """
 
+import os
 import sys
+import termios
 import random
 import click
 
@@ -255,11 +257,16 @@ def main(testnum, list):
                 pass
     elif testnum is not None:
         try:
+            fd = sys.stdout.fileno()
+            tc = termios.tcgetattr(fd)
+            os.system("stty raw")
             fn = PRG0().__getattribute__("rtn{}".format(testnum))
             fn()
             print()
         except AttributeError:
             sys.exit("Test {} not found.".format(testnum))
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, tc)
     else:
         ctx = click.get_current_context()
         sys.exit(ctx.get_help())
