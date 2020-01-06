@@ -259,7 +259,7 @@ def main(testnum, list):
         try:
             fd = sys.stdout.fileno()
             tc = termios.tcgetattr(fd)
-            os.system("stty raw")
+            os.system("stty -xcase")
             fn = PRG0().__getattribute__("rtn{}".format(testnum))
             fn()
             print()
