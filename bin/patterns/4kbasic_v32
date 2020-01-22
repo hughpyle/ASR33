@@ -1,0 +1,8 @@
+<
+    "pattern": [
+        < 20: None >,
+        ("shift9", ("text", "8080 BASIC VER 3.2 ", "mod6x13"), 0),
+        < 100: None >,
+        ("url", "https://deramp.com/downloads/altair/software/papertape_cassette/4K%20BASIC%20Ver%203-2.tap")
+    ]
+>
