@@ -246,6 +246,16 @@ class PRG0:
 @click.argument("testnum", type=int, required=False)
 @click.option("--list", default=False, is_flag=True, help="List all the tests")
 def main(testnum, list):
+    """
+    Test print routines for the Teletype terminal.
+
+    These tests are copied from the DEC Family-of-8 ASR33/35 Teletype Tests
+    described in MAINDEC-08-D2QD-D
+    http://bitsavers.trailing-edge.com/pdf/dec/pdp8/diag/MAINDEC-08-D2QD-D.pdf
+
+    :param testnum:  Test number (octal), from 0 to 37.
+        USe "--list" to list all the tests.
+    """
     if list:
         for i in range(0, 40):
             try:

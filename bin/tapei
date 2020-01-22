@@ -68,7 +68,8 @@ def getchs(initial=None):
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 def main(font, test):
     """
-    Print patterns to punchtape.
+    Interactively type at the terminal, and punch a representation
+    of each character on paper tape using bitmap fonts.
     """
     # Use the pattern named 'text' to render the text typed,
     # because it knows how to shift appropriately for each font,

@@ -52,7 +52,9 @@ ALL_FONTS = sorted([os.path.splitext(filename)[0] for filename in os.listdir(FON
 @click.option("--align", default=0, help="Shift the baseline by <n> pixels")
 @click.option("--test", is_flag=True, help="Write text preview, not binary")
 def main(words, font, align, test):
-    """Write text to punchtape"""
+    """
+    Write text to paper tape, using bitmap fonts.
+    """
 
     font_filename = os.path.join(FONT_PATH, "{}.bdf".format(font))
     label = " ".join(words)
