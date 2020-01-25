@@ -1,7 +1,13 @@
 <
     "pattern": "mono",
     "gray": ("gray_sequence", 0, 255),
-    "binary": ("sequence", 0, 255),
+    "binary": [
+        <32: None>,
+        ("sequence", 0, 255),
+        <32: None>,
+        ("sequence", 255, 0, -1),
+        <32: None>
+    ],
     "fives": ("sequence", 0, 255, 5),
     "mono": ("monotonic_gray_sequence", 0, 255),
     "fade": [

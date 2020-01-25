@@ -319,7 +319,7 @@ class Pattern(object):
     @Operator("sequence")
     def sequence(self, value, value2, stride=1):
         """Produce the integers from (int)value to (int)value2 inclusive, incrementing by stride"""
-        return [n for n in range(value, value2+1, stride)]
+        return [n for n in range(value, value2 + stride, stride)]
 
     @Operator("gray_sequence")
     def gray(self, value, value2, stride=1):
@@ -784,13 +784,15 @@ def main(pattern, part, all, svg, border, width, height, test, words, font):
         for byte in data:
             sys.stdout.write("{:08b}\n".format(byte & 0xFF).replace("0", ".").replace("1", "*"))
     else:
-        fd = sys.stdout.fileno()
-        tc = termios.tcgetattr(fd)
-        os.system("stty raw")
+        if sys.stdout.isatty():
+            fd = sys.stdout.fileno()
+            tc = termios.tcgetattr(fd)
+            tty.setraw(fd)
         sys.stdout.buffer.write(INIT)
         sys.stdout.buffer.write(bytearray(data))
         sys.stdout.buffer.write(RESET)
-        termios.tcsetattr(fd, termios.TCSADRAIN, tc)
+        if sys.stdout.isatty():
+            termios.tcsetattr(fd, termios.TCSADRAIN, tc)
 
     print("Length: {} bits, {} inches".format(l, l/10), file=sys.stderr)
 
