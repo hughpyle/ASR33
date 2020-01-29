@@ -112,7 +112,8 @@
 
 // Uncomment this to ignore the hardware switches and use basic defaults
 #define IGNORE_THE_SWITCHES
-
+// And uncomment this to just be 'raw mode'
+//#define RAW_RAW_RAW
 
 #ifdef TESTING
 #define HWSERIAL Serial
@@ -143,7 +144,7 @@ AltSoftSerial altSerial(1, 1, true);
 
 // You can tweak the baud rate very slightly here, but it's better to use 110 and
 // fix whatever timing/alignment issues in hardware
-#define BAUDRATE 111
+#define BAUDRATE 110
 
 // Macro to force a Teensy reset
 #define CPU_RESTART_ADDR (uint32_t *)0xE000ED0C
@@ -252,7 +253,7 @@ void loop() {
   } else if (millisSinceActivity > SNOOZETIME) {
     // Stop the open-line chattering
     HWSERIAL.setBreak();
-  } else {
+  } else if(!isRx8BitClean) {
     // Keep the line open so timing errors are minimized
     sendToTTY(0);
   }
@@ -295,6 +296,18 @@ void readOptions() {
   isRx8BitClean  = !digitalRead(PIN_RX_8BITCLEAN);
 
 #ifdef IGNORE_THE_SWITCHES
+
+#ifdef RAW_RAW_RAW
+  isTestMode     = 0;
+  isTxUCLC       = 0;
+  isTxFoldSlash  = 0;
+  isTxUtf8Arrows = 0;
+  isTx8BitClean  = 1;
+  isRxNLCR       = 0;
+  isRxSpare1     = 0;
+  isRxDelays     = 0;
+  isRx8BitClean  = 1;
+#else
   isTestMode     = 0;
   isTxUCLC       = 1;
   isTxFoldSlash  = 0;
@@ -304,6 +317,8 @@ void readOptions() {
   isRxSpare1     = 0;
   isRxDelays     = 1;
   isRx8BitClean  = 0;
+#endif
+
 #endif
 
 #ifdef DEBUG_ALL
@@ -339,7 +354,9 @@ int processUSBByte(int b)
   Serial.println(b, HEX);
 #endif
 
-  if (!isRx8BitClean) {
+  if (isRx8BitClean) {
+    sendToTTY(b);
+  } else {
     if (isRxNLCR) {
       // TODO linefeed conversion, LF => CR+LF
       if ((b == LF) && (prevUSBByte != CR)) {
@@ -425,7 +442,7 @@ int processTTYByte(int b) {
   if (!isTx8BitClean) {
     // Processing
 
-    // Ryemove the parity bit
+    // Remove the parity bit
     b = b & 0x7F;
     c = b;
 
@@ -479,9 +496,13 @@ int processTTYByte(int b) {
 
   prevTTYByte = b;
 
-  // Don't send nulls to the USB terminal
-  if (c != 0) {
+  if (isTx8BitClean) {
     sendToUSB(c);
+  } else {
+    // Don't send nulls to the USB terminal
+    if (c != 0) {
+      sendToUSB(c);
+    }
   }
   return c;
 }
