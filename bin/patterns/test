@@ -9,6 +9,11 @@
             ]
          }
     ],
+    "test_comment": [
+        0xFF,
+        ("comment", "nothing to see here"),
+        0xFF
+    ],
     "test_reverse": [
         "pattern",
         {-1: "pattern"},

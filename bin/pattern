@@ -58,7 +58,7 @@ The operators are identified with '@Operator(..name..)' below.  See each operato
 import os
 import sys
 import ast
-import math
+import tty
 import types
 import random
 import math
@@ -199,6 +199,11 @@ class Pattern(object):
                 else:
                     return obj(value)
         raise ValueError("Unknown operator: '{}'".format(oper))
+
+    @Operator("comment")
+    def comment(self, value):
+        """Ignore the value, it's a comment"""
+        return
 
     @Operator("invert")
     def invert(self, value):
