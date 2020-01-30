@@ -1,5 +1,6 @@
 <
     "pattern": [
+        ("comment", "verify with: tread --leader 27 4508 basic"),
         < 20: None >,
         ("shift9", ("text", "8080 BASIC VER 1.0 ", "mod6x13"), 0),
         ("text", "Micro-Soft 1975", "smallcaps"),
