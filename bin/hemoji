@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# display a big emoji, Hammersley-style character set
+emoji $1 "'." "0-"
+
