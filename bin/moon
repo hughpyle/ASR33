@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # moon pix
 # - ASCII moon with overstrike
@@ -19,10 +19,16 @@ if [[ "$1" == "-big" ]]; then
     shift
 fi
 
+baudot=0
+if [[ "$1" == "-baudot" ]]; then
+    baudot=1
+fi
+
 showtime=1
 moondate=$1
 if [[ "$moondate" ]]; then
     showtime=0
+    moontime="12:00"
     shift
 else
     moondate=$(date -u "+%m/%d/%Y")
@@ -35,18 +41,27 @@ else
     moontime=$(date -u "+%H:%M")
 fi
 
-chars1="'.#"
-chars2="-/MO0@N\\"
 
 url="https://api.usno.navy.mil/imagery/moon.png?ID=asr33&date=$moondate&time=$moontime"
 data="https://api.usno.navy.mil/rstt/oneday?ID=asr33&date=$moondate&loc=Lynn,MA"
 phase=$(curl -s "$data" | jq -r "if .curphase == null then .closestphase.phase  else .curphase end")
+label=$(echo "$phase" | awk '{print $NF}' | tr '[:lower:]' '[:upper:]')
 gamma="1.5"
 
 if [[ $showtime == 1 ]]; then
     title="$moondate $moontime, $phase"
 else
     title="$moondate, $phase"
+fi
+
+if [[ $baudot == 1 ]]; then
+    # Only use characters in the ITA2/Baudot-Murray printable set
+    chars1="'.:#"
+    chars2="-MO0N${label}"
+    shift
+else
+    chars1="'.:#"
+    chars2="-/MO0N\\${label}"
 fi
 
 tmp1=$(mktemp -t XXXXXX.png)
@@ -67,6 +82,6 @@ if [[ $? == 0 ]]; then
         # convert to ascii
         $(dirname $0)/../asciiart/code/image2.py --width $width "$tmp2" --gamma "$gamma" --chars1 "$chars1" --chars2 "$chars2" --title "$title" --indent $indent --output -
     else
-        echo "error" >&2
+        echo "error $phase" >&2
     fi
 fi

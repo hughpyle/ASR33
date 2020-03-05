@@ -1,20 +1,9 @@
 # Interface Hardware
 
-The Teletype data interface is a serial data connection using 20mA current loop.
-
-Connecting this to modern computers requires some hardware.  There are a few options:
-* Current loop to RS-232 serial.  This can be done with quite simple electronics, and there are various commercially
-available adapters.  One very neat option is Mike Douglas' [RS-232 Adapter](http://deramp.com/tty_adapter.html) that
-plugs right into the back of the Teletype.
-    * Most computers nowadays don't have RS-232 ports, so you'll also need
-      a RS232-to-USB adapter.
-    * You could even go RS232-to-Bluetooth.
-* Eric Volpe's [USB converter](http://heepy.net/index.php/USB-teletype), which can also work with the 60mA loop on 5-level Teletypes,
-* Build your own USB converter.
-
----
-
-I built an interface from scratch.  It's a hobbyist build, not intended to be commercially replicable.  A very cool way to learn about current-loop interfaces nevertheless.
+I built a current-loop to USB interface from scratch, powered by a Teensy
+microcontroller.  It's a hobbyist build, not intended to be commercially
+replicable.  A very cool way to learn about current-loop interfaces 
+nevertheless.
 
 Project notes and pictures: [PDF](./tty-usb.pdf) and [PowerPoint](tty-usb.pptx).
 
