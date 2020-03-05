@@ -112,8 +112,12 @@
 
 // Uncomment this to ignore the hardware switches and use basic defaults
 #define IGNORE_THE_SWITCHES
+
 // And uncomment this to just be 'raw mode'
-//#define RAW_RAW_RAW
+// #define RAW_RAW_RAW
+
+// And uncomment this to disable all print
+// #define NOPRINT
 
 #ifdef TESTING
 #define HWSERIAL Serial
@@ -390,6 +394,9 @@ int processUSBByte(int b)
 
 
 void sendToTTY(int b) {
+#ifdef NOPRINT
+  return
+#endif
 
 #ifdef DEBUG_ALL
   if (b != 0) {
@@ -508,9 +515,7 @@ int processTTYByte(int b) {
 }
 
 void sendToUSB(int c) {
-  if (c > 0) {
-    Serial.write(c);
-  }
+  Serial.write(c);
 }
 
 
