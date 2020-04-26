@@ -53,6 +53,16 @@ Things you can do in this file format:
 
 The operators are identified with '@Operator(..name..)' below.  See each operator for details.
 
+
+Examples:
+
+```
+$ pattern hearts
+$ pattern skulls
+$ pattern sequences --part fade
+$ pattern hearts --svg > hearts.svg
+$ pattern text --part tweet2 "  Printable punchable text!  "
+```
 """
 
 import os
@@ -210,6 +220,16 @@ class Pattern(object):
         """Invert the bits of the value"""
         value = self.render_value(value)
         return b"".join([byte8(0xFF ^ byte) for byte in value])
+
+    @Operator("printable")
+    def invert(self, value):
+        """make printable characters"""
+        value = self.render_value(value)
+        def fixb(b):
+            if b >= 0x20 and b < 0x7e:
+                return b
+            return b | 0x40
+        return b"".join([byte8(fixb(byte)) for byte in value])
 
     @Operator("mirror")
     def mirror(self, value):

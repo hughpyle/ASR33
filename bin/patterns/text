@@ -1,4 +1,12 @@
 <
+    "tweet1": [
+        ("printable", ("shift", ("text", "$1", "smallcaps"), -3))
+    ],
+
+    "tweet2": [
+        ("printable", ("mirror", ("shift", ("text", "$1", "small"), 3)))
+    ],
+
     "pattern": [
         ("shift9", ("text", "$*"), 0)
     ],
