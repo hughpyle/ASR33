@@ -11,7 +11,7 @@
     * [There are lots of options](doc/04-connections.md) for connecting a Teletype to a computer.
     * I've built some quite simple custom [Hardware](hardware/README.md): electronics to operate the 20mA current-loop,
       and [Firmware](firmware/README.md): using a Teensy microcontroller for a modern USB connection.
-    * Connecting to [MacOS](osx/README.md) and to a [Raspberry Pi](rpi/README.md) (with some `getty` and `terminfo` Unix archaeology)
+    * Connecting to [MacOS](osx/README.md) and to a [Raspberry Pi](rpi/README.md) (with some `getty` and `terminfo` Unix archaeology, and a [kernel patch for linux](https://github.com/hughpyle/ASR33/tree/master/rpi/kernel))
 
 
 * Making It Useful:
