@@ -11,7 +11,10 @@ line-discipline things implemented there in firmware
 GPIO serial connection should work fine too.  In that
 case the port would be ttyAMA0 instead of ttyACM0 below.
 
+Some notes about [other hardware options are here](https://github.com/hughpyle/ASR33/blob/master/doc/04-connections.md).
+
 You can see all the ports using `ls /dev/tty*` 
+
 
 ## getty on systemd
 
@@ -41,24 +44,36 @@ sudo mkdir /etc/systemd/system/getty@ttyACM0.service.d
 ```
 
 Then create a file `/etc/systemd/system/getty@ttyACM0.service.d/override.conf` with
-contents below, replacing `userename` with the desired linux user that should
-automatically be logged in:
+contents below, replacing `username` with the desired linux user that should
+automatically be logged in, and making sure that `ttyACM0` matches the port you're using.
 ```
 [Service]
 Type=simple
 ExecStart=
-ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 tty33
+ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 110 tty33
 ```
 (Yes, there are two `ExecStart=` lines).
+
 The `tty33` is the terminal type (defined in `/lib/terminfo/`) and
 gives you a plain terminal without escape sequences for colors.
+
+The `110` baud rate isn't needed if you're going via a Teensy or Arduino that can present a
+full-speed interface to the USB port.
 
 You may need to set `stty brkint` for BREAK to send Ctrl+C to the host.
 
 
-### Using custom terminfo
+### Using a custom Linux kernel
 
-The [Teensy firmware](../firmware) implements wordwrap, automatic CR for NL,
+Linux originated in the 1990s and was never built with Teletype support in mind.
+So it's missing some of the features from original Unix that you will want for
+a natural Teletype experience, including upper-case escape characters and
+carriage-return delay.  You can [build a custom kernel that includes these features](https://github.com/hughpyle/ASR33/blob/master/rpi/kernel/README.md).
+
+
+### Using custom terminfo with a Teensy or Arduino interface
+
+[My Teensy firmware](../firmware) implements wordwrap, automatic CR for NL,
 delays for NL and CR, and other features, controlled by escape sequences.  If you're using
 that firmware, the best settings are
 
