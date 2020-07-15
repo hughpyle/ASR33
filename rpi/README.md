@@ -7,19 +7,26 @@ There are several ways to physically connect a Teleytpe to a Raspberry Pi:
 
 For this I'm going via Teensy, because of the various
 line-discipline things implemented there in firmware
-(case conversion, and so on).  But I think the direct 
-GPIO serial connection should work fine too.  In that
-case the port would be ttyAMA0 instead of ttyACM0 below.
+(case conversion, and so on).  But the direct 
+GPIO serial connection works fine. 
+There are [many other hardware options](https://github.com/hughpyle/ASR33/blob/master/doc/04-connections.md) too.
 
-Some notes about [other hardware options are here](https://github.com/hughpyle/ASR33/blob/master/doc/04-connections.md).
-
-You can see all the ports using `ls /dev/tty*` 
+The port name given to the Teletype by Linux will 
+change depending on the connection method.  With a Teensy
+it will be "/dev/ttyACM0".  GPIO will be "/dev/ttyAMA0".
+With a RS232-to-USB cable it'll usually be "/dev/ttyUSB0",
+but might vary.  You can see all the ports using `ls /dev/tty*`.
+Adjust the port name below accordingly.
 
 
 ## getty on systemd
 
-Recent versions of raspbian use `systemd`.
-To request a getty on the 'ttyACM0' device,
+The "getty" is the program that sets up the terminal
+connection to the port, and sends it to the login program
+so that you can start an interactive shell.
+
+To request a getty on the 'ttyACM0' device (using `systemd`
+which is standard in recent versions of raspbian OS),
 ```
 sudo systemctl start getty@ttyACM0.service
 ```
