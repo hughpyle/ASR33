@@ -69,7 +69,15 @@ gives you a plain terminal without escape sequences for colors.
 The `110` baud rate isn't needed if you're going via a Teensy or Arduino that can present a
 full-speed interface to the USB port.
 
-You may need to set `stty brkint` for BREAK to send Ctrl+C to the host.
+
+### Customizing settings after login
+
+After login, you can use `stty` to set custom terminal settings if needed.  For example,
+you may want to set `stty brkint` for BREAK to send Ctrl+C to the host.  
+With the custom kernel (below), you'll probably want to add to your `.profile` something like this:
+```
+stty ispeed 110 ospeed 110 icrnl xcase iexten ofill cr1
+```
 
 
 ### Using a custom Linux kernel
