@@ -37,13 +37,10 @@ sudo systemctl enable getty@ttyACM0.service
 ```
 Now a `reboot` should immediately print the login message at the console connected to the ttyACM0 device.
 
-You can see all the getty properties using
-```
-sudo systemctl show getty@ttyACM0.service
-```
+Note though, we didn't tell the getty to use 110 baud connection.  So this probably isn't enough yet.
 
 
-### Auto-login
+### Auto-login and other parameters
 
 Create a directory,
 ```
@@ -60,6 +57,11 @@ ExecStart=
 ExecStart=-/sbin/agetty --nohostname --autologin username --noclear ttyACM0 110 tty33
 ```
 (Yes, there are two `ExecStart=` lines).
+
+You can omit `--autologin` if you want to log in from the terminal.  But be careful,
+the getty doesn't really handle lowercase usernames or passwords.  So auto-login is
+just easier (although obviously less secure.  Someone might use the Teletype to exfil
+all your secrets on paper tape).
 
 The `tty33` is the terminal type (defined in `/lib/terminfo/`) and
 gives you a plain terminal without escape sequences for colors.
