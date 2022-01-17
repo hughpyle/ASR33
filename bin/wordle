@@ -51,9 +51,7 @@ def iga(dte: datetime) -> int:
 
 
 def sda(dte: datetime) -> str:
-    ins = iga(dte)
-    inf = ins % len(La)
-    return La[inf]
+    return La[wordnum(dte)]
 
 
 def wordnum(dte: datetime) -> int:
@@ -82,6 +80,7 @@ def play(seed):
     ing = 1
     while ing <= MAXTRIES:
         guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
+        guess = guess.casefold()
 
         valid = (guess in La or guess in Ta)
         if len(guess) < 5:
