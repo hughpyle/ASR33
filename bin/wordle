@@ -27,7 +27,7 @@ DISPLAY = {
     CORRECT: "*"
 }
 
-WINNER = DISPLAY["correct"] * 5
+WINNER = DISPLAY[CORRECT] * 5
 
 CONGRATS = ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"]
 
@@ -136,9 +136,9 @@ def main():
 
     print(f"""
 Key:
-     {DISPLAY['absent']} = letter not present
-     {DISPLAY['present']} = letter in an incorrect position
-     {DISPLAY['correct']} = letter in the correct position""")
+     {DISPLAY[ABSENT]} = letter not present
+     {DISPLAY[PRESENT]} = letter in an incorrect position
+     {DISPLAY[CORRECT]} = letter in the correct position""")
 
     try:
         tries = play(today)
