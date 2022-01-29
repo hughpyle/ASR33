@@ -11,6 +11,7 @@ with a little obfuscation so as to not spoil the fun too much
 import gzip
 import json
 import os
+import pathlib
 import random
 import sys
 import termios
@@ -20,20 +21,30 @@ from datetime import date, timedelta
 
 
 @contextmanager
-def raw_output(*args, **kwds):
+def paper_tape_output():
     """
-    Use `with raw_output():` to wrap writing binary data to the terminal.
+    Use `with paper_tape_output():` to wrap writing binary data to the terminal, for punching on tape.
     """
-    # Escape sequence to initialize 8-bit-clean output (turn off wordwrap, NLCR, delays)
-    # (Usually a teletype wouldn't have firmware that handles escape sequences,
-    # but mine does, https://github.com/hughpyle/ASR33/tree/master/firmware)
+    # If the terminal doesn't support hardcopy,
+    # we can safely assume it doesn't support paper tape output.
+    # (Don't use curses.tcgetstr(), because setupterm() fails on tty33)
+    if os.system("tput hc"):
+        yield None
+        return
 
-    if "tty33" in os.environ.get("TERM"):
+    term = os.environ.get("TERM").lower()
+    if term == "tty33-amx":
+        # Escape sequence to initialize 8-bit-clean output (turn off wordwrap, NLCR, delays)
+        # (Usually a teletype wouldn't have firmware that handles escape sequences,
+        # but mine does, https://github.com/hughpyle/ASR33/tree/master/firmware).
+        # Also mine doesn't have DC2/DC4 control (it's just missing that hardware).
         init = b"\033[?7l\033_ab\234"
         reset = b"\033[!p"
     else:
-        init = b""
-        reset = b""
+        # Turn the tape punch on with DC2, off with DC4
+        # (Note: for full binary fidelity you also need to send DC2 after printing any DC4, not done here)
+        init = b"\022"
+        reset = b"\024"
 
     if sys.stdout.isatty():
         fdi = sys.stdout.fileno()
@@ -41,7 +52,7 @@ def raw_output(*args, **kwds):
         tty.setraw(fdi)
 
     sys.stdout.buffer.write(init)
-    yield
+    yield 1
     sys.stdout.buffer.write(reset)
 
     if sys.stdout.isatty():
@@ -74,6 +85,26 @@ ACCEPT_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZTA)).decode("ascii"))
 
 # Seed date for the OG game
 SEED_DATE: date = date(2021, 6, 19)
+
+
+class Score():
+    """
+    A place to save the score (in ~/.wordle)
+    """
+    def __init__(self, dte: date):
+        confdir = pathlib.Path.home() / ".wordle"
+        os.makedirs(confdir, exist_ok=True)
+        self._filepath = confdir / str(wordnum(dte))
+
+    @property
+    def played(self):
+        """Has this game been played before?"""
+        return self._filepath.exists()
+
+    def save(self, words):
+        """Save the guesses"""
+        with open(self._filepath, "w", encoding="utf-8") as fscore:
+            fscore.write(" ".join(words) + "\n")
 
 
 def daynum(dte: date) -> int:
@@ -148,6 +179,7 @@ def play(seed):
     ask for guesses and evaluate them
     return a list of the evaluation results, if you won
     """
+    words = []
     matches = []
     ing = 1
     while ing <= MAXTRIES:
@@ -165,16 +197,17 @@ def play(seed):
             print("Not in word list.")
             continue
 
+        words.append(guess)
         match = evaluate(guess, seed)
         matches.append(match)
         print(f"           {printable(match)}")
         if match == WINNER:
             print(f"\n{CONGRATS[ing-1]}!")
-            return matches
+            return words, matches
         ing = ing + 1
 
     print("\nSorry! Try again tomorrow!")
-    return None
+    return words, None
 
 
 def main():
@@ -196,31 +229,39 @@ def main():
                 random.seed()
                 today = SEED_DATE + timedelta(days=random.randint(0, daynum(date.today())))
 
+        score = Score(today)
+        if score.played:
+            sys.exit("Sorry, you've already played.")
+
         print(f"""
     Key:
         {DISPLAY[ABSENT]} = letter not present
         {DISPLAY[PRESENT]} = letter in an incorrect position
         {DISPLAY[CORRECT]} = letter in the correct position""")
 
-        tries = play(today)
-        if tries:
-            input("Turn on the paper tape punch, then press RETURN.")
+        words, blocks = play(today)
+
+        # Save the words (whether or not you won)
+        score.save(words)
+
+        if blocks:
             print()
             # Print the summary blocks
-            print(f"\n{title} {len(tries)}/{MAXTRIES}\n")
-            print("\n".join([printable(result) for result in tries]))
+            print(f"\n{title} {len(blocks)}/{MAXTRIES}\n")
+            print("\n".join([printable(result) for result in blocks]))
             print()
 
             # Print the summary blocks in the lower 5 bits, for tape punching
             leading = bytearray([0xFF for _ in range(MAXTRIES)])
             spacing = bytearray([0x00 for _ in range(MAXTRIES)])
-            summary = bytearray([punchable(result) for result in tries])
+            summary = bytearray([punchable(result) for result in blocks])
 
             print()
-            with raw_output():
-                sys.stdout.buffer.write(leading + spacing + summary + spacing + leading)
-                sys.stdout.buffer.write(spacing)
-                sys.stdout.buffer.write(spacing)
+            with paper_tape_output() as tape:
+                if tape:
+                    sys.stdout.buffer.write(leading + spacing + summary + spacing + leading)
+                    sys.stdout.buffer.write(spacing)
+                    sys.stdout.buffer.write(spacing)
             print()
 
     except KeyboardInterrupt:
