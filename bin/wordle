@@ -189,14 +189,16 @@ def play(seed):
         guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
         guess = guess.casefold()
 
-        valid = (guess in ANSWER_WORDS or guess in ACCEPT_WORDS)
         if len(guess) < 5:
             print("Not enough letters.")
             continue
         if len(guess) > 5:
             print("Too many letters.")
             continue
-        if not valid:
+        if guess in words:
+            print("You already tried that!")
+            continue
+        if not (guess in ANSWER_WORDS or guess in ACCEPT_WORDS):
             print("Not in word list.")
             continue
 
