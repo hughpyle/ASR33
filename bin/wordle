@@ -119,7 +119,8 @@ def wordnum(dte: date) -> int:
     """
     word-number for a date is the index of the word in the ANSWER_WORDS
     """
-    if dte > date.today():  # Uh-oh! Suspected timeline causality violation!
+    if dte > date.today() or dte < SEED_DATE:
+        # Uh-oh! Suspected timeline causality violation!
         dte = SEED_DATE
     index = daynum(dte) % len(ANSWER_WORDS)
     return index
@@ -232,7 +233,7 @@ def main():
             try:
                 # Arbitrary day-number
                 today = SEED_DATE + timedelta(days=int(mode))
-            except ValueError:
+            except (ValueError, OverflowError):
                 random.seed()
                 today = SEED_DATE + timedelta(
                     days=random.randint(0, daynum(date.today()))
