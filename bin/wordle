@@ -13,6 +13,7 @@ import json
 import os
 import pathlib
 import random
+import string
 import sys
 import termios
 import tty
@@ -29,11 +30,7 @@ ABSENT = "absent"
 PRESENT = "present"
 CORRECT = "correct"
 
-DISPLAY = {
-    ABSENT: ".",
-    PRESENT: "+",
-    CORRECT: "*"
-}
+DISPLAY = {ABSENT: ".", PRESENT: "+", CORRECT: "*"}
 
 WINNER = [CORRECT] * 5
 
@@ -88,10 +85,11 @@ def paper_tape_output():
         termios.tcsetattr(fdi, termios.TCSADRAIN, tci)
 
 
-class Score():
+class Score:
     """
     A place to save the score (in ~/.wordle)
     """
+
     def __init__(self, dte: date):
         confdir = pathlib.Path.home() / ".wordle"
         os.makedirs(confdir, exist_ok=True)
@@ -189,6 +187,11 @@ def play(seed):
         guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
         guess = guess.casefold()
 
+        if guess == "?":
+            used = set([char for word in words for char in word])
+            print("Used:    " + "".join(sorted(used)))
+            print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
+            continue
         if len(guess) < 5:
             print("Not enough letters.")
             continue
@@ -220,7 +223,9 @@ def main():
     play the game
     """
     try:
-        mode = input("Play today's official word [Y], or game-number, else random? ").upper()
+        mode = input(
+            "Play today's official word [Y], or game-number, else random? "
+        ).upper()
 
         today = date.today()
         if mode != "Y":
@@ -229,18 +234,22 @@ def main():
                 today = SEED_DATE + timedelta(days=int(mode))
             except ValueError:
                 random.seed()
-                today = SEED_DATE + timedelta(days=random.randint(0, daynum(date.today())))
+                today = SEED_DATE + timedelta(
+                    days=random.randint(0, daynum(date.today()))
+                )
         title = f"Wordle {wordnum(today)}"
 
         score = Score(today)
         if score.played:
             sys.exit("Sorry, you've already played.")
 
-        print(f"""
+        print(
+            f"""
     Key:
         {DISPLAY[ABSENT]} = letter not present
         {DISPLAY[PRESENT]} = letter in an incorrect position
-        {DISPLAY[CORRECT]} = letter in the correct position""")
+        {DISPLAY[CORRECT]} = letter in the correct position"""
+        )
 
         words, blocks = play(today)
 
@@ -262,7 +271,9 @@ def main():
             print()
             with paper_tape_output() as tape:
                 if tape:
-                    sys.stdout.buffer.write(leading + spacing + summary + spacing + leading)
+                    sys.stdout.buffer.write(
+                        leading + spacing + summary + spacing + leading
+                    )
                     sys.stdout.buffer.write(spacing)
                     sys.stdout.buffer.write(spacing)
             print()
