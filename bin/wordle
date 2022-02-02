@@ -91,9 +91,10 @@ class Score:
     """
 
     def __init__(self, dte: date):
-        confdir = pathlib.Path.home() / ".wordle"
-        os.makedirs(confdir, exist_ok=True)
-        self._filepath = confdir / str(wordnum(dte))
+        self._dte = dte
+        self._confdir = pathlib.Path.home() / ".wordle"
+        os.makedirs(self._confdir, exist_ok=True)
+        self._filepath = self._confdir / str(wordnum(dte))
 
     @property
     def played(self):
@@ -106,6 +107,55 @@ class Score:
             # First line of the save file is the list of words used
             fscore.write(" ".join(words) + "\n")
             # Currently nothing else (e.g. doesn't say whether you guessed correctly)
+
+    def print_stats(self):
+        """Calculate and print the statistics"""
+        # Read all the score files and collect stats
+        words = {}
+        score = {}
+        stats = [0] * (MAXTRIES + 1)
+        played = 0
+        won = 0
+        maxnum = 0
+        for game in self._confdir.iterdir():
+            if game.is_file():
+                try:
+                    wnum = int(game.name)
+                    maxnum = max(maxnum, wnum)
+                    with game.open() as gfd:
+                        # What was the last-played word?
+                        words[wnum] = gfd.readline().strip().split(" ")
+                        # Did it win?
+                        score[wnum] = ANSWER_WORDS[wnum] == words[wnum][-1]
+                        # Update the histogram
+                        if score[wnum]:
+                            won = won + 1
+                            stats[len(words[wnum])] = stats[len(words[wnum])] + 1
+                    played = played + 1
+                except (ValueError, OSError):
+                    pass
+
+        # Calculate the streaks
+        cstreak = 0
+        mstreak = 0
+        for wnum in range(maxnum + 1):
+            if score.get(wnum):
+                cstreak = cstreak + 1
+                mstreak = max(cstreak, mstreak)
+            else:
+                cstreak = 0
+
+        # Print the stats
+        print(
+            "\nPlayed   Win %   Current streak   Max streak"
+            f"\n{played:>6}   {round(100*won/played):>5}   {cstreak:>14}  {mstreak:>11}"
+        )
+        print("\nGuess distribution:")
+        for idx in range(1, MAXTRIES + 1):
+            print(str(idx) + " : " + ("*" * stats[idx]))
+        print()
+
+        # How long to the next word (midnight)?
 
 
 def daynum(dte: date) -> int:
@@ -242,7 +292,9 @@ def main():
 
         score = Score(today)
         if score.played:
-            sys.exit("Sorry, you've already played.")
+            print("Sorry, you've already played.")
+            score.print_stats()
+            sys.exit(1)
 
         print(
             f"""
@@ -269,7 +321,6 @@ def main():
             spacing = bytearray([0x00 for _ in range(MAXTRIES)])
             summary = bytearray([punchable(result) for result in blocks])
 
-            print()
             with paper_tape_output() as tape:
                 if tape:
                     sys.stdout.buffer.write(
@@ -278,6 +329,8 @@ def main():
                     sys.stdout.buffer.write(spacing)
                     sys.stdout.buffer.write(spacing)
             print()
+
+            score.print_stats()
 
     except KeyboardInterrupt:
         pass
