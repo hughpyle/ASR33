@@ -174,12 +174,15 @@ class Game:
 
     def all_games(self):
         """Generator for all the played games in history"""
-        for gamefile in self._confdir.iterdir():
-            try:
-                wnum = int(gamefile.name)
-                yield Game(wnum)
-            except (OSError, ValueError):
-                pass
+        try:
+            for gamefile in self._confdir.iterdir():
+                try:
+                    wnum = int(gamefile.name)
+                    yield Game(wnum)
+                except (OSError, ValueError):
+                    pass
+        except FileNotFoundError:
+            pass
 
     @property
     def won(self):
