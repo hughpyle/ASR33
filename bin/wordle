@@ -150,12 +150,12 @@ class Game:
     def __init__(self, gamenum: int = None):
         self.gamenum = gamenum
         self.words = []
-        self._confdir = pathlib.Path.home() / ".wordle"
-        if gamenum is not None:
-            self._filepath = self._confdir / f"{self.gamenum:05}"
-            if self._filepath.exists():
-                with self._filepath.open() as gfd:
-                    self.words = gfd.readline().strip().split(" ")
+        self.confdir = pathlib.Path.home() / ".wordle"
+        os.makedirs(self.confdir, exist_ok=True)
+
+        if self.filepath and self.filepath.exists():
+            with self.filepath.open() as gfd:
+                self.words = gfd.readline().strip().split(" ")
 
     def in_progress(self):
         """Is there an unfinished game in progress?"""
@@ -174,15 +174,12 @@ class Game:
 
     def all_games(self):
         """Generator for all the played games in history"""
-        try:
-            for gamefile in self._confdir.iterdir():
-                try:
-                    wnum = int(gamefile.name)
-                    yield Game(wnum)
-                except (OSError, ValueError):
-                    pass
-        except FileNotFoundError:
-            pass
+        for gamefile in self.confdir.iterdir():
+            try:
+                wnum = int(gamefile.name)
+                yield Game(wnum)
+            except (OSError, ValueError):
+                pass
 
     @property
     def won(self):
@@ -194,12 +191,18 @@ class Game:
         """Was this game lost?"""
         return self.words and not self.won and len(self.words) == MAXTRIES
 
+    @property
+    def filepath(self):
+        """Path to the save-file"""
+        if self.gamenum is not None:
+            return self.confdir / f"{self.gamenum:05}"
+
     def save(self):
         """Save the guesses"""
-        os.makedirs(self._confdir, exist_ok=True)
-        with open(self._filepath, "w", encoding="utf-8") as fscore:
-            # Save file is just one line, space-separated list of the used words
-            fscore.write(" ".join(self.words) + "\n")
+        if self.filepath:
+            with open(self.filepath, "w", encoding="utf-8") as fscore:
+                # Save file is just one line, space-separated list of the used words
+                fscore.write(" ".join(self.words) + "\n")
 
     def print_stats(self):
         """Calculate and print the statistics"""
@@ -380,7 +383,7 @@ def main():
         if game:
             game.play()
 
-    except (KeyboardInterrupt, IndexError) as exc:
+    except (KeyboardInterrupt, IndexError, PermissionError) as exc:
         sys.exit(exc)
 
 
