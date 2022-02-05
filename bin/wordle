@@ -38,6 +38,13 @@ CONGRATS = ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"]
 
 MAXTRIES = 6
 
+KEY = f"""
+    Key:
+        {DISPLAY[ABSENT]} = letter not present
+        {DISPLAY[PRESENT]} = letter in an incorrect position
+        {DISPLAY[CORRECT]} = letter in the correct position"""
+
+
 # Initialize the word lists
 ANSWER_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZLA)).decode("ascii"))
 ACCEPT_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZTA)).decode("ascii"))
@@ -85,79 +92,6 @@ def paper_tape_output():
         termios.tcsetattr(fdi, termios.TCSADRAIN, tci)
 
 
-class Score:
-    """
-    A place to save the score (in ~/.wordle)
-    """
-
-    def __init__(self, dte: date):
-        self._dte = dte
-        self._confdir = pathlib.Path.home() / ".wordle"
-        os.makedirs(self._confdir, exist_ok=True)
-        self._filepath = self._confdir / str(wordnum(dte))
-
-    @property
-    def played(self):
-        """Has this game been played before?"""
-        return self._filepath.exists()
-
-    def save(self, words):
-        """Save the guesses"""
-        with open(self._filepath, "w", encoding="utf-8") as fscore:
-            # First line of the save file is the list of words used
-            fscore.write(" ".join(words) + "\n")
-            # Currently nothing else (e.g. doesn't say whether you guessed correctly)
-
-    def print_stats(self):
-        """Calculate and print the statistics"""
-        # Read all the score files and collect stats
-        words = {}
-        score = {}
-        stats = [0] * (MAXTRIES + 1)
-        played = 0
-        won = 0
-        maxnum = 0
-        for game in self._confdir.iterdir():
-            if game.is_file():
-                try:
-                    wnum = int(game.name)
-                    maxnum = max(maxnum, wnum)
-                    with game.open() as gfd:
-                        # What was the last-played word?
-                        words[wnum] = gfd.readline().strip().split(" ")
-                        # Did it win?
-                        score[wnum] = ANSWER_WORDS[wnum] == words[wnum][-1]
-                        # Update the histogram
-                        if score[wnum]:
-                            won = won + 1
-                            stats[len(words[wnum])] = stats[len(words[wnum])] + 1
-                    played = played + 1
-                except (ValueError, OSError):
-                    pass
-
-        # Calculate the streaks
-        cstreak = 0
-        mstreak = 0
-        for wnum in range(maxnum + 1):
-            if score.get(wnum):
-                cstreak = cstreak + 1
-                mstreak = max(cstreak, mstreak)
-            else:
-                cstreak = 0
-
-        # Print the stats
-        print(
-            "\nPlayed   Win %   Current streak   Max streak"
-            f"\n{played:>6}   {round(100*won/played):>5}   {cstreak:>14}  {mstreak:>11}"
-        )
-        print("\nGuess distribution:")
-        for idx in range(1, MAXTRIES + 1):
-            print(str(idx) + " : " + ("*" * stats[idx]))
-        print()
-
-        # How long to the next word (midnight)?
-
-
 def daynum(dte: date) -> int:
     """
     day-number for a date is the number of days since SEED_DATE
@@ -176,13 +110,6 @@ def wordnum(dte: date) -> int:
     return index
 
 
-def wordfor(dte: date) -> str:
-    """
-    Get the answer for the given date
-    """
-    return ANSWER_WORDS[wordnum(dte)]
-
-
 def test(word, wordchar, testchar):
     """
     test a single character (testchar)
@@ -194,12 +121,12 @@ def test(word, wordchar, testchar):
     return ABSENT
 
 
-def evaluate(guess: str, seed: date):
+def evaluate(guess: str, gamenum: int):
     """
     evaluate a guess (word) against the answer (date),
     and return the result as a 5-element array of [CORRECT, PRESENT, etc].
     """
-    word = wordfor(seed)
+    word = ANSWER_WORDS[gamenum]
     result = [test(word, wordchar, testchar) for wordchar, testchar in zip(word, guess)]
     return result
 
@@ -226,93 +153,171 @@ def punchable(result):
     return byte << 3
 
 
-def play(seed):
+class AlreadyPlayedException(Exception):
+    ...
+
+
+class Game:
     """
-    ask for guesses and evaluate them
-    return a list of the evaluation results, if you won
+    A game (identified by its number).  Saves into ~/.wordle/<number>.
     """
-    words = []
-    matches = []
-    ing = 1
-    while ing <= MAXTRIES:
-        guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
-        guess = guess.casefold()
 
-        if guess == "?":
-            used = set([char for word in words for char in word])
-            print("Used:    " + "".join(sorted(used)))
-            print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
-            continue
-        if len(guess) < 5:
-            print("Not enough letters.")
-            continue
-        if len(guess) > 5:
-            print("Too many letters.")
-            continue
-        if guess in words:
-            print("You already tried that!")
-            continue
-        if not (guess in ANSWER_WORDS or guess in ACCEPT_WORDS):
-            print("Not in word list.")
-            continue
+    def __init__(self, gamenum: int = None):
+        self.gamenum = gamenum
+        self.words = []
+        self._confdir = pathlib.Path.home() / ".wordle"
+        if gamenum is not None:
+            self._filepath = self._confdir / f"{self.gamenum:05}"
+            if self._filepath.exists():
+                with self._filepath.open() as gfd:
+                    self.words = gfd.readline().strip().split(" ")
 
-        words.append(guess)
-        match = evaluate(guess, seed)
-        matches.append(match)
-        print(f"           {printable(match)}")
-        if match == WINNER:
-            print(f"\n{CONGRATS[ing-1]}!")
-            return words, matches
-        ing = ing + 1
+    def in_progress(self):
+        """Is there an unfinished game in progress?"""
+        for game in self.all_games():
+            if not (game.won or game.lost):
+                return game
+        return None
 
-    print("\nSorry! Try again tomorrow!")
-    return words, None
-
-
-def main():
-    """
-    play the game
-    """
-    try:
-        mode = input(
-            "Play today's official word [Y], or game-number, else random? "
-        ).upper()
-
-        today = date.today()
-        if mode != "Y":
+    def all_games(self):
+        """Generator for all the played games in history"""
+        for gamefile in self._confdir.iterdir():
             try:
-                # Arbitrary day-number
-                today = SEED_DATE + timedelta(days=int(mode))
-            except (ValueError, OverflowError):
-                random.seed()
-                today = SEED_DATE + timedelta(
-                    days=random.randint(0, daynum(date.today()))
-                )
-        title = f"Wordle {wordnum(today)}"
+                wnum = int(gamefile.name)
+                yield Game(wnum)
+            except (OSError, ValueError):
+                pass
 
-        score = Score(today)
-        if score.played:
-            print("Sorry, you've already played.")
-            score.print_stats()
-            sys.exit(1)
+    @property
+    def won(self):
+        """Was this game won?"""
+        return self.words and ANSWER_WORDS[self.gamenum] == self.words[-1]
 
+    @property
+    def lost(self):
+        """Was this game lost?"""
+        return self.words and not self.won and len(self.words) == MAXTRIES
+
+    def save(self):
+        """Save the guesses"""
+        os.makedirs(self._confdir, exist_ok=True)
+        with open(self._filepath, "w", encoding="utf-8") as fscore:
+            # First line of the save file is the list of words used
+            fscore.write(" ".join(self.words) + "\n")
+
+    def print_stats(self):
+        """Calculate and print the statistics"""
+        # Read all the score files and collect stats
+        games = {}
+        stats = [0] * (MAXTRIES + 1)
+        played = 0
+        won = 0
+        maxnum = 0
+        for game in self.all_games():
+            games[game.gamenum] = game
+
+            played = played + 1
+            maxnum = max(maxnum, game.gamenum)
+
+            # Update the histogram
+            if game.won:
+                won = won + 1
+                stats[len(game.words)] = stats[len(game.words)] + 1
+
+        # Calculate the streaks
+        cstreak = 0
+        mstreak = 0
+        for wnum in range(maxnum + 1):
+            if wnum in games and games[wnum].won:
+                cstreak = cstreak + 1
+                mstreak = max(cstreak, mstreak)
+            else:
+                cstreak = 0
+
+        # Print the stats
         print(
-            f"""
-    Key:
-        {DISPLAY[ABSENT]} = letter not present
-        {DISPLAY[PRESENT]} = letter in an incorrect position
-        {DISPLAY[CORRECT]} = letter in the correct position"""
+            "\nPlayed   Win %   Current streak   Max streak"
+            f"\n{played:>6}   {round(100*won/played):>5}   {cstreak:>14}  {mstreak:>11}"
         )
+        print("\nGuess distribution:")
+        for idx in range(1, MAXTRIES + 1):
+            print(str(idx) + " : " + ("*" * stats[idx]))
+        print()
 
-        words, blocks = play(today)
+        # How long to the next word (midnight)?
 
-        # Save the words (whether or not you won)
-        score.save(words)
+    def _play(self):
+        """
+        ask for guesses and evaluate them
+        return a list of the evaluation results, if you won
+        """
+        matches = []
+        ing = 1
 
-        if blocks:
-            print()
+        def _match(guess):
+            match = evaluate(guess, self.gamenum)
+            matches.append(match)
+            print(f"           {printable(match)}")
+            return match
+
+        while ing <= len(self.words):
+            guess = self.words[ing - 1]
+            print(f"\nGuess {ing}/{MAXTRIES}: {guess}")
+            _match(guess)
+            ing = ing + 1
+
+        while ing <= MAXTRIES:
+            guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
+            guess = guess.casefold()
+
+            if guess == "?":
+                used = set([char for word in self.words for char in word])
+                print("Used:    " + "".join(sorted(used)))
+                print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
+                continue
+            if len(guess) < 5:
+                print("Not enough letters.")
+                continue
+            if len(guess) > 5:
+                print("Too many letters.")
+                continue
+            if guess in self.words:
+                print("You already tried that!")
+                continue
+            if not (guess in ANSWER_WORDS or guess in ACCEPT_WORDS):
+                print("Not in word list.")
+                continue
+
+            self.words.append(guess)
+            # Save the words (every time! so we can pick up if interrupted)
+            self.save()
+
+            match = _match(guess)
+            if match == WINNER:
+                print(f"\n{CONGRATS[ing-1]}!")
+                return matches
+            ing = ing + 1
+
+        print("\nSorry! Try again tomorrow!")
+        return None
+
+    def play(self):
+        """
+        Play the game
+        """
+        print(f"Wordle {self.gamenum}.")
+        if self.won or self.lost:
+            raise AlreadyPlayedException("Sorry, you've already played.")
+
+        print(KEY)
+
+        # do the main loop
+        blocks = self._play()
+
+        if self.won:
             # Print the summary blocks
-            print(f"\n{title} {len(blocks)}/{MAXTRIES}\n")
+            print()
+            print(f"\nWordle {self.gamenum} {len(blocks)}/{MAXTRIES}\n")
             print("\n".join([printable(result) for result in blocks]))
             print()
 
@@ -320,7 +325,6 @@ def main():
             leading = bytearray([0xFF for _ in range(MAXTRIES)])
             spacing = bytearray([0x00 for _ in range(MAXTRIES)])
             summary = bytearray([punchable(result) for result in blocks])
-
             with paper_tape_output() as tape:
                 if tape:
                     sys.stdout.buffer.write(
@@ -330,12 +334,39 @@ def main():
                     sys.stdout.buffer.write(spacing)
             print()
 
-            score.print_stats()
+        # Print the all-time statistics
+        self.print_stats()
 
-    except KeyboardInterrupt:
-        pass
 
-    print()
+def main():
+    """
+    play the game
+    """
+    try:
+        game = Game().in_progress()
+        if not game:
+            mode = input(
+                "Play today's official word [Y], or game-number, else random? "
+            ).upper()
+
+            today = date.today()
+            if mode != "Y":
+                try:
+                    # Parse the game-number as integer
+                    today = SEED_DATE + timedelta(days=int(mode))
+                except (ValueError, OverflowError):
+                    # Play a random game before today's
+                    random.seed()
+                    today = SEED_DATE + timedelta(
+                        days=random.randint(0, daynum(date.today()))
+                    )
+
+            game = Game(wordnum(today))
+
+        game.play()
+
+    except (KeyboardInterrupt, AlreadyPlayedException) as exc:
+        sys.exit(exc)
 
 
 if __name__ == "__main__":
