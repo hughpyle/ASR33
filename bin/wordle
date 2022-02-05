@@ -18,7 +18,7 @@ import sys
 import termios
 import tty
 from contextlib import contextmanager
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 
 # data division
 
@@ -110,28 +110,17 @@ def wordnum(dte: date) -> int:
     return index
 
 
-def test(word, wordchar, testchar):
+def time_to_midnight() -> str:
     """
-    test a single character (testchar)
+    How long to the next word is available at midnight?
+    (datetime grumble grumble)
     """
-    if testchar == wordchar:
-        return CORRECT
-    if testchar in word:
-        return PRESENT
-    return ABSENT
+    mid = datetime.combine(date.today() + timedelta(days=1), datetime.min.time())
+    dur = mid - datetime.now().replace(microsecond=0)
+    return f"Next word in {dur}"
 
 
-def evaluate(guess: str, gamenum: int):
-    """
-    evaluate a guess (word) against the answer (date),
-    and return the result as a 5-element array of [CORRECT, PRESENT, etc].
-    """
-    word = ANSWER_WORDS[gamenum]
-    result = [test(word, wordchar, testchar) for wordchar, testchar in zip(word, guess)]
-    return result
-
-
-def printable(result):
+def printable(result) -> str:
     """
     printable version of a result
     """
@@ -139,7 +128,7 @@ def printable(result):
     return "".join(disp)
 
 
-def punchable(result):
+def punchable(result) -> int:
     """
     byte version of a result, for paper tape
     """
@@ -151,10 +140,6 @@ def punchable(result):
         if item == CORRECT:
             byte = byte | 1
     return byte << 3
-
-
-class AlreadyPlayedException(Exception):
-    ...
 
 
 class Game:
@@ -179,6 +164,14 @@ class Game:
                 return game
         return None
 
+    def random(self):
+        """Make a new game for a random date before today.  May raise IndexError."""
+        available = set(range(wordnum(date.today())))
+        for game in self.all_games():
+            if game.gamenum in available:
+                available.remove(game.gamenum)
+        return Game(random.choice(list(available)))
+
     def all_games(self):
         """Generator for all the played games in history"""
         for gamefile in self._confdir.iterdir():
@@ -202,7 +195,7 @@ class Game:
         """Save the guesses"""
         os.makedirs(self._confdir, exist_ok=True)
         with open(self._filepath, "w", encoding="utf-8") as fscore:
-            # First line of the save file is the list of words used
+            # Save file is just one line, space-separated list of the used words
             fscore.write(" ".join(self.words) + "\n")
 
     def print_stats(self):
@@ -244,7 +237,8 @@ class Game:
             print(str(idx) + " : " + ("*" * stats[idx]))
         print()
 
-        # How long to the next word (midnight)?
+        if maxnum >= wordnum(date.today()):
+            print(time_to_midnight())
 
     def _play(self):
         """
@@ -254,25 +248,43 @@ class Game:
         matches = []
         ing = 1
 
+        def _test(word, wordchar, testchar):
+            # test a single character (testchar)
+            if testchar == wordchar:
+                return CORRECT
+            if testchar in word:
+                return PRESENT
+            return ABSENT
+
         def _match(guess):
-            match = evaluate(guess, self.gamenum)
+            # evaluate a guess (word) against the answer, as a 5-element array of [CORRECT, PRESENT, etc].
+            word = ANSWER_WORDS[self.gamenum]
+            match = [_test(word, wordc, testc) for wordc, testc in zip(word, guess)]
             matches.append(match)
             print(f"           {printable(match)}")
             return match
 
         while ing <= len(self.words):
+            # Print any previous guesses (if we're starting from a saved game)
             guess = self.words[ing - 1]
             print(f"\nGuess {ing}/{MAXTRIES}: {guess}")
             _match(guess)
             ing = ing + 1
 
         while ing <= MAXTRIES:
+            # Get the next guess
             guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
             guess = guess.casefold()
 
             if guess == "?":
-                used = set([char for word in self.words for char in word])
-                print("Used:    " + "".join(sorted(used)))
+                used = {char for word in self.words for char in word}
+                miss = used - set(ANSWER_WORDS[self.gamenum])
+                print(
+                    "Used:    "
+                    + "".join(sorted(used - miss))
+                    + " "
+                    + "".join(sorted(miss))
+                )
                 print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
                 continue
             if len(guess) < 5:
@@ -298,17 +310,21 @@ class Game:
                 return matches
             ing = ing + 1
 
-        print("\nSorry! Try again tomorrow!")
+        print(
+            f"\nSorry! The word was: {ANSWER_WORDS[self.gamenum]}. Better luck next time!"
+        )
         return None
 
     def play(self):
         """
         Play the game
         """
-        print(f"Wordle {self.gamenum}.")
         if self.won or self.lost:
-            raise AlreadyPlayedException("Sorry, you've already played.")
+            print(f"Sorry, you've already played game {self.gamenum}.")
+            print(time_to_midnight())
+            return
 
+        print(f"Wordle {self.gamenum}.")
         print(KEY)
 
         # do the main loop
@@ -349,23 +365,19 @@ def main():
                 "Play today's official word [Y], or game-number, else random? "
             ).upper()
 
-            today = date.today()
+            game = Game(wordnum(date.today()))
             if mode != "Y":
                 try:
                     # Parse the game-number as integer
-                    today = SEED_DATE + timedelta(days=int(mode))
+                    game = Game(wordnum(SEED_DATE + timedelta(days=int(mode))))
                 except (ValueError, OverflowError):
                     # Play a random game before today's
-                    random.seed()
-                    today = SEED_DATE + timedelta(
-                        days=random.randint(0, daynum(date.today()))
-                    )
+                    game = Game().random()
 
-            game = Game(wordnum(today))
+        if game:
+            game.play()
 
-        game.play()
-
-    except (KeyboardInterrupt, AlreadyPlayedException) as exc:
+    except (KeyboardInterrupt, IndexError) as exc:
         sys.exit(exc)
 
 
