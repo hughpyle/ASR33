@@ -367,7 +367,7 @@ def main():
     """
     play the game
     """
-    pars = argparse.ArgumentParser(description="Wordle for command-line.")
+    pars = argparse.ArgumentParser(description="Wordle for Teletype.")
     pars.add_argument("gamenum", type=int, nargs="?", help="game number (optional)")
     pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
     pars.add_argument("-r", "--random", action="store_true", help="play a random game")
