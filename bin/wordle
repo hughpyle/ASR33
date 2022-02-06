@@ -8,6 +8,7 @@ this time in python for playing on the commandline, by hugh (https://twitter.com
 with a little obfuscation so as to not spoil the fun too much
 """
 
+import argparse
 import gzip
 import json
 import os
@@ -58,8 +59,7 @@ def paper_tape_output():
     """
     Use `with paper_tape_output():` to wrap writing binary data to the terminal, for punching on tape.
     """
-    # If the terminal doesn't support hardcopy,
-    # we can safely assume it doesn't support paper tape output.
+    # If the terminal doesn't support hardcopy, safe to assume it doesn't support paper tape output.
     # (Don't use curses.tcgetstr(), because setupterm() fails on tty33)
     if os.system("tput hc"):
         yield False
@@ -155,7 +155,7 @@ class Game:
 
         if self.filepath and self.filepath.exists():
             with self.filepath.open() as gfd:
-                self.words = gfd.readline().strip().split(" ")
+                self.words = gfd.readline().strip().split()
 
     def in_progress(self):
         """Is there an unfinished game in progress?"""
@@ -246,7 +246,7 @@ class Game:
         if maxnum >= wordnum(date.today()):
             print(time_to_midnight())
 
-    def _play(self):
+    def _play(self, hard_mode: bool = False):
         """
         ask for guesses and evaluate them
         return a list of the evaluation results, if you won
@@ -279,20 +279,15 @@ class Game:
 
         while ing <= MAXTRIES:
             # Get the next guess
-            guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
-            guess = guess.casefold()
+            guess = input(f"\nGuess {ing}/{MAXTRIES}: ").casefold()
+            used = {char for word in self.words for char in word}
+            miss = used - set(ANSWER_WORDS[self.gamenum])
+            hits = used - miss
 
             if guess == "":
                 continue
             if guess == "?":
-                used = {char for word in self.words for char in word}
-                miss = used - set(ANSWER_WORDS[self.gamenum])
-                print(
-                    "Used:    "
-                    + "".join(sorted(used - miss))
-                    + " "
-                    + "".join(sorted(miss))
-                )
+                print("Used:    " + "".join(sorted(hits)) + " " + "".join(sorted(miss)))
                 print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
                 continue
             if len(guess) < 5:
@@ -300,6 +295,9 @@ class Game:
                 continue
             if len(guess) > 5:
                 print("Too many letters.")
+                continue
+            if hard_mode and (hits - set(guess)):
+                print(f"You must include {sorted(hits - set(guess))}")
                 continue
             if guess in self.words:
                 print("You already tried that!")
@@ -319,11 +317,11 @@ class Game:
             ing = ing + 1
 
         print(
-            f"\nSorry! The word was: {ANSWER_WORDS[self.gamenum]}. Better luck next time!"
+            f"\nThe word was '{ANSWER_WORDS[self.gamenum]}'. Better luck next time!"
         )
         return None
 
-    def play(self):
+    def play(self, hard_mode: bool = False):
         """
         Play the game
         """
@@ -332,11 +330,14 @@ class Game:
             print(time_to_midnight())
             return
 
-        print(f"Wordle {self.gamenum}.")
-        print(KEY)
+        if hard_mode:
+            print(f"Wordle {self.gamenum} (hard mode).")
+        else:
+            print(f"Wordle {self.gamenum}.")
+            print(KEY)
 
         # do the main loop
-        blocks = self._play()
+        blocks = self._play(hard_mode=hard_mode)
 
         if self.won:
             # Print the summary blocks
@@ -366,8 +367,22 @@ def main():
     """
     play the game
     """
+    pars = argparse.ArgumentParser(description="Wordle for command-line.")
+    pars.add_argument("gamenum", type=int, nargs="?", help="game number (optional)")
+    pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
+    pars.add_argument("-r", "--random", action="store_true", help="play a random game")
+    args = pars.parse_args()
+
     try:
+        # If there's an open game, restart it
         game = Game().in_progress()
+
+        if args.gamenum and not game:
+            game = Game(args.gamenum)
+
+        if args.random and not game:
+            game = Game().random()
+
         if not game:
             mode = input(
                 "Play today's official word [Y], or game-number, else random? "
@@ -383,7 +398,7 @@ def main():
                     game = Game().random()
 
         if game:
-            game.play()
+            game.play(hard_mode=args.hard)
 
     except (KeyboardInterrupt, IndexError, PermissionError) as exc:
         sys.exit(exc)
