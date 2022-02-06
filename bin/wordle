@@ -282,6 +282,8 @@ class Game:
             guess = input(f"\nGuess {ing}/{MAXTRIES}: ")
             guess = guess.casefold()
 
+            if guess == "":
+                continue
             if guess == "?":
                 used = {char for word in self.words for char in word}
                 miss = used - set(ANSWER_WORDS[self.gamenum])
