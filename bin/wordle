@@ -192,6 +192,11 @@ class Game:
         return self.words and not self.won and len(self.words) == MAXTRIES
 
     @property
+    def played(self):
+        """Was this game played?"""
+        return self.won or self.lost
+
+    @property
     def filepath(self):
         """Path to the save-file"""
         if self.gamenum is not None:
@@ -316,19 +321,17 @@ class Game:
                 return matches
             ing = ing + 1
 
-        print(
-            f"\nThe word was '{ANSWER_WORDS[self.gamenum]}'. Better luck next time!"
-        )
+        print(f"\nThe word was '{ANSWER_WORDS[self.gamenum]}'. Better luck next time!")
         return None
 
     def play(self, hard_mode: bool = False):
         """
         Play the game
         """
-        if self.won or self.lost:
-            print(f"Sorry, you've already played game {self.gamenum}.")
+        if self.played:
+            print(f"You already played round {self.gamenum}.")
             print(time_to_midnight())
-            return
+            return False
 
         if hard_mode:
             print(f"Wordle {self.gamenum} (hard mode).")
@@ -339,28 +342,30 @@ class Game:
         # do the main loop
         blocks = self._play(hard_mode=hard_mode)
 
+        num = "X"
         if self.won:
-            # Print the summary blocks
-            print()
-            print(f"\nWordle {self.gamenum} {len(blocks)}/{MAXTRIES}\n")
-            print("\n".join([printable(result) for result in blocks]))
-            print()
+            num = len(blocks)
 
-            # Print the summary blocks in the lower 5 bits, for tape punching
-            leading = bytearray([0xFF for _ in range(MAXTRIES)])
-            spacing = bytearray([0x00 for _ in range(MAXTRIES)])
-            summary = bytearray([punchable(result) for result in blocks])
-            with paper_tape_output() as tape:
-                if tape:
-                    sys.stdout.buffer.write(
-                        leading + spacing + summary + spacing + leading
-                    )
-                    sys.stdout.buffer.write(spacing)
-                    sys.stdout.buffer.write(spacing)
-            print()
+        # Print the summary blocks
+        print()
+        print(f"\nWordle {self.gamenum} {num}/{MAXTRIES}\n")
+        print("\n".join([printable(result) for result in blocks]))
+        print()
+
+        # Print the summary blocks in the lower 5 bits, for tape punching
+        leading = bytearray([0xFF for _ in range(MAXTRIES)])
+        spacing = bytearray([0x00 for _ in range(MAXTRIES)])
+        summary = bytearray([punchable(result) for result in blocks])
+        with paper_tape_output() as tape:
+            if tape:
+                sys.stdout.buffer.write(leading + spacing + summary + spacing + leading)
+                sys.stdout.buffer.write(spacing)
+                sys.stdout.buffer.write(spacing)
+        print()
 
         # Print the all-time statistics
         self.print_stats()
+        return True
 
 
 def main():
@@ -368,37 +373,29 @@ def main():
     play the game
     """
     pars = argparse.ArgumentParser(description="Wordle for Teletype.")
-    pars.add_argument("gamenum", type=int, nargs="?", help="game number (optional)")
+    pars.add_argument("gamenum", type=int, nargs="?", help="play this round (optional)")
     pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
-    pars.add_argument("-r", "--random", action="store_true", help="play a random game")
+    pars.add_argument("-y", "--today", action="store_true", help="play today's round")
+    pars.add_argument("-r", "--random", action="store_true", help="play a random round")
+    pars.add_argument("-s", "--stats", action="store_true", help="print statistics")
     args = pars.parse_args()
 
     try:
         # If there's an open game, restart it
         game = Game().in_progress()
-
-        if args.gamenum and not game:
-            game = Game(args.gamenum)
-
-        if args.random and not game:
-            game = Game().random()
-
-        if not game:
-            mode = input(
-                "Play today's official word [Y], or game-number, else random? "
-            ).upper()
-
-            game = Game(wordnum(date.today()))
-            if mode != "Y":
-                try:
-                    # Parse the game-number as integer
-                    game = Game(wordnum(SEED_DATE + timedelta(days=int(mode))))
-                except (ValueError, OverflowError):
-                    # Play a random game before today's
-                    game = Game().random()
-
         if game:
             game.play(hard_mode=args.hard)
+        elif args.gamenum:
+            Game(args.gamenum).play(hard_mode=args.hard)
+        elif args.today:
+            Game(wordnum(date.today())).play(hard_mode=args.hard)
+        elif args.random:
+            Game().random().play(hard_mode=args.hard)
+        elif args.stats:
+            Game().print_stats()
+        else:
+            if not Game(wordnum(date.today())).play(hard_mode=args.hard):
+                pars.print_usage()
 
     except (KeyboardInterrupt, IndexError, PermissionError) as exc:
         sys.exit(exc)
