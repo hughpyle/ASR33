@@ -342,9 +342,11 @@ class Game:
         # do the main loop
         blocks = self._play(hard_mode=hard_mode)
 
-        num = "X"
         if self.won:
             num = len(blocks)
+        else:
+            num = "X"
+            blocks = []
 
         # Print the summary blocks
         print()
