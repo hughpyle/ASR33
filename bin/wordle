@@ -46,12 +46,45 @@ KEY = f"""
         {DISPLAY[CORRECT]} = letter in the correct position"""
 
 
+# Seed date for the OG game
+SEED_DATE: date = date(2021, 6, 19)
+
 # Initialize the word lists
 ANSWER_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZLA)).decode("ascii"))
 ACCEPT_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZTA)).decode("ascii"))
 
-# Seed date for the OG game
-SEED_DATE: date = date(2021, 6, 19)
+# As of 2022-02-17 the New York Times has removed these from ANSWER_WORDS (and added none)
+NYT_REMOVED = [241, 245, 274, 295, 305, 396]
+
+
+def nyt_gamenum(og_gamenum):
+    """
+    Produce the adjusted 'nyt' date-number for an 'og' datenumber.
+    Return None if the og_datenumber was removed (it's not playable in NYT mode).
+
+    >>> nyt_gamenum(1234)
+    1228
+
+    >>> nyt_gamenum(248)
+    246
+
+    >>> nyt_gamenum(245) is None
+    True
+
+    >>> nyt_gamenum(242)
+    241
+
+    >>> nyt_gamenum(241) is None
+    True
+
+    """
+    adjust = 0
+    for index, removed in enumerate(NYT_REMOVED):
+        if og_gamenum == removed:
+            return None
+        if og_gamenum > removed:
+            adjust = index + 1
+    return og_gamenum - adjust
 
 
 @contextmanager
@@ -92,13 +125,6 @@ def paper_tape_output():
         termios.tcsetattr(fdi, termios.TCSADRAIN, tci)
 
 
-def daynum(dte: date) -> int:
-    """
-    day-number for a date is the number of days since SEED_DATE
-    """
-    return round((dte - SEED_DATE).total_seconds() / 86400)
-
-
 def wordnum(dte: date) -> int:
     """
     word-number for a date is the index of the word in the ANSWER_WORDS
@@ -106,7 +132,10 @@ def wordnum(dte: date) -> int:
     if dte > date.today() or dte < SEED_DATE:
         # Uh-oh! Suspected timeline causality violation!
         dte = SEED_DATE
-    index = daynum(dte) % len(ANSWER_WORDS)
+    # day-number for a date is the number of days since SEED_DATE
+    daynum = round((dte - SEED_DATE).total_seconds() / 86400)
+    # don't ever fall off the end of the list please
+    index = daynum % len(ANSWER_WORDS)
     return index
 
 
@@ -144,18 +173,26 @@ def punchable(result) -> int:
 
 class Game:
     """
-    A game (identified by its number).  Saves into ~/.wordle/<number>.
+    A game (identified by its number in the original wordlist).  Saves into ~/.wordle/<number>.
     """
 
-    def __init__(self, gamenum: int = None):
+    def __init__(self, og_mode: bool = True, gamenum: int = None):
+        if gamenum and gamenum > wordnum(date.today()):
+            gamenum = 0
+        self.og_mode = og_mode
         self.gamenum = gamenum
         self.words = []
         self.confdir = pathlib.Path.home() / ".wordle"
-        os.makedirs(self.confdir, exist_ok=True)
+        self.load()
 
+    def load(self):
+        """Load words from save file"""
+        os.makedirs(self.confdir, exist_ok=True)
         if self.filepath and self.filepath.exists():
             with self.filepath.open() as gfd:
                 self.words = gfd.readline().strip().split()
+                return True
+        return False
 
     def in_progress(self):
         """Is there an unfinished game in progress?"""
@@ -170,16 +207,24 @@ class Game:
         for game in self.all_games():
             if game.gamenum in available:
                 available.remove(game.gamenum)
-        return Game(random.choice(list(available)))
+        return Game(og_mode=self.og_mode, gamenum=random.choice(list(available)))
 
     def all_games(self):
         """Generator for all the played games in history"""
         for gamefile in self.confdir.iterdir():
             try:
                 wnum = int(gamefile.name)
-                yield Game(wnum)
+                yield Game(og_mode=self.og_mode, gamenum=wnum)
             except (OSError, ValueError):
                 pass
+
+    @property
+    def effective_gamenum(self):
+        """Adjusted game-number"""
+        if self.og_mode:
+            return self.gamenum
+        else:
+            return nyt_gamenum(self.gamenum)
 
     @property
     def won(self):
@@ -275,45 +320,55 @@ class Game:
             print(f"           {printable(match)}")
             return match
 
-        while ing <= len(self.words):
-            # Print any previous guesses (if we're starting from a saved game)
-            guess = self.words[ing - 1]
-            print(f"\nGuess {ing}/{MAXTRIES}: {guess}")
-            _match(guess)
-            ing = ing + 1
-
         while ing <= MAXTRIES:
-            # Get the next guess
-            guess = input(f"\nGuess {ing}/{MAXTRIES}: ").casefold()
-            used = {char for word in self.words for char in word}
-            miss = used - set(ANSWER_WORDS[self.gamenum])
-            hits = used - miss
 
-            if guess == "":
-                continue
-            if guess == "?":
-                print("Used:    " + "".join(sorted(hits)) + " " + "".join(sorted(miss)))
-                print("Unused:  " + "".join(sorted(set(string.ascii_lowercase) - used)))
-                continue
-            if len(guess) < 5:
-                print("Not enough letters.")
-                continue
-            if len(guess) > 5:
-                print("Too many letters.")
-                continue
-            if hard_mode and (hits - set(guess)):
-                print(f"You must include {sorted(hits - set(guess))}")
-                continue
-            if guess in self.words:
-                print("You already tried that!")
-                continue
-            if not (guess in ANSWER_WORDS or guess in ACCEPT_WORDS):
-                print("Not in word list.")
-                continue
+            if ing <= len(self.words):
+                # Print any previous guesses (if we're starting from a saved game)
+                guess = self.words[ing - 1]
+                print(f"\nGuess {ing}/{MAXTRIES}: {guess}")
+            else:
+                # Get the next guess
+                guess = input(f"\nGuess {ing}/{MAXTRIES}: ").casefold()
+                used = {char for word in self.words for char in word}
+                miss = used - set(ANSWER_WORDS[self.gamenum])
+                hits = used - miss
 
-            self.words.append(guess)
-            # Save the words (every time! so we can pick up if interrupted)
-            self.save()
+                if guess == "":
+                    continue
+                if guess == "?":
+                    print(
+                        "Used:    "
+                        + "".join(sorted(hits))
+                        + " "
+                        + "".join(sorted(miss))
+                    )
+                    print(
+                        "Unused:  "
+                        + "".join(sorted(set(string.ascii_lowercase) - used))
+                    )
+                    continue
+                if len(guess) < 5:
+                    print("Not enough letters.")
+                    continue
+                if len(guess) > 5:
+                    print("Too many letters.")
+                    continue
+                if hard_mode and (hits - set(guess)):
+                    print(f"You must include {sorted(hits - set(guess))}")
+                    continue
+                if hard_mode and (set(guess) & miss):
+                    print(f"You must not include {sorted(set(guess) & miss)}")
+                    continue
+                if guess in self.words:
+                    print("You already tried that!")
+                    continue
+                if not (guess in ANSWER_WORDS or guess in ACCEPT_WORDS):
+                    print("Not in word list.")
+                    continue
+
+                self.words.append(guess)
+                # Save the words (every time! so we can pick up if interrupted)
+                self.save()
 
             match = _match(guess)
             if match == WINNER:
@@ -329,14 +384,14 @@ class Game:
         Play the game
         """
         if self.played:
-            print(f"You already played round {self.gamenum}.")
+            print(f"You already played round {self.effective_gamenum}.")
             print(time_to_midnight())
             return False
 
+        har_desc = " (hard mode)" if hard_mode else ""
+        og_desc = " (original wordlist)" if self.og_mode else ""
+        print(f"Wordle {self.effective_gamenum}{har_desc}{og_desc}.")
         if hard_mode:
-            print(f"Wordle {self.gamenum} (hard mode).")
-        else:
-            print(f"Wordle {self.gamenum}.")
             print(KEY)
 
         # do the main loop
@@ -350,7 +405,7 @@ class Game:
 
         # Print the summary blocks
         print()
-        print(f"\nWordle {self.gamenum} {num}/{MAXTRIES}\n")
+        print(f"\nWordle {self.effective_gamenum} {num}/{MAXTRIES}\n")
         print("\n".join([printable(result) for result in blocks]))
         print()
 
@@ -375,7 +430,8 @@ def main():
     play the game
     """
     pars = argparse.ArgumentParser(description="Wordle for Teletype.")
-    pars.add_argument("gamenum", type=int, nargs="?", help="play this round (optional)")
+    pars.add_argument("gamenum", type=int, nargs="?", help="play OG round (optional)")
+    pars.add_argument("-g", "--og", action="store_true", help="play OG mode (default NYT)")
     pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
     pars.add_argument("-y", "--today", action="store_true", help="play today's round")
     pars.add_argument("-r", "--random", action="store_true", help="play a random round")
@@ -384,19 +440,23 @@ def main():
 
     try:
         # If there's an open game, restart it
-        game = Game().in_progress()
+        game = Game(og_mode=args.og).in_progress()
         if game:
             game.play(hard_mode=args.hard)
         elif args.gamenum:
-            Game(args.gamenum).play(hard_mode=args.hard)
+            Game(og_mode=args.og, gamenum=args.gamenum).play(hard_mode=args.hard)
         elif args.today:
-            Game(wordnum(date.today())).play(hard_mode=args.hard)
+            Game(og_mode=args.og, gamenum=wordnum(date.today())).play(
+                hard_mode=args.hard
+            )
         elif args.random:
-            Game().random().play(hard_mode=args.hard)
+            Game(og_mode=args.og).random().play(hard_mode=args.hard)
         elif args.stats:
-            Game().print_stats()
+            Game(og_mode=args.og).print_stats()
         else:
-            if not Game(wordnum(date.today())).play(hard_mode=args.hard):
+            if not Game(og_mode=args.og, gamenum=wordnum(date.today())).play(
+                hard_mode=args.hard
+            ):
                 pars.print_usage()
 
     except (KeyboardInterrupt, IndexError, PermissionError) as exc:
