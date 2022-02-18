@@ -391,7 +391,7 @@ class Game:
         har_desc = " (hard mode)" if hard_mode else ""
         og_desc = " (original wordlist)" if self.og_mode else ""
         print(f"Wordle {self.effective_gamenum}{har_desc}{og_desc}.")
-        if hard_mode:
+        if not hard_mode:
             print(KEY)
 
         # do the main loop
