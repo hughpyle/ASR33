@@ -38,11 +38,13 @@ alias fig='pyfiglet -w 72'
 alias figlet='pyfiglet -f banner3 -w 72'
 alias banner='printerbanner -w 72'
 alias clear='tput clear'
+alias hint='cat /usr/share/dict/words | grep -x'
 
 # RTTY stream decoders for the ITTY channels (using http://www.whence.com/minimodem/)
 alias itty='curl -N -s http://internet-tty.net:8000/ITTY | lame --decode --quiet --mp3input - - | minimodem rtty -i -a -q --rx-one -R 11025 -f -'
 alias autostart='curl -N -s http://internet-tty.net:8030/AUTOSTART | lame --decode --quiet --mp3input - - | minimodem rtty -i -a -q -R 11025 -f -'
 alias europe='curl -N -s internet-tty.net:8040/EUROPE | lame --decode --quiet --mp3input - - | minimodem 50 -M 1275 -S 1445 -5 -i -a -q -R 11025 -f -'
+alias tpix='curl -N -s http://tomhunter.zapto.org:8000/ttypix | lame --decode --quiet --mp3input - - | minimodem rtty -i -a -q --rx-one -R 11025 -f -'
 
 # printer stuff
 export IPP_PRINTER_NAME=Teletype

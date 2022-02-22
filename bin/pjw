@@ -28,7 +28,7 @@ url="http://spinroot.com/pico/pjw.jpg"
 if [[ $? == 0 ]]; then
     # fetch the jpg
     wget -q -O "$tmps" "$url"
-    convert "$tmps" -white-threshold 75% -resize ${pix}x "$tmpp"
+    convert "$tmps" -define png:color-type=2 -white-threshold 75% -resize ${pix}x "$tmpp"
 
     # convert to ascii
     $(dirname $0)/../asciiart/code/image2.py --invert --gamma 0.8 --width $width "$tmpp" --chars1 "$chars1" --chars2 "$chars2" --indent $indent --output -
