@@ -53,28 +53,29 @@ SEED_DATE: date = date(2021, 6, 19)
 ANSWER_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZLA)).decode("ascii"))
 ACCEPT_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZTA)).decode("ascii"))
 
+
 # As of 2022-02-17 the New York Times has removed these from ANSWER_WORDS (and added none)
 NYT_REMOVED = [241, 245, 274, 295, 305, 396]
 
 
-def nyt_gamenum(og_gamenum):
+def nyt_display_num(og_gamenum):
     """
-    Produce the adjusted 'nyt' date-number for an 'og' datenumber.
+    Produce the adjusted 'nyt' date-number to display for an 'og' datenumber.
     Return None if the og_datenumber was removed (it's not playable in NYT mode).
 
-    >>> nyt_gamenum(1234)
+    >>> nyt_display_num(1234)
     1228
 
-    >>> nyt_gamenum(248)
+    >>> nyt_display_num(248)  # tacit
     246
 
-    >>> nyt_gamenum(245) is None
+    >>> nyt_display_num(245) is None
     True
 
-    >>> nyt_gamenum(242)
-    241
+    >>> nyt_display_num(244)
+    243
 
-    >>> nyt_gamenum(241) is None
+    >>> nyt_display_num(241) is None
     True
 
     """
@@ -85,6 +86,55 @@ def nyt_gamenum(og_gamenum):
         if og_gamenum > removed:
             adjust = index + 1
     return og_gamenum - adjust
+
+
+def wordnum(dte: date, og_mode: bool) -> int:
+    """
+    word-number for a date is the index of the word in the ANSWER_WORDS.
+    In NYT mode, this isn't necessarily what gets displayed!
+
+    >>> wordnum(date(2022, 2, 19), True)
+    245
+
+    >>> wordnum(date(2022, 2, 19), False)
+    246
+
+    >>> wordnum(date(2022, 2, 20), True)
+    246
+
+    >>> wordnum(date(2022, 2, 20), False)
+    248
+
+    """
+    if dte > date.today() or dte < SEED_DATE:
+        # Uh-oh! Suspected timeline causality violation!
+        dte = SEED_DATE
+
+    # day-number for a date is the number of days since SEED_DATE
+    daynum = round((dte - SEED_DATE).total_seconds() / 86400)
+
+    if not og_mode:
+        # adjust for the missing NYT words
+        adjust = 0
+        for index, removed in enumerate(NYT_REMOVED):
+            if daynum > removed:
+                adjust = index + 1
+        daynum = daynum + adjust
+
+    # don't ever fall off the end of the list please
+    index = daynum % len(ANSWER_WORDS)
+    return index
+
+
+NYTLIST = []  # paste the NYT word list here to test reconciliation
+if NYTLIST:
+    for idx, word in enumerate(NYTLIST):
+        if word not in ANSWER_WORDS:
+            sys.exit(word)
+    for idx, word in enumerate(ANSWER_WORDS):
+        if word in NYTLIST:
+            if word != NYTLIST[nyt_display_num(idx)]:
+                sys.exit(f"{word} {idx}")
 
 
 @contextmanager
@@ -125,20 +175,6 @@ def paper_tape_output():
         termios.tcsetattr(fdi, termios.TCSADRAIN, tci)
 
 
-def wordnum(dte: date) -> int:
-    """
-    word-number for a date is the index of the word in the ANSWER_WORDS
-    """
-    if dte > date.today() or dte < SEED_DATE:
-        # Uh-oh! Suspected timeline causality violation!
-        dte = SEED_DATE
-    # day-number for a date is the number of days since SEED_DATE
-    daynum = round((dte - SEED_DATE).total_seconds() / 86400)
-    # don't ever fall off the end of the list please
-    index = daynum % len(ANSWER_WORDS)
-    return index
-
-
 def time_to_midnight() -> str:
     """
     How long to the next word is available at midnight?
@@ -177,7 +213,7 @@ class Game:
     """
 
     def __init__(self, og_mode: bool = True, gamenum: int = None):
-        if gamenum and gamenum > wordnum(date.today()):
+        if gamenum and gamenum > wordnum(date.today(), og_mode):
             gamenum = 0
         self.og_mode = og_mode
         self.gamenum = gamenum
@@ -203,7 +239,7 @@ class Game:
 
     def random(self):
         """Make a new game for a random date before today.  May raise IndexError."""
-        available = set(range(wordnum(date.today())))
+        available = set(range(wordnum(date.today(), self.og_mode)))
         for game in self.all_games():
             if game.gamenum in available:
                 available.remove(game.gamenum)
@@ -224,7 +260,7 @@ class Game:
         if self.og_mode:
             return self.gamenum
         else:
-            return nyt_gamenum(self.gamenum)
+            return nyt_display_num(self.gamenum)
 
     @property
     def won(self):
@@ -293,7 +329,7 @@ class Game:
             print(str(idx) + " : " + ("*" * stats[idx]))
         print()
 
-        if maxnum >= wordnum(date.today()):
+        if maxnum >= wordnum(date.today(), self.og_mode):
             print(time_to_midnight())
 
     def _play(self, hard_mode: bool = False):
@@ -431,7 +467,9 @@ def main():
     """
     pars = argparse.ArgumentParser(description="Wordle for Teletype.")
     pars.add_argument("gamenum", type=int, nargs="?", help="play OG round (optional)")
-    pars.add_argument("-g", "--og", action="store_true", help="play OG mode (default NYT)")
+    pars.add_argument(
+        "-g", "--og", action="store_true", help="play OG mode (default NYT)"
+    )
     pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
     pars.add_argument("-y", "--today", action="store_true", help="play today's round")
     pars.add_argument("-r", "--random", action="store_true", help="play a random round")
@@ -440,23 +478,20 @@ def main():
 
     try:
         # If there's an open game, restart it
+        tody = wordnum(date.today(), args.og)
         game = Game(og_mode=args.og).in_progress()
         if game:
             game.play(hard_mode=args.hard)
         elif args.gamenum:
             Game(og_mode=args.og, gamenum=args.gamenum).play(hard_mode=args.hard)
         elif args.today:
-            Game(og_mode=args.og, gamenum=wordnum(date.today())).play(
-                hard_mode=args.hard
-            )
+            Game(og_mode=args.og, gamenum=tody).play(hard_mode=args.hard)
         elif args.random:
             Game(og_mode=args.og).random().play(hard_mode=args.hard)
         elif args.stats:
             Game(og_mode=args.og).print_stats()
         else:
-            if not Game(og_mode=args.og, gamenum=wordnum(date.today())).play(
-                hard_mode=args.hard
-            ):
+            if not Game(og_mode=args.og, gamenum=tody).play(hard_mode=args.hard):
                 pars.print_usage()
 
     except (KeyboardInterrupt, IndexError, PermissionError) as exc:
