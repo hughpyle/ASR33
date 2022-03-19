@@ -72,6 +72,9 @@ def nyt_display_num(og_gamenum):
     >>> nyt_display_num(245) is None
     True
 
+    >>> nyt_display_num(274) is None
+    True
+
     >>> nyt_display_num(244)
     243
 
@@ -97,13 +100,16 @@ def wordnum(dte: date, og_mode: bool) -> int:
     245
 
     >>> wordnum(date(2022, 2, 19), False)
-    246
+    247
 
     >>> wordnum(date(2022, 2, 20), True)
     246
 
     >>> wordnum(date(2022, 2, 20), False)
     248
+
+    >>> wordnum(date(2022, 3, 18), False) in NYT_REMOVED
+    False
 
     """
     if dte > date.today() or dte < SEED_DATE:
@@ -112,14 +118,11 @@ def wordnum(dte: date, og_mode: bool) -> int:
 
     # day-number for a date is the number of days since SEED_DATE
     daynum = round((dte - SEED_DATE).total_seconds() / 86400)
-
     if not og_mode:
         # adjust for the missing NYT words
-        adjust = 0
-        for index, removed in enumerate(NYT_REMOVED):
-            if daynum > removed:
-                adjust = index + 1
-        daynum = daynum + adjust
+        for removed in NYT_REMOVED:
+            if daynum >= removed:
+                daynum = daynum + 1
 
     # don't ever fall off the end of the list please
     index = daynum % len(ANSWER_WORDS)
@@ -299,10 +302,15 @@ class Game:
         won = 0
         maxnum = 0
         for game in self.all_games():
-            games[game.gamenum] = game
+            gn = game.effective_gamenum
+            if gn is None:
+                # OG result but we're using NYT numbering, ignore it
+                continue
+
+            games[gn] = game
 
             played = played + 1
-            maxnum = max(maxnum, game.gamenum)
+            maxnum = max(maxnum, gn)
 
             # Update the histogram
             if game.won:
@@ -466,15 +474,25 @@ def main():
     play the game
     """
     pars = argparse.ArgumentParser(description="Wordle for Teletype.")
-    pars.add_argument("gamenum", type=int, nargs="?", help="play OG round (optional)")
-    pars.add_argument(
-        "-g", "--og", action="store_true", help="play OG mode (default NYT)"
-    )
+    pars.add_argument("gamenum", type=str, nargs="?", help="play a date (YYYY-MM-DD)")
+    pars.add_argument("-g", "--og", action="store_true", help="use OG numbering")
     pars.add_argument("-d", "--hard", action="store_true", help="play in hard mode")
     pars.add_argument("-y", "--today", action="store_true", help="play today's round")
     pars.add_argument("-r", "--random", action="store_true", help="play a random round")
     pars.add_argument("-s", "--stats", action="store_true", help="print statistics")
     args = pars.parse_args()
+
+    gamenum = None
+    if args.gamenum:
+        # If 'gamenum', try parse it as a date or integer
+        try:
+            dt = date.fromisoformat(args.gamenum)
+            gamenum = wordnum(dt, args.og)
+        except ValueError:
+            try:
+                gamenum = int(args.gamenum)
+            except ValueError:
+                sys.exit("Not a number or date")
 
     try:
         # If there's an open game, restart it
@@ -482,8 +500,8 @@ def main():
         game = Game(og_mode=args.og).in_progress()
         if game:
             game.play(hard_mode=args.hard)
-        elif args.gamenum:
-            Game(og_mode=args.og, gamenum=args.gamenum).play(hard_mode=args.hard)
+        elif gamenum:
+            Game(og_mode=args.og, gamenum=gamenum).play(hard_mode=args.hard)
         elif args.today:
             Game(og_mode=args.og, gamenum=tody).play(hard_mode=args.hard)
         elif args.random:
@@ -494,7 +512,7 @@ def main():
             if not Game(og_mode=args.og, gamenum=tody).play(hard_mode=args.hard):
                 pars.print_usage()
 
-    except (KeyboardInterrupt, IndexError, PermissionError) as exc:
+    except (EOFError, KeyboardInterrupt, IndexError, PermissionError) as exc:
         sys.exit(exc)
 
 
