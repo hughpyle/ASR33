@@ -53,9 +53,36 @@ SEED_DATE: date = date(2021, 6, 19)
 ANSWER_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZLA)).decode("ascii"))
 ACCEPT_WORDS = json.loads(gzip.decompress(bytes.fromhex(GZTA)).decode("ascii"))
 
+# paste the NYT word list here to test reconciliation
+NYTLIST = []
 
-# As of 2022-02-17 the New York Times has removed these from ANSWER_WORDS (and added none)
-NYT_REMOVED = [241, 245, 274, 295, 305, 396]
+# As of 2022-02-17 the New York Times has removed several items from ANSWER_WORDS (and added none)
+# As of 2022-03-20 the New York Times has relocated words too
+# Relocation map is {index in original list, index in NYT list}
+NYT_RELOCATED = {
+    241: None,
+    245: None,
+    274: None,
+    287: 2297,
+    295: None,
+    305: None,
+    320: 2298,
+    322: 2295,
+    365: 2303,
+    387: 2296,
+    393: 2299,
+    396: None,
+    411: 2293,
+    444: 2306,
+    448: 2301,
+    472: 2294,
+    479: 2304,
+    482: 2300,
+    504: 2305,
+    529: 2307,
+    530: 2302,
+    531: 2308,
+}
 
 
 def nyt_display_num(og_gamenum):
@@ -64,7 +91,7 @@ def nyt_display_num(og_gamenum):
     Return None if the og_datenumber was removed (it's not playable in NYT mode).
 
     >>> nyt_display_num(1234)
-    1228
+    1212
 
     >>> nyt_display_num(248)  # tacit
     246
@@ -83,10 +110,10 @@ def nyt_display_num(og_gamenum):
 
     """
     adjust = 0
-    for index, removed in enumerate(NYT_REMOVED):
-        if og_gamenum == removed:
-            return None
-        if og_gamenum > removed:
+    for index, moved in enumerate(sorted(list(NYT_RELOCATED))):
+        if og_gamenum == moved:
+            return NYT_RELOCATED[og_gamenum]
+        if og_gamenum > moved:
             adjust = index + 1
     return og_gamenum - adjust
 
@@ -108,7 +135,7 @@ def wordnum(dte: date, og_mode: bool) -> int:
     >>> wordnum(date(2022, 2, 20), False)
     248
 
-    >>> wordnum(date(2022, 3, 18), False) in NYT_REMOVED
+    >>> wordnum(date(2022, 3, 18), False) in NYT_RELOCATED
     False
 
     """
@@ -119,25 +146,35 @@ def wordnum(dte: date, og_mode: bool) -> int:
     # day-number for a date is the number of days since SEED_DATE
     daynum = round((dte - SEED_DATE).total_seconds() / 86400)
     if not og_mode:
+        # relocate if needed
+        if NYT_RELOCATED.get(daynum):
+            daynum = NYT_RELOCATED[daynum]
         # adjust for the missing NYT words
-        for removed in NYT_REMOVED:
-            if daynum >= removed:
-                daynum = daynum + 1
+        for moved in NYT_RELOCATED:
+            if not NYT_RELOCATED[moved]:
+                if daynum >= moved:
+                    daynum = daynum + 1
 
     # don't ever fall off the end of the list please
     index = daynum % len(ANSWER_WORDS)
     return index
 
 
-NYTLIST = []  # paste the NYT word list here to test reconciliation
 if NYTLIST:
+    # test for reconciliation
     for idx, word in enumerate(NYTLIST):
         if word not in ANSWER_WORDS:
             sys.exit(word)
     for idx, word in enumerate(ANSWER_WORDS):
         if word in NYTLIST:
-            if word != NYTLIST[nyt_display_num(idx)]:
-                sys.exit(f"{word} {idx}")
+            nyt = nyt_display_num(idx)
+            if idx > 0 and not nyt:
+                sys.exit(f"No {word} at {idx}")
+            if word != NYTLIST[nyt]:
+                if word in ANSWER_WORDS:
+                    print(f"{word} is at {NYTLIST.index(word)} in NYT, not {nyt}")
+                else:
+                    sys.exit(f"{word} at {idx} is {NYTLIST[nyt]}")
 
 
 @contextmanager
