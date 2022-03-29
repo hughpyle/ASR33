@@ -118,6 +118,13 @@ def nyt_display_num(og_gamenum):
     return og_gamenum - adjust
 
 
+def _effective_gamenum(gamenum, og_mode):
+    """Adjusted game-number"""
+    if og_mode:
+        return gamenum
+    return nyt_display_num(gamenum)
+
+
 def wordnum(dte: date, og_mode: bool) -> int:
     """
     word-number for a date is the index of the word in the ANSWER_WORDS.
@@ -279,11 +286,21 @@ class Game:
 
     def random(self):
         """Make a new game for a random date before today.  May raise IndexError."""
-        available = set(range(wordnum(date.today(), self.og_mode)))
+        # Check the game numbers up to today
+        available = set()
+        for num in range(wordnum(date.today(), self.og_mode)):
+            if _effective_gamenum(num, self.og_mode) is None:
+                continue
+            available.add(num)
+        # Remove game numbers that have been played already
         for game in self.all_games():
             if game.gamenum in available:
                 available.remove(game.gamenum)
-        return Game(og_mode=self.og_mode, gamenum=random.choice(list(available)))
+        # Choice
+        try:
+            return Game(og_mode=self.og_mode, gamenum=random.choice(list(available)))
+        except IndexError:
+            raise IndexError("There are no rounds to play.")
 
     def all_games(self):
         """Generator for all the played games in history"""
@@ -297,10 +314,7 @@ class Game:
     @property
     def effective_gamenum(self):
         """Adjusted game-number"""
-        if self.og_mode:
-            return self.gamenum
-        else:
-            return nyt_display_num(self.gamenum)
+        return _effective_gamenum(self.gamenum, self.og_mode)
 
     @property
     def won(self):
