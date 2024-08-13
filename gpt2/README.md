@@ -44,12 +44,12 @@ and hopefully it'll produce things that contribute to the discussion... right?
 
 Throwing caution to the wind:
 * I hooked that up to the [twitchbot](https://github.com/hughpyle/ASR33/blob/master/bin/twitchbot) that we'd begun [a few weeks back](https://youtu.be/s7MqGX8qfWs?t=460).  The bot keeps track of 5 lines of history to use as the prompt.  With a chat command `!gpt2` it sends the prompts to the web service, and puts the result into the channel.
-* and then we [chatted away on Twitch.tv](https://www.twitch.tv/videos/426617997) and watched what happened.
+* and then we chatted away on Twitch.tv and watched what happened.
 
 It worked.
 
-([Click to watch the livestream replay](https://www.twitch.tv/videos/426617997?t=53s))
-[![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://www.twitch.tv/videos/426617997?t=53s)
+Click to watch the livestream replay:
+[![Watch Highlight: Episode 21: Generative Text from 33asr on www.twitch.tv](https://static-cdn.jtvnw.net/s3_vods/36863f5800facacb9aa8_33asr_78640762467_9096004860//thumb/thumb426938433-640x360.jpg)](https://youtu.be/mohzPfypKZ4?t=180)
 
 Quite a trip.  Next time I'll have to run the bot with a "bot identity" instead of "as me"...
 
