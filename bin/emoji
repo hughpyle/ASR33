@@ -8,6 +8,11 @@
 width=40 # 32
 height=25 # 20
 indent=14 # 18
+
+width=32 # 32
+height=20 # 20
+indent=8 # 18
+
 if [[ "$1" == "-big" ]]; then
     # large
     width=72
