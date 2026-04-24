@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) Hugh Pyle 2018.   MIT license.
 
 """Print an image using ASCII text.
@@ -37,7 +37,7 @@ import sys
 import json
 import os
 import numpy as np
-import imageio
+import imageio.v2 as imageio
 import io
 import click
 from skimage import feature, transform, color, exposure, util
@@ -148,10 +148,26 @@ def process(image):
     return fd
 
 
-def render(fd, outfile, chars1, chars2, indent=0, title=None):
-    # The fd is a histograms-of-gradients
-    n_cells_row = fd.shape[0]
-    n_cells_col = fd.shape[1]
+def process_jittered(image, jitter):
+    """Compute HOG at multiple sub-cell offsets to improve matching of thin features.
+
+    A thin stroke that falls on a cell boundary at the nominal grid position may
+    land squarely within a cell at a shifted position, producing a better match.
+    Returns a list of fd arrays: [center, up, down, left, right].
+    """
+    fds = [process(image.copy())]
+    for dy, dx in [(-jitter, 0), (jitter, 0), (0, -jitter), (0, jitter)]:
+        shifted = np.roll(np.roll(image, dy, axis=0), dx, axis=1)
+        fds.append(process(shifted))
+    return fds
+
+
+def render(fds, outfile, chars1, chars2, indent=0, title=None):
+    # fds is either a single HOG descriptor array or a list of them (for jittered matching)
+    if isinstance(fds, np.ndarray):
+        fds = [fds]
+    n_cells_row = fds[0].shape[0]
+    n_cells_col = fds[0].shape[1]
 
     # Load the previously-prepared histograms for the print characters.
     # This is structured as a dictionary, indexed by character-pair, with each value being
@@ -181,24 +197,23 @@ def render(fd, outfile, chars1, chars2, indent=0, title=None):
 
     result = []
     # Look at each 3x5 block in the HOG and match it to the best 3x5 block in the chars.
-    # (There's probably some numpy way to do this all at once, which would improve perf)
+    # When multiple fds are provided (jittered), try each offset and keep the best match.
     for iy in range(0, n_cells_row, BROWS):
         line1 = ''
         line2 = ''
         for ix in range(0, n_cells_col, BCOLS):
-            fd_cell = fd[iy: iy+BROWS, ix: ix+BCOLS]
-            mean = fd_cell.mean()
-
             best = 1e10
             char = '  '
-            for c in chars.keys():
-                if mean >= charlums[c]:
-                    # Correlation: L2 distance
-                    corr = np.linalg.norm(chars[c] - fd_cell)
-                    # print("{}: {} = {}: {}".format(c, chars[c].shape, fd_cell.shape, corr))
-                    if corr < best:
-                        best = corr
-                        char = c
+            for fd in fds:
+                fd_cell = fd[iy: iy+BROWS, ix: ix+BCOLS]
+                mean = fd_cell.mean()
+                for c in chars.keys():
+                    if mean >= charlums[c]:
+                        # Correlation: L2 distance
+                        corr = np.linalg.norm(chars[c] - fd_cell)
+                        if corr < best:
+                            best = corr
+                            char = c
 
             line1 = line1 + char[0]
             line2 = line2 + char[1]
@@ -219,19 +234,19 @@ def render(fd, outfile, chars1, chars2, indent=0, title=None):
     with io.open(outfile, "wb") as f:
         f.write(b"\r\n")
         f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
         f.write(b"\r\n")
         f.write("\r\n".join(result).encode("utf-8"))
         f.write(b"\r\n")
         f.write(title)
         f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
-        f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
+        # f.write(b"\r\n")
 
 
 @click.command()
@@ -241,17 +256,21 @@ def render(fd, outfile, chars1, chars2, indent=0, title=None):
 @click.option('--indent', default=0, help='Indent with spaces')
 @click.option('--chars1', help='Characters to use in the first layer')
 @click.option('--chars2', help='Characters to use in the second layer')
+@click.option('--jitter', default=0, help='Sub-cell jitter in pixels (e.g. 4 = 25%% of cell)')
 @click.option('--title', help='Title text')
 @click.option('--output', help='Output filename (use "-" for stdout)')
 @click.argument('filename')
-def main(filename, width, invert, gamma, indent, chars1, chars2, title, output):
+def main(filename, width, invert, gamma, indent, chars1, chars2, jitter, title, output):
     # Aspect ratio is determined by the input image.
     # Width is determined here.
     img = load_image(filename, width, invert, gamma)
     # imageio.imsave("test.jpg", img)
 
     # Analyze the image
-    hog_fd = process(img)
+    if jitter > 0:
+        hog_fds = process_jittered(img, jitter)
+    else:
+        hog_fds = process(img)
 
     if title:
         # title is a string
@@ -262,7 +281,7 @@ def main(filename, width, invert, gamma, indent, chars1, chars2, title, output):
     # Map to ASCII
     if not output:
         output = filename + ".txt"
-    render(hog_fd, output, chars1, chars2, indent, title)
+    render(hog_fds, output, chars1, chars2, indent, title)
 
 
 if __name__ == "__main__":

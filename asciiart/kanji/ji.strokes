@@ -1,0 +1,15 @@
+# 事 (ji / thing, matter)
+# Structure: horizontal top, vertical center with 3 more horizontals, hook
+grid 8 9
+
+# horizontal strokes (4 total, stacked)
+h 0 0 8
+h 2 1 7
+h 3 0 8
+h 5 1 7
+
+# central vertical — full height
+v 4 0 6
+
+# hook at bottom — diagonal down-left
+d 6 4 7 2

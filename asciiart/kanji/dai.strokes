@@ -1,0 +1,15 @@
+# 大 (dai / big) — compact version
+# Three strokes: horizontal, vertical, two diagonals
+grid 5 9
+
+# vertical stroke
+v 4 0 4
+
+# horizontal stroke — row 1
+h 1 1 7
+
+# left diagonal (撇) — from just below crossing, sweeping left
+d 2 3 4 0
+
+# right diagonal (捺) — from just below crossing, sweeping right
+d 2 5 4 8

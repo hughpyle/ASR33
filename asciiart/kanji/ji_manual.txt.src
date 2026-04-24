@@ -1,0 +1,20 @@
+# 事 (ji) — hand-composed using full ASR33 palette
+# 8 rows × 13 cols (correct aspect for square print)
+#
+# T = horiz top + vert down
+# L = vert down + horiz right (bottom-left corner)
+# J = vert down + hook left (bottom hook)
+# 7 = horiz top + down-right
+# [ = left bracket (left side of box)
+# ] = right bracket (right side of box)
+# E = vert + three horiz bars (!)
+# F = vert + two horiz bars
+#
+__ __ __ __ __ __ __ __ __ __ __ __ __
+__ __ -_ -_ -_ -_ T_ -_ -_ -_ -_ __ __
+__ __ __ __ __ __ I_ __ __ __ __ __ __
+__ __ __ [_ -_ -_ +_ -_ -_ ]_ __ __ __
+__ __ __ [_ -_ -_ +_ -_ -_ ]_ __ __ __
+__ __ -_ -_ -_ -_ +_ -_ -_ -_ I_ __ __
+__ __ -_ -_ -_ -_ +_ -_ -_ -_ I_ __ __
+__ __ __ __ __ /_ J_ __ __ __ __ __ __

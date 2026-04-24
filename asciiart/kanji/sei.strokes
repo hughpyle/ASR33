@@ -1,0 +1,19 @@
+# 生 (sei / life, birth)
+# Strokes: left-falling at top, vertical center,
+# three horizontals of increasing width
+grid 7 9
+
+# short left-falling stroke at top
+d 0 5 1 3
+
+# upper horizontal
+h 1 2 7
+
+# central vertical
+v 4 1 6
+
+# middle horizontal
+h 3 1 6
+
+# long bottom horizontal (widest)
+h 6 0 8
