@@ -1,47 +1,60 @@
 
 
-    I.  I          ---T-----------         .I                 I
-    I/  I             I.    I        -------+-------          I     '
-   I+---+-------     II--T- I   /      T----+----T     ------+I-------   /                  /                                        /
-   /-__-I ______    /I-__I  I   /.     I____I____I     ______-I-______   -/  /            '//         '
- /I/    I          /I/\  I  I /--     -+____I____+]          /Y\  /.               ./.        '/                             . .
- /I-----I+-----    /I.\ II II/        ______I____+I         I/ \ .                 .  ' //  /.
-   _____I+_____        YI   I        -------+----+---      /I/  \                                                            /
-        I              /    I    I    ------I----+I        /     \ \                       .                                         . '
-        I            / /   I\   .I    ______I____I        /        \--                     '      I    /                        .        '\
- -------+-------    /      L+----J       --_+           /           \                    .        \  /                                   .
+        XX-        ------------=\.          I/    \          ./        ==                      I           H'    I           '
+    X=/ II         ___===__XX=__I=   -=====II=====+=         II    =/' /H            _/_  ==_  +\         +//   -=\         //
+   .I/  II   I\       // I II\  I       I===I===T-           II    .I    /-  HH   /'       -'   :H.          H   H/  =/           HH     :
+   /====IX===+=L     /===X=II  II/     II__=X=_III     -=====IIT====+=   -/  -H=- /=-\     ./  =/:H  //       H      +/            H/=   /=\
+  //    II           /  .I/II.//        I__YXY_+I            //I  .-    HH           -   /':H -.        :       H            -'H
+  /     II  .\.     //I.// II/        -==__=X=__\I/\        ///II  -     HH   '      - H -- :H.                  I/''        .-':H
+ / -====IX=====    /  I//  II    I   =_____=X=__=I==L       // J\\ .     -H=-   \    .  H--  :H              /    /H  \       --  I'
+        II        .   ///  II    I    -=====/===II         //    \\        HH            --   :H    H         /-   /H         -.    --
+        II   .I      //    I\===XX-      -=//I  I        //      \\\==        HH    :      -.    :I   ==        \.-/           '.       I-\
+ -======IX====X=. .//      LI====I        .X=J         //         I\\-- -      H=   /=\    .       +\_//+          /           .          ..\
 
-    I/                \I  I  I/       \  --------]      \      .I     '                '       '       '                 '
-   /+-----------   LT--\-+I--I--T]    \\\___IT__ I      \\ -----+-----   '                  \I     /         I                 I
- ./II  I I  I .     I__+-_+_-+__I      I\   I    I       I\ T___I___T  -/                    \   /           .                 .
- /  I  I I  I  .    I +_______+ I        ---I -- I          I___I___I .
- --++-++-++-++--      I_--T--_I      --TT___+-__]I     --T] I---I---I                                                               \ /
-    I  I I  I         +___I___+        I    I    I I   __I  +__-I-__+                                                               / \
- --++-++-++-++--    [+---_+----+]      I    I    \II.    I  . /II \                                                 I            ./  .
- __I+_I__I+__\__     I    I    I       II   I    L+I     \I./   I   \.             '                          /                I/         '
-  /I  I   I  .\      I    I ---II    ./ \ . I      .   ./ \     I    \   /          I                /      - -               ' -          .
-  /I  I   I   I\     I    I  _-+    ./   \-----------  /  -------------  .            .              /      .   .\            .   \\
+Great is the matter of birth and death
 
-       /                 .I          --+-+--++-----]     \   \I   I/       '                                                 '   '     '
-    Y/-----+-      LT-----+-----T]     I.I   I----+I   LT--\--\--/I-T]     '/     /                                             \'  I  '/
-    /Y\   /I.       I I       I I    [H+-+H] I____+I    I__--_+----_I    . '   '/                                                \  \/
- ./ /  \Y/          I +-------+ I    I I I I[+----_]    I[+_______+]I    .  - -
-       /Y\ \          I.     .I      I I I I I .I         I-------I       - - '
- ---/ ----- \ --      [-------+      I I +HII+--+---      I-------I    ' /   \ . \
- _-/\-_____-++-\      I.     .I      I+---+II_- I---      I_T_____I  /.I         \.                            /
-    I       I         [-------+      I+___+I-__++___     L+_I-_I+_+J I                                                            //
-    I-------I         I.     .I      I+---+I--- I---     . /   \I   II                                                           -   I     /
-    I_______I      ---+-------+---   I ___+I___-+___-  ---/    L-----J                                                         /.     \   /
 
-   I     .I           I/                I     I         \     I/                       '                                       '
-   I -----+-----      I/-T---T--T]      II    I         \    /+--+-                      /'                 /                   '    /
- I I IL---+---]      /--_I-__I__I    --+I---II---++-      \/I----I_-T                     ./  //             /    /              //   /
- I I II+_____+I      /   /   I  I      I    II   I         /I___I-__I                     .                      //             .    /
-.I I I I_____+I    /    /   II  I      +--+I/I   I     --T] I---IT--I                            //             /.
- I I  I+_____+I        /    /   I      I  I  J\.II     __I  +_+-+I__+                       .                      I //             /
-   I  L_______J     ./ /   /    I      I  I   \Y/        I    I/ I   I                     '     .                  - -             /
-   I -----------    /    / /    I     I   I   /Y\        II--/   I---I                    .    '                    - .         /  -
-   I   /   .\--       --/  .   II    .II .I  /    \.    /L\ /    +___J       '    '\         /-      /      /   /  -    '     ' ' .
-   I  /     ----     --/   ----+     /I---+-/      \   /  ---------___-      .      \\       /.      /      .   / /.      .   .   \\
+    I=/       \      \   II. I/       \\ ---T--XX-      \      II.    +/'       '      '   :H   '       ''       ==/      '      :H
+   YIX=T=TT=T=.\     .\=-II .I=-       \\__III_II.      .\\-===XI====-    /= I II I/ .      -\ :H  /-        II  :H+ H/        I     =H  --
+  //\III II II      I==X=XI=====X=-    II  II  II        I\ I  II  I  .-I HH HH /:      H  = =H /   =/     ::   H  HH        H.    HH  :
+  /.I II II II/.   /I  I=====X-.I.      I--III.II        I  II=XI==II  . H HH HH H:'     /  H    -=/ /       :  :H: HH           HH =H  HH
+ -==IHHI.II.IX==-  /I II--T-II .     ==XX__III-II  I   ==II II\II--II    H==H HH H=-    .   H    H/         ==  +H+ HH        HH HH'H/  H:
+   .I II II II\        I_=I_IHI        II  II  \\I I     II II/I\\ I    H HH HH H:'        H _/ +=         HH   H  II  :     HH HH-HI' H
+ ===IHHI.II.IX==.    II=_XI___I.       II  II   \\II     II  //II \\I    H==H HH H=-\     HH  =H   H        HH   H   -I/:     HH  --HH -I
+   I  \I \\ \\       II  II   I/       \I  II   .I\.     \I.// II  \\      I  'I ''       HH  :H   H'       IH   H    H-      I/ .. HH  ..
+  /II I\ I\\ \\\     II  II-=II.     .I/ \==---\  /=-  =X/\\-- II  ----  '// HI  I. .I      HH  :H \H/       /. -\   \'  '     =..'\  :H   //
+ ///  II  I\  I\     I   II  II      /I   \=====XX/.   /I   \=======/. ...  ::  H.  H.         :H          .:   .\___\  .    .:   .\-----/.
+
+            Life slips quickly by
+
+
+     L=/                 \=T        ---T-T==-I====XT      \I .\I L=/      /'                 '\               -- H    =I      '   I   /'
+     I=====T=/      IT----XX----I/   __III__ II   II     I\\. I\ I/     //    =/'       I    ==    :'     H:H   H:   HH       I  HI /-
+    //\   /I=-     .IX____+_____X==  IIIIIII IX===II    IX=======X==XX.    --'   '//       /=          =/   :HHHHHH H=   H:    :=      /=  ==
+  .// .\Y//        /=JII=====X=/     IIIIIII IX===II   .III=-----II.L+L   -.  - -.        ./ :H     =/-     HHH:H:H H=   HH    /:H      +H   \
+  /   //X\\\--        II.    II      IIIIIII IIII I    /I IX_____XI  .   '- .''\         :H     //      HHH:H:H H/HH :    .  H=     =H
+  -=X//    \\===-     II=====II      III III I.II===-     IX_____XI    =..    ..\-       :H     HH      HHH HHH / HH --      H=     =H
+.-__I\=====\I         II.    II      II---II/I II...      IHT__T_XI I    HI     IH         :H     HH      HH   HH.  HH         H=     =H
+    II     II         II=====II      II___II ==II==-      III=+II I I    HH     HH         :H     HH      HH   HH   HH         H/// H: : :
+    II=====II         II.    II \Y   II===XI---II-==-     //  I\X===II    HH     HH         :H     HH '    HH   =H   HH --      --   I=   //
+    II     II      -==XI=====II./\   II   II___++____  -==/    I=====+    HH     H:         =H     HH ..   H:    :             /.    +\\_//
+
+                                 Wake up! Wake up!
+
+
+   II     II  .        L==-            \\I    X=/       \    L=/   HH     H:            //             ''     =/'       '     /'
+   II -===IX====       I/.     I        \\ .  I/  \     .\.  I=====-   HH     H= --        /-               II    /-  I      I   //  //
+  III\IIT=II=I.       //=T==T==XX.   ==TI=====/===X=     I\ II_-I/.I   HHI HI H+ H        ---=/ =/ ==      =H  --/-  -=\     H. //  /. :
+ IIIII\II_-_III      // .I/ I/ II      II  I /I X=/       ./IX_=I-=II :HHHHIHH   +H       --  /' /' /H      HH    -/ =/'        -H= /H  H:
+.IIII  II___II      //  // //  II      II=XI/II I/     ==X= IX-\I-=II /:HH  HH   +H      -.  -- .-  HH      HH =H./  /-       =/ H= '/  H
+/I II  II___II     /   //  //  II      II II/II //      III I+-/I\\I.  HH  HH   +H     .   --  -'  HH      H: HH. H -'       /: H /-H'':
+   II  II____II.      //  //  .II     IIL II  \X/        II   //I \\I   HH  HH    H:       --  --   //      /  HH  I -        H:   -.H .IH
+   II-=IX=_==X==-   ///  //   ///     I/\ II  /X\        II //  \===X=   HH  +=/ __=       -.  --   .-'     /-' //  - -        H/ '-  I-  =
+   II  /X_- .\=+    /  /// \\\/I     // .X/. // \\==-  =XI\X=-  +=_=I--   HH  '=    '\     .  '.. '''-/     .-   -  -. .-\-   -=/       \ /+/
+   I //       \J    .//     \X=J     /   /.//     \    /I   \========.   H  .       .       .     .        .   .  .     .    .:   .\--____/
+
+                                                  Don't waste a moment
+
+
 
 
