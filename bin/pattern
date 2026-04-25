@@ -416,7 +416,8 @@ class Pattern(object):
             font = ImageFont.load(pil_filename)
 
             # Make a new image just the right size for the text
-            line_w, line_h = font.getsize(value)
+            bbox = font.getbbox(value)
+            line_w, line_h = bbox[2] - bbox[0], bbox[3] - bbox[1]
             img = Image.new('1', (line_w, line_h), color=0)
 
             # Write the text
